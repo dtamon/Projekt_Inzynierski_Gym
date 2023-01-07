@@ -1,0 +1,78 @@
+﻿@page "/equipmentAdd"
+@page "/equipmentForm/{FormMode}/{CurrentID}"
+@using Projekt_Inzynierski.Core.DTOs;
+@inject NavigationManager NavigationManager
+@inject HttpClient _httpClient
+
+<h3>Urządzenie</h3>
+<hr />
+<EditForm Model="@equipmentDto" OnValidSubmit=@OnValidSubmit>
+    <FluentValidationValidator />
+    <div class="form-group" hidden>
+        <input for="IdContract" class="form-control" @bind="@equipmentDto.Id" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="SerialNr" class="col-form-label">Numer seryjny:</label>
+        <InputText @bind-Value="@equipmentDto.SerialNr" class="form-control"></InputText>
+        <ValidationMessage For="@(() => equipmentDto.SerialNr)" />
+    </div>
+    <br />
+    <div class="form-check">
+        <label for="TechnicalState" class="form-check-label">Czy jest sprawny?</label>
+        <InputCheckbox @bind-Value="@equipmentDto.TechnicalState"  class="form-check-input"/>
+    </div>
+    <br />
+    <div class="form-group col-md-3">
+        <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+        <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+    </div>
+</EditForm>
+@code {
+    [Parameter]
+    public string CurrentID { get; set; }
+    [Parameter]
+    public string FormMode { get; set; }
+
+    TrainingEquipmentDto equipmentDto = new TrainingEquipmentDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        @if (FormMode == "edit")
+        {
+            var fetchedEquipment = await _httpClient.GetFromJsonAsync<TrainingEquipmentDto>($"api/trainingEquipment/{CurrentID}");
+            if (fetchedEquipment != null)
+            {
+                equipmentDto = fetchedEquipment;
+            }
+        }
+    }
+
+    protected void OnValidSubmit()
+    {
+        if (FormMode != "edit")
+        {
+            CreateTrainingEquipment();
+        }
+        else
+        {
+            UpdateTrainingEquipment();
+
+        }
+    }
+
+    protected async void CreateTrainingEquipment()
+    {
+        await _httpClient.PostAsJsonAsync("api/trainingEquipment", equipmentDto);
+        NavigationManager.NavigateTo("equipmentList");
+    }
+
+    protected async void UpdateTrainingEquipment()
+    {
+        await _httpClient.PutAsJsonAsync($"api/trainingEquipment/{CurrentID}", equipmentDto);
+        NavigationManager.NavigateTo("equipmentList");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("equipmentList");
+    }
+}

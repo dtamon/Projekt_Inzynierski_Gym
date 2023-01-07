@@ -1,0 +1,120 @@
+﻿@page "/employeeAdd"
+@page "/employeeForm/{FormMode}/{CurrentID}"
+@using Projekt_Inzynierski.Core.DTOs;
+@inject NavigationManager NavigationManager
+@inject HttpClient _httpClient
+
+<h3>Dane Pracownika</h3>
+<hr />
+<EditForm Model="@employeeDto" OnValidSubmit=@OnValidSubmit>
+    <FluentValidationValidator />
+    <div class="form-group" hidden>
+        <input for="Id" class="form-control" @bind="@employeeDto.Id" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="Email" class="col-form-label">Email:</label>
+        <InputText @bind-Value="@employeeDto.Email" class="form-control" disabled="@isDisabled"></InputText>
+        <ValidationMessage For="@(() => employeeDto.Email)" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="Password" class="col-form-label">Hasło:</label>
+        <InputText @bind-Value="@employeeDto.Password" class="form-control" type="password" disabled="@isDisabled"></InputText>
+        <ValidationMessage For="@(() => employeeDto.Password)" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="ConfirmPassword" class="col-form-label">Potwierdzenie hasła:</label>
+        <InputText @bind-Value="@employeeDto.ConfirmPassword" class="form-control" type="password" disabled="@isDisabled"></InputText>
+        <ValidationMessage For="@(() => employeeDto.ConfirmPassword)" />
+    </div>  
+    <div class="form-group col-md-3">
+        <label for="FirstName" class="col-form-label">Imię:</label>
+        <InputText @bind-Value="@employeeDto.FirstName" class="form-control" disabled="@isDisabled"></InputText>
+        <ValidationMessage For="@(() => employeeDto.FirstName)" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="LastName" class="col-form-label">Nazwisko:</label>
+        <InputText @bind-Value="@employeeDto.LastName" class="form-control" disabled="@isDisabled"></InputText>
+        <ValidationMessage For="@(() => employeeDto.LastName)" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="PhoneNr" class="col-form-label">Numer tel.:</label>
+        <InputText @bind-Value="@employeeDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
+        <ValidationMessage For="@(() => employeeDto.PhoneNr)" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="Pesel" class="col-form-label">Pesel:</label>
+        <InputText @bind-Value="@employeeDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
+        <ValidationMessage For="@(() => employeeDto.Pesel)" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="Sal" class="col-form-label">Wynagrodzenie:</label>
+        <InputNumber @bind-Value="@employeeDto.Salary" class="form-control" disabled="@isDisabled"></InputNumber>
+        <ValidationMessage For="@(() => employeeDto.Salary)" />
+    </div>
+    <br />
+    <div class="form-group col-md-3 list-group-horizontal-sm">
+        <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+        <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" /> 
+        <input type="button" class="btn btn-danger" @onclick=@EndEmployment value="Koniec zatrudnienia" />
+    </div>
+</EditForm>
+@code {
+    [Parameter]
+    public string CurrentID { get; set; }
+    [Parameter]
+    public string FormMode { get; set; }
+
+    EmployeeDto employeeDto = new EmployeeDto();
+    bool isDisabled;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (FormMode == "details")
+        {
+            isDisabled = true;
+        }
+        if (FormMode == "edit" || FormMode == "details")
+        {
+            var fetchedEmployee = await _httpClient.GetFromJsonAsync<EmployeeDto>($"api/employee/{CurrentID}");
+            if (fetchedEmployee != null)
+            {
+                employeeDto = fetchedEmployee;
+            }
+        }
+
+    }
+
+    protected void OnValidSubmit()
+    {
+        if (FormMode != "edit")
+        {
+            CreateEmployee();
+        }
+        else
+        {
+            UpdateEmployee();
+        }
+    }
+
+    protected async void CreateEmployee()
+    {
+        await _httpClient.PostAsJsonAsync("api/employee", employeeDto);
+        NavigationManager.NavigateTo("employeeList");
+    }
+
+    protected async void UpdateEmployee()
+    {
+        await _httpClient.PutAsJsonAsync($"api/employee/{CurrentID}", employeeDto);
+        NavigationManager.NavigateTo("employeeList");
+    }
+
+    protected void EndEmployment()
+    {
+        employeeDto.EmployedTo = DateTime.Today.AddMonths(1);
+        UpdateEmployee();
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("employeeList");
+    }
+}

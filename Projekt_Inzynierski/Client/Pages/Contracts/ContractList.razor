@@ -1,0 +1,57 @@
+﻿@page "/contractList"
+@using Projekt_Inzynierski.Core.DTOs;
+@inject NavigationManager NavigationManager
+@inject HttpClient _httpClient
+
+<NavLink class="nav-link" href="contractAdd">
+    <span class="oi oi-plus" aria-hidden="true"></span>Dodaj Umowę
+</NavLink>
+
+<h3>Lista Umów</h3>
+@if (contracts == null)
+{
+    <p><em>Ładowanie...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Okres w miesiącach</th>
+                <th>Koszt miesięczny</th>
+                <th>Operacje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var contract in contracts)
+            {
+                <tr>
+                    <td>@contract.Months</td>
+                    <td>@contract.MonthlyCost</td>
+                    <td>
+                        <a class="nav-link" href="contractForm/edit/@contract.Id">
+                            <span class="oi oi-pencil" aria-hidden="true"></span>Edytuj
+                        </a>
+                        <a class="nav-link" href="" @onclick="@(() => {DeleteContract(contract.Id); })">
+                            <span class="oi oi-trash" aria-hidden="true"></span>Usuń
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+    ICollection<ContractDto> contracts = new List<ContractDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        contracts = await _httpClient.GetFromJsonAsync<ICollection<ContractDto>>("api/contract");
+    }
+
+    protected async void DeleteContract(int id)
+    {
+        await _httpClient.DeleteAsync($"api/contract/{id}");
+        NavigationManager.NavigateTo("contractList");
+    }
+}

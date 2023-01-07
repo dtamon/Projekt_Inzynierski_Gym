@@ -1,0 +1,74 @@
+﻿@page "/trainerList"
+@using Projekt_Inzynierski.Core.DTOs;
+@inject NavigationManager NavigationManager
+@inject HttpClient _httpClient
+
+<NavLink class="nav-link" href="trainerAdd">
+    <span class="oi oi-plus" aria-hidden="true"></span>Dodaj Trenera
+</NavLink>
+
+<h3>Lista Trenerów</h3>
+@if (trainers == null)
+{
+    <p><em>Ładowanie...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Imię</th>
+                <th>Nazwisko</th>
+                <th>Numer tel.</th>
+                <th>Email</th>
+                <th>Pesel</th>
+                <th>Wynagrodzenie</th>
+                <th>Specjalizacje</th>
+                <th>Operacja</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var trainer in trainers)
+            {
+                <tr>
+                    <td>@trainer.FirstName</td>
+                    <td>@trainer.LastName</td>
+                    <td>@trainer.PhoneNr</td>
+                    <td>@trainer.Email</td>
+                    <td>@trainer.Pesel</td>
+                    <td>@trainer.Salary</td>
+                    <td>
+                        @foreach (var spec in trainer.Specializations)
+                        {
+                            <p>@spec.SpecName</p>
+                        }
+                    </td>
+                    <td>
+                        <a class="nav-link" href="trainerForm/edit/@trainer.Id">
+                            <span class="oi oi-pencil" aria-hidden="true"></span>Edytuj
+                        </a>
+                        <a class="nav-link" href="" @onclick="@(() => {DeleteTrainer(trainer.Id); })">
+                            <span class="oi oi-trash" aria-hidden="true"></span>Usuń
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    ICollection<TrainerDto> trainers = new List<TrainerDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        trainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerDto>>("api/trainer");
+    }
+
+    protected async void DeleteTrainer(int id)
+    {
+
+        await _httpClient.DeleteAsync($"api/trainer/{id}");
+        NavigationManager.NavigateTo("trainerList");
+    }
+}

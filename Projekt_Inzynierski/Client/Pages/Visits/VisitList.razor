@@ -1,0 +1,67 @@
+﻿@page "/visitList"
+@using Projekt_Inzynierski.Core.DTOs;
+@inject NavigationManager NavigationManager
+@inject HttpClient _httpClient
+
+<NavLink class="nav-link" href="visitAdd">
+    <span class="oi oi-plus" aria-hidden="true"></span>Dodaj Wizytę
+</NavLink>
+
+<h3>Lista Wizyt</h3>
+@if (visits == null)
+{
+    <p><em>Ładowanie...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Imię</th>
+                <th>Nazwisko</th>
+                <th>Email</th>
+                <th>Pesel</th>
+                <th>Data wizyty</th>
+                <th>Operacja</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var visit in visits)
+            {
+                <tr>
+                    <td>@visit.FirstName</td>
+                    <td>@visit.LastName</td>
+                    <td>@visit.Email</td>
+                    <td>@visit.Pesel</td>
+                    <td>@visit.VisitDate.ToShortDateString()</td>
+                    <td>
+                        <a class="nav-link" href="visitForm/details/@visit.Id">
+                            <span class="oi oi-magnifying-glass" aria-client="true"></span>Szczegóły
+                        </a>
+                        <a class="nav-link" href="visitForm/edit/@visit.Id">
+                            <span class="oi oi-pencil" aria-hidden="true"></span>Edytuj
+                        </a>
+                        <a class="nav-link" href="" @onclick="@(() => {DeleteVisit(visit.Id); })">
+                            <span class="oi oi-trash" aria-hidden="true"></span>Usuń
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    ICollection<VisitDto> visits = new List<VisitDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        visits = await _httpClient.GetFromJsonAsync<ICollection<VisitDto>>("api/visit");
+    }
+
+    protected async void DeleteVisit(int id)
+    {
+        await _httpClient.DeleteAsync($"api/visit/{id}");
+        NavigationManager.NavigateTo("visitList");
+    }
+}

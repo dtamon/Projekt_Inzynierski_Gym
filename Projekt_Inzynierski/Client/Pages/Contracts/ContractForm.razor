@@ -1,0 +1,82 @@
+﻿@page "/contractAdd"
+@page "/contractForm/{FormMode}/{CurrentID}"
+@using Projekt_Inzynierski.Core.DTOs;
+@inject NavigationManager NavigationManager
+@inject HttpClient _httpClient
+
+<h3>Umowa</h3>
+<hr />
+<EditForm Model="@contractDto" OnValidSubmit=@OnValidSubmit>
+    <FluentValidationValidator />
+    <div class="form-group" hidden>
+        <input for="Id" class="form-control" @bind="@contractDto.Id" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="Months" class="col-form-label">Czas obowiązywania w miesiącach:</label>
+        <InputNumber @bind-Value="@contractDto.Months" class="form-control" disabled="@isDisabled"></InputNumber>
+        <ValidationMessage For="@(() => contractDto.Months)" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="MonthlyCost" class="col-form-label">Koszt miesięczny:</label>
+        <InputNumber @bind-Value="@contractDto.MonthlyCost" class="form-control" disabled="@isDisabled"></InputNumber>
+        <ValidationMessage For="@(() => contractDto.MonthlyCost)" />
+    </div>
+    <br />
+    <div class="form-group col-md-3">
+        <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+        <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+    </div>
+</EditForm>
+@code {
+    [Parameter]
+    public string CurrentID { get; set; }
+    [Parameter]
+    public string FormMode { get; set; }
+
+    ContractDto contractDto = new ContractDto();
+    bool isDisabled;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (FormMode == "details")
+        {
+            isDisabled = true;
+        }
+        @if (FormMode == "edit")
+        {
+            var fetchedContract = await _httpClient.GetFromJsonAsync<ContractDto>($"api/contract/{CurrentID}");
+            if (fetchedContract != null)
+            {
+                contractDto = fetchedContract;
+            }
+        }
+    }
+
+    protected void OnValidSubmit()
+    {
+        if (FormMode != "edit")
+        {
+            CreateContract();
+        }
+        else
+        {
+            UpdateContract();
+        }
+    }
+
+    protected async void CreateContract()
+    {
+        await _httpClient.PostAsJsonAsync("api/contract", contractDto);
+        NavigationManager.NavigateTo("contractList");
+    }
+
+    protected async void UpdateContract()
+    {
+        await _httpClient.PutAsJsonAsync($"api/contract/{CurrentID}", contractDto);
+        NavigationManager.NavigateTo("contractList");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("contractList");
+    }
+}

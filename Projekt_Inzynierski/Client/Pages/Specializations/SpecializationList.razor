@@ -1,0 +1,59 @@
+﻿@page "/specializationList"
+@using Projekt_Inzynierski.Core.DTOs;
+@inject NavigationManager NavigationManager
+@inject HttpClient _httpClient
+
+<NavLink class="nav-link" href="specializationAdd">
+    <span class="oi oi-plus" aria-hidden="true"></span>Dodaj Specializację
+</NavLink>
+
+<h3>Lista Specializacji</h3>
+@if (specializations == null)
+{
+        <p><em>Ładowanie...</em></p>
+}
+else
+{
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Specjalizacja</th>
+                    <th>Operacje</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var specialization in specializations)
+            {
+                        <tr>
+                            <td>@specialization.SpecName</td>
+                            <td>
+                        @*<a class="nav-link" href="specForm/details/@specialization.IdSpec">
+                <span class="oi oi-magnifying-glass" aria-hidden="true"></span>Szczegóły
+                </a>*@
+                                <a class="nav-link" href="specializationForm/edit/@specialization.Id">
+                                    <span class="oi oi-pencil" aria-hidden="true"></span>Edytuj
+                                </a>
+                                <a class="nav-link" href="" @onclick="@(() => {DeleteSpecialization(specialization.Id); })">
+                                    <span class="oi oi-trash" aria-hidden="true"></span>Usuń
+                                </a>
+                            </td>
+                        </tr>
+            }
+            </tbody>
+        </table>
+}
+
+@code {
+    ICollection<SpecializationDto> specializations = new List<SpecializationDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        specializations = await _httpClient.GetFromJsonAsync<ICollection<SpecializationDto>>("api/specialization");
+    }
+
+    protected async void DeleteSpecialization(int id)
+    {
+        await _httpClient.DeleteAsync($"api/specialization/{id}");
+        NavigationManager.NavigateTo("specializationList");
+    }
+}

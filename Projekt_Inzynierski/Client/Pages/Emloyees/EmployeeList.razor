@@ -1,0 +1,71 @@
+﻿@page "/employeeList"
+@using Projekt_Inzynierski.Core.DTOs;
+@inject NavigationManager NavigationManager
+@inject HttpClient _httpClient
+
+<NavLink class="nav-link" href="employeeAdd">
+    <span class="oi oi-plus" aria-hidden="true"></span>Dodaj Pracownika
+</NavLink>
+
+<h3>Lista Pracowników</h3>
+@if (employees == null)
+{
+    <p><em>Ładowanie...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Imię</th>
+                <th>Nazwisko</th>
+                <th>Numer tel.</th>
+                <th>Email</th>
+                <th>Pesel</th>
+                <th>Wynagrodzenie</th>
+                <th>Koniec umowy</th>
+                <th>Operacja</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in employees)
+            {
+                <tr>
+                    <td>@employee.FirstName</td>
+                    <td>@employee.LastName</td>
+                    <td>@employee.PhoneNr</td>
+                    <td>@employee.Email</td>
+                    <td>@employee.Pesel</td>
+                    <td>@employee.Salary</td>
+                    <td>@(employee.EmployedTo < DateTime.Today ? null : employee.EmployedTo.ToShortDateString())</td>
+                    <td>
+                        <a class="nav-link" href="employeeForm/details/@employee.Id">
+                            <span class="oi oi-magnifying-glass" aria-hidden="true"></span>Szczegóły
+                        </a>
+                        <a class="nav-link" href="employeeForm/edit/@employee.Id">
+                            <span class="oi oi-pencil" aria-hidden="true"></span>Edytuj
+                        </a>
+                        <a class="nav-link" href="" @onclick="@(() => {DeleteEmployee(employee.Id); })">
+                            <span class="oi oi-trash" aria-hidden="true"></span>Usuń
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    ICollection<EmployeeDto> employees = new List<EmployeeDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        employees = await _httpClient.GetFromJsonAsync<ICollection<EmployeeDto>>("api/employee");
+    }
+
+    protected async void DeleteEmployee(int id)
+    {
+        await _httpClient.DeleteAsync($"api/employee/{id}");
+        NavigationManager.NavigateTo("employeeList");
+    }
+}

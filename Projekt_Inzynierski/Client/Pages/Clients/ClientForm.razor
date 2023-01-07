@@ -1,0 +1,124 @@
+﻿@page "/clientAdd"
+@page "/clientForm/{FormMode}/{CurrentID}"
+@using Projekt_Inzynierski.Core.DTOs;
+@inject NavigationManager NavigationManager
+@inject HttpClient _httpClient
+
+<h3>Dane Klienta</h3>
+<hr />
+<EditForm Model="@clientDto" OnValidSubmit=@OnValidSubmit>
+    <FluentValidationValidator />
+    <div class="form-group" hidden>
+        <input for="Id" class="form-control" @bind="@clientDto.Id" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="Email" class="col-form-label">Email:</label>
+        <InputText @bind-Value="@clientDto.Email" class="form-control" disabled="@isDisabled"></InputText>
+        <ValidationMessage For="@(() => clientDto.Email)" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="Password" class="col-form-label">Hasło:</label>
+        <InputText @bind-Value="@clientDto.Password" class="form-control" type="password" disabled="@isDisabled"></InputText>
+        <ValidationMessage For="@(() => clientDto.Password)" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="ConfirmPassword" class="col-form-label">Potwierdzenie hasła:</label>
+        <InputText @bind-Value="@clientDto.ConfirmPassword" class="form-control" type="password" disabled="@isDisabled"></InputText>
+        <ValidationMessage For="@(() => clientDto.ConfirmPassword)" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="FirstName" class="col-form-label">Imię:</label>
+        <InputText @bind-Value="@clientDto.FirstName" class="form-control" disabled="@isDisabled"></InputText>
+        <ValidationMessage For="@(() => clientDto.FirstName)" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="LastName" class="col-form-label">Nazwisko:</label>
+        <InputText @bind-Value="@clientDto.LastName" class="form-control" disabled="@isDisabled"></InputText>
+        <ValidationMessage For="@(() => clientDto.LastName)" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="PhoneNr" class="col-form-label">Numer telefonu:</label>
+        <InputText @bind-Value="@clientDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
+        <ValidationMessage For="@(() => clientDto.PhoneNr)" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="Pesel" class="col-form-label">Pesel:</label>
+        <InputText @bind-Value="@clientDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
+        <ValidationMessage For="@(() => clientDto.Pesel)" />
+    </div>
+    <div class="form-group col-md-3">
+        <label for="ContractId" class="col-form-label">Umowa:</label>
+        <InputSelect @bind-Value="@clientDto.ContractId" class="form-select" disabled="@isDisabled">
+            <option selected style="display:none"> -- wybierz umowę -- </option>
+            @if (contracts != null)
+            {
+                @foreach (var contract in contracts)
+                {
+                    <option value="@contract.Id">@contract.Months miesięcy, @contract.MonthlyCost zł miesięcznie</option>
+                }
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => clientDto.ContractId)" />
+    </div>
+    <br />
+    <div class="form-group col-md-3">
+        <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+        <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+    </div>
+</EditForm>
+@code {
+    [Parameter]
+    public string CurrentID { get; set; }
+    [Parameter]
+    public string FormMode { get; set; }
+
+    ClientDto clientDto = new ClientDto();
+    ICollection<ContractDto> contracts = new List<ContractDto>();
+    bool isDisabled;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (FormMode == "details")
+        {
+            isDisabled = true;
+        }
+        contracts = await _httpClient.GetFromJsonAsync<ICollection<ContractDto>>("api/contract");
+        if (FormMode == "edit" || FormMode == "details")
+        {
+            var fetchedClient = await _httpClient.GetFromJsonAsync<ClientDto>($"api/client/{CurrentID}");
+            if (fetchedClient != null)
+            {
+                clientDto = fetchedClient;
+            }
+        }
+
+    }
+
+    protected void OnValidSubmit()
+    {
+        if (FormMode != "edit")
+        {
+            CreateClient();
+        }
+        else
+        {
+            UpdateClient();
+        }
+    }
+
+    protected async void CreateClient()
+    {
+        await _httpClient.PostAsJsonAsync("api/client", clientDto);
+        NavigationManager.NavigateTo("clientList");
+    }
+
+    protected async void UpdateClient()
+    {
+        await _httpClient.PutAsJsonAsync($"api/client/{CurrentID}", clientDto);
+        NavigationManager.NavigateTo("clientList");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("clientList");
+    }
+}

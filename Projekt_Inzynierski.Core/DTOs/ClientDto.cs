@@ -16,6 +16,7 @@ namespace Projekt_Inzynierski.Core.DTOs
         public string Pesel { get; set; }
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
+        public string Role { get; set; } = "Client";
         public int ContractId { get; set; }
         public int? ContractMonths { get; set; }
         public int? ContractMonthlyCost { get; set; }

@@ -3,6 +3,8 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Projekt_Inzynierski.Core;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.Core.Services.Services;
 using Projekt_Inzynierski.Core.Validators;
@@ -11,6 +13,7 @@ using Projekt_Inzynierski.DataAccess.Entities;
 using Projekt_Inzynierski.DataAccess.Repositories;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
 using Projekt_Inzynierski.DataAccess.Repositories.Repositories;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +21,27 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+var authenticationSettings = new AuthenticationSettings();
+builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
+
+builder.Services.AddSingleton(authenticationSettings);
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = "Bearer";
+    options.DefaultScheme = "Bearer";
+    options.DefaultChallengeScheme = "Bearer";
+}).AddJwtBearer(cfg =>
+{
+    cfg.RequireHttpsMetadata = false;
+    cfg.SaveToken = true;
+    cfg.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = authenticationSettings.JwtIssuer,
+        ValidAudience = authenticationSettings.JwtIssuer,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey)),
+    };
+});
 
 //Context
 builder.Services.AddDbContext<GymDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("connection")));
@@ -31,6 +55,7 @@ builder.Services.AddScoped<ISpecializationRepository, SpecializationRepository>(
 builder.Services.AddScoped<ITrainerRepository, TrainerRepository>();
 builder.Services.AddScoped<ITrainingEquipmentRepository, TrainingEquipmentRepository>();
 builder.Services.AddScoped<IVisitRepository, VisitRepository>();
+builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 
 //Services
 builder.Services.AddScoped<IClientService, ClientService>();
@@ -40,6 +65,7 @@ builder.Services.AddScoped<ISpecializationService, SpecializationService>();
 builder.Services.AddScoped<ITrainerService, TrainerService>();
 builder.Services.AddScoped<ITrainingEquipmentService, TrainingEquipmentService>();
 builder.Services.AddScoped<IVisitService, VisitService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 //Automapper
 builder.Services.AddAutoMapper(typeof(Projekt_Inzynierski.Core.GymMappingProfile).Assembly);
@@ -55,6 +81,7 @@ builder.Services.AddFluentValidationAutoValidation(config =>
 builder.Services.AddScoped<IPasswordHasher<Client>, PasswordHasher<Client>>();
 builder.Services.AddScoped<IPasswordHasher<Employee>, PasswordHasher<Employee>>();
 builder.Services.AddScoped<IPasswordHasher<Trainer>, PasswordHasher<Trainer>>();
+builder.Services.AddScoped<IPasswordHasher<Person>, PasswordHasher<Person>>();
 
 
 var app = builder.Build();
@@ -71,6 +98,7 @@ else
     app.UseHsts();
 }
 
+app.UseAuthentication();
 app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();

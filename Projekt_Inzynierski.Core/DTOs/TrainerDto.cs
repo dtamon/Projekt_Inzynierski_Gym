@@ -16,6 +16,7 @@ namespace Projekt_Inzynierski.Core.DTOs
         public string Pesel { get; set; }
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
+        public string Role { get; set; } = "Trainer";
         public DateTime EmployedFrom { get; set; }
         public DateTime EmployedTo { get; set; }
         public int Salary { get; set; }

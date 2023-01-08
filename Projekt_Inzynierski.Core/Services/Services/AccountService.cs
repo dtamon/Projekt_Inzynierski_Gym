@@ -27,7 +27,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
             _authenticationSettings = authenticationSettings;
         }
 
-        public async Task<string> GenerateJwt(LoginDto dto)
+        public async Task<UserSession?> GenerateJwt(LoginDto dto)
         {
             var user = await _personRepository.GetUserByEmail(dto.Email);
 
@@ -59,7 +59,16 @@ namespace Projekt_Inzynierski.Core.Services.Services
                 );
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            return tokenHandler.WriteToken(token);
+
+            var userSession = new UserSession
+            {
+                UserName = $"{user.FirstName} {user.LastName}",
+                Role = user.Role,
+                Token = tokenHandler.WriteToken(token),
+                ExpiresIn = (int)expires.Subtract(DateTime.Now).TotalSeconds
+            };
+
+            return userSession;
         }
     }
 }

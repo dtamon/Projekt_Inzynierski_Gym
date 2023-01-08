@@ -1,7 +1,11 @@
 ﻿@page "/fetchdata"
+@attribute [Authorize(Roles = "Client")]
+@using Projekt_Inzynierski.Client.Extensions;
 @using Projekt_Inzynierski.Core.DTOs;
 @using Projekt_Inzynierski.Shared
 @inject HttpClient Http
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navigationManager
 
 <PageTitle>Weather forecast</PageTitle>
 
@@ -43,6 +47,17 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+        }
+        else
+        {
+            navigationManager.NavigateTo("/login");
+        }
+
     }
 }

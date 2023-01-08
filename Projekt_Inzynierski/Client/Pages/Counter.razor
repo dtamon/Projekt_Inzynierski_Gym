@@ -1,5 +1,5 @@
 ﻿@page "/counter"
-@using Projekt_Inzynierski.Core.DTOs;
+@attribute [Authorize(Roles = "Admin,Client")]
 @inject HttpClient _httpClient
 
 <PageTitle>Counter</PageTitle>
@@ -7,23 +7,14 @@
 <h1>Counter</h1>
 
 <p role="status">Current count: @currentCount</p>
-<p role="status">Token: @token</p>
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 @code {
     private int currentCount = 0;
-    private string token;
-
-    LoginDto user = new LoginDto()
-        {
-            Email = "dominiktamon@gmail.com",
-            Password = "dtamon"
-        };
 
     private async void IncrementCount()
     {
-        //currentCount++;
-        var result = await _httpClient.PostAsJsonAsync("api/account/login", user);
+        currentCount++;
     }
 }

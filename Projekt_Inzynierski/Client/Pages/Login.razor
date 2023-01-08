@@ -1,0 +1,51 @@
+﻿@page "/login"
+@using Projekt_Inzynierski.Client.Extensions;
+@using Projekt_Inzynierski.Core.DTOs;
+@using Projekt_Inzynierski.Client.Authentication
+@inject HttpClient _httpClient
+@inject IJSRuntime js
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navigationManager
+
+
+<div class="row">
+    <div class="colcol-lg-4 offset-lg-4 pt-4 pb-4 border">
+        <div class="mb-3 text-center">
+            <h3>LOGIN</h3>
+        </div>
+        <div class="mb-3">
+            <label>Email</label>
+            <input @bind="loginDto.Email" class="form-control" placeholder="User Email" />
+        </div>
+        <div class="mb-3">
+            <label>Email</label>
+            <input @bind="loginDto.Password" type="password" class="form-control" placeholder="User Email" />
+        </div>
+        <div class="mb-3 d-grid gap-2">
+            <button @onclick="Authenticate" class="btn btn-primary"> Login</button>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private LoginDto loginDto = new LoginDto();
+
+    private async Task Authenticate()
+    {
+        var loginResponse = await _httpClient.PostAsJsonAsync<LoginDto>("api/account/login", loginDto);
+
+        if (loginResponse.IsSuccessStatusCode)
+        {
+            var userSession = await loginResponse.Content.ReadFromJsonAsync<UserSession>();
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+            await customAuthStateProvider.UpdateAuthenticationState(userSession);
+            navigationManager.NavigateTo("/", true);
+        }
+        else if (loginResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            await js.InvokeVoidAsync("alert", "Invalid Email or Password");
+            return;
+        }
+    }
+}

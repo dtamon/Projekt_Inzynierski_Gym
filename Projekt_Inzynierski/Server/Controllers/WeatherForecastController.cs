@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Projekt_Inzynierski.Shared;
 
@@ -20,6 +21,7 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Client")]
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast

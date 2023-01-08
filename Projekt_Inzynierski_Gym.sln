@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Projekt_Inzynierski.Server", "Projekt_Inzynierski\Server\Projekt_Inzynierski.Server.csproj", "{FC703E7E-1281-4B28-B8D4-C56AB8FE50A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Projekt_Inzynierski.Server", "Projekt_Inzynierski\Server\Projekt_Inzynierski.Server.csproj", "{FC703E7E-1281-4B28-B8D4-C56AB8FE50A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Projekt_Inzynierski.Client", "Projekt_Inzynierski\Client\Projekt_Inzynierski.Client.csproj", "{C67D00D0-7CCE-48E1-BFFF-C5F4BB11CD15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Projekt_Inzynierski.Client", "Projekt_Inzynierski\Client\Projekt_Inzynierski.Client.csproj", "{C67D00D0-7CCE-48E1-BFFF-C5F4BB11CD15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Projekt_Inzynierski.DataAccess", "Projekt_Inzynierski.DataAccess\Projekt_Inzynierski.DataAccess.csproj", "{5FFD539E-181D-4341-84AA-3AF526F209B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Projekt_Inzynierski.DataAccess", "Projekt_Inzynierski.DataAccess\Projekt_Inzynierski.DataAccess.csproj", "{5FFD539E-181D-4341-84AA-3AF526F209B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Projekt_Inzynierski.Core", "Projekt_Inzynierski.Core\Projekt_Inzynierski.Core.csproj", "{66A48BF7-E5BA-4A07-B385-C6189009D8D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Projekt_Inzynierski.Core", "Projekt_Inzynierski.Core\Projekt_Inzynierski.Core.csproj", "{66A48BF7-E5BA-4A07-B385-C6189009D8D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

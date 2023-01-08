@@ -19,8 +19,11 @@ namespace Projekt_Inzynierski.Server.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto dto)
         {
-            string token = await _accountService.GenerateJwt(dto);
-            return Ok(token);
+            var userSession = await _accountService.GenerateJwt(dto);
+            if (userSession is null)
+                return Unauthorized();
+            else
+                return Ok(userSession); 
         }
     }
 }

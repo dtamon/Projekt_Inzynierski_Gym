@@ -9,6 +9,6 @@ namespace Projekt_Inzynierski.Core.Services.Interfaces
 {
     public interface IAccountService
     {
-        Task<string> GenerateJwt(LoginDto dto);
+        Task<UserSession?> GenerateJwt(LoginDto dto);
     }
 }

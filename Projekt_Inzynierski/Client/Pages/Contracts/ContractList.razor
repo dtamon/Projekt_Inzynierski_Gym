@@ -3,9 +3,13 @@
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
 
-<NavLink class="nav-link" href="contractAdd">
-    <span class="oi oi-plus" aria-hidden="true"></span>Dodaj Umowę
-</NavLink>
+
+<div class="d-flex justify-content-between">
+    <h3>Lista Kontraktów</h3>
+    <NavLink class="nav-link" href="contractAdd">
+        <input type="button" class="btn btn-success" value="+ Dodaj" />
+    </NavLink>
+</div>
 
 <h3>Lista Umów</h3>
 @if (contracts == null)
@@ -28,12 +32,12 @@ else
                 <tr>
                     <td>@contract.Months</td>
                     <td>@contract.MonthlyCost</td>
-                    <td>
+                    <td class="hstack">
                         <a class="nav-link" href="contractForm/edit/@contract.Id">
-                            <span class="oi oi-pencil" aria-hidden="true"></span>Edytuj
+                            <span class="oi oi-pencil" aria-hidden="true"></span>
                         </a>
                         <a class="nav-link" href="" @onclick="@(() => {DeleteContract(contract.Id); })">
-                            <span class="oi oi-trash" aria-hidden="true"></span>Usuń
+                            <span class="oi oi-trash" aria-hidden="true"></span>
                         </a>
                     </td>
                 </tr>

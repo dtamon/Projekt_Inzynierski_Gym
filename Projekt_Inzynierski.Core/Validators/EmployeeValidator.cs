@@ -12,10 +12,8 @@ namespace Projekt_Inzynierski.Core.Validators
 {
     public class EmployeeValidator : AbstractValidator<EmployeeDto>
     {
-        private readonly GymDbContext _dbContext;
         public EmployeeValidator(GymDbContext dbContext)
         {
-            _dbContext = dbContext;
 
             RuleFor(x => x.FirstName)
                 .NotEmpty().WithMessage("Imię jest wymagane")
@@ -31,7 +29,14 @@ namespace Projekt_Inzynierski.Core.Validators
                 .NotEmpty().WithMessage("Numer telefonu jest wymagany")
                 .Length(9, 9).WithMessage("Numer telefonu musi zawierać 9 cyfr")
                 .Matches("^[0-9]*$").WithMessage("Numer telefonu może zawierać tylko cyfry")
-                .MustAsync(async (employee, value, c) => await UniqueEmail(employee, value)).WithMessage("Numer telefonu jest już przypisany do innej osoby");
+                .Custom((value, context) =>
+                {
+                    var emailInUse = dbContext.Person.Any(s => s.Email == value);
+                    if (emailInUse)
+                    {
+                        context.AddFailure("Email", "Podany Email jest w użyciu");
+                    }
+                });
 
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Email jest wymagany")
@@ -69,9 +74,9 @@ namespace Projekt_Inzynierski.Core.Validators
                 .GreaterThan(0).WithMessage("Wynagrodzenie musi być liczbą dodatnią");
         }
 
-        private async Task<bool> UniqueEmail(EmployeeDto employee ,string phoneNr)
-        {
-            return !await _dbContext.Person.Where(s => s.Id != employee.Id).AnyAsync(s => s.PhoneNr == phoneNr);
-        }
+        //private async Task<bool> UniqueEmail(EmployeeDto employee ,string phoneNr)
+        //{
+        //    return !await _dbContext.Person.Where(s => s.Id != employee.Id).AnyAsync(s => s.PhoneNr == phoneNr);
+        //}
     }
 }

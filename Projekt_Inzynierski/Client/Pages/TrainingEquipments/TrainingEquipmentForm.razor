@@ -6,27 +6,37 @@
 
 <h3>Urządzenie</h3>
 <hr />
-<EditForm Model="@equipmentDto" OnValidSubmit=@OnValidSubmit>
-    <FluentValidationValidator />
-    <div class="form-group" hidden>
-        <input for="IdContract" class="form-control" @bind="@equipmentDto.Id" />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="@equipmentDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
+            <FluentValidationValidator />
+            <div class="form-group" hidden>
+                <input for="IdContract" class="form-control" @bind="@equipmentDto.Id" />
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <label for="SerialNr" class="input-group-text col-md-3">Numer seryjny:</label>
+                    <InputText @bind-Value="@equipmentDto.SerialNr" class="form-control"></InputText>
+                </div>
+                <ValidationMessage For="@(() => equipmentDto.SerialNr)" />
+            </div>
+            <br />
+            <div class="form-group">
+                <div class="input-group">
+                    <label for="TechnicalState" class="input-group-text col-md-3">Czy jest sprawny?</label>
+                    <div class="form-control">
+                        <InputCheckbox @bind-Value="@equipmentDto.TechnicalState" class="form-check-input" />
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="form-group ms-auto">
+                <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+                <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+            </div>
+        </EditForm>
     </div>
-    <div class="form-group col-md-3">
-        <label for="SerialNr" class="col-form-label">Numer seryjny:</label>
-        <InputText @bind-Value="@equipmentDto.SerialNr" class="form-control"></InputText>
-        <ValidationMessage For="@(() => equipmentDto.SerialNr)" />
-    </div>
-    <br />
-    <div class="form-check">
-        <label for="TechnicalState" class="form-check-label">Czy jest sprawny?</label>
-        <InputCheckbox @bind-Value="@equipmentDto.TechnicalState"  class="form-check-input"/>
-    </div>
-    <br />
-    <div class="form-group col-md-3">
-        <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
-        <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
-    </div>
-</EditForm>
+</div>
 @code {
     [Parameter]
     public string CurrentID { get; set; }

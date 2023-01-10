@@ -6,22 +6,28 @@
 
 <h3>Specjalizacja</h3>
 <hr />
-<EditForm Model="@specializationDto" OnValidSubmit=@OnValidSubmit>
-    <FluentValidationValidator />
-    <div class="form-group" hidden>
-        <input for="IdSpec" class="form-control" @bind="@specializationDto.Id" />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="@specializationDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
+            <FluentValidationValidator />
+            <div class="form-group" hidden>
+                <input for="IdSpec" class="form-control" @bind="@specializationDto.Id" />
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <label for="Spec" class="input-group-text col-md-3">Specjalizacja:</label>
+                    <InputText @bind-Value="@specializationDto.SpecName" class="form-control" disabled="@isDisabled"></InputText>
+                </div>
+                <ValidationMessage For="@(() => specializationDto.SpecName)" />
+            </div>
+            <br />
+            <div class="form-group ms-auto">
+                <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+                <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+            </div>
+        </EditForm>
     </div>
-    <div class="form-group col-md-3">
-        <label for="Spec" class="col-form-label">Specjalizacja:</label>
-        <InputText @bind-Value="@specializationDto.SpecName" class="form-control" disabled="@isDisabled"></InputText>
-        <ValidationMessage For="@(() => specializationDto.SpecName)" />
-    </div>
-    <br />
-    <div class="form-group col-md-3">
-        <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
-        <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
-    </div>
-</EditForm>
+</div>
 
 @code {
     [Parameter]

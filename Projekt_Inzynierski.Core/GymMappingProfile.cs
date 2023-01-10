@@ -47,6 +47,16 @@ namespace Projekt_Inzynierski.Core
                 .ForMember(d => d.PhoneNr, o => o.MapFrom(s => s.Client.PhoneNr))
                 .ForMember(d => d.Email, o => o.MapFrom(s => s.Client.Email))
                 .ForMember(d => d.Pesel, o => o.MapFrom(s => s.Client.Pesel));
+
+            CreateMap<GroupTrainingDto, GroupTraining>()
+                .ForMember(d => d.Clients, o => o.MapFrom(s => s.ClientIds.ToList()))
+                .ForMember(d => d.Trainers, o => o.MapFrom(s => s.TrainerIds.ToList()));
+            CreateMap<GroupTraining, GroupTrainingDto>()
+                .ForMember(d => d.FreeSpots, o => o.MapFrom(s => s.MaxCLients - s.Clients.Count()))
+                .ForMember(d => d.ClientIds, o => o.MapFrom(s => s.Clients))
+                .ForMember(d => d.Clients, o => o.MapFrom(s => s.Clients))
+                .ForMember(d => d.TrainerIds, o => o.MapFrom(s => s.Trainers))
+                .ForMember(d => d.Trainers, o => o.MapFrom(s => s.Trainers));
         }
     }
 }

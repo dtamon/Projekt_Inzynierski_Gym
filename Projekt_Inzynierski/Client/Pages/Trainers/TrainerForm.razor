@@ -14,21 +14,21 @@
                 <div class="form-group" hidden>
                     <input for="Id" class="form-control" @bind="@trainerDto.Id" />
                 </div>
-                <div class="row form-group">
+                <div class="form-group">
                     <div class="input-group">
                         <label for="Email" class="input-group-text col-md-3">Email:</label>
                         <InputText @bind-Value="@trainerDto.Email" class="form-control" disabled="@isDisabled"></InputText>
                     </div>
                     <ValidationMessage For="@(() => trainerDto.Email)" />
                 </div>
-                <div class="row form-group">
+                <div class="form-group">
                     <div class="input-group">
                         <label for="Password" class="input-group-text col-md-3">Hasło:</label>
                         <InputText @bind-Value="@trainerDto.Password" class="form-control" type="password" disabled="@isDisabled"></InputText>
                     </div>
                     <ValidationMessage For="@(() => trainerDto.Password)" />
                 </div>
-                <div class="row form-group">
+                <div class="form-group">
                     <div class="input-group">
                         <label for="ConfirmPassword" class="input-group-text col-md-3">Powtórz hasło:</label>
                         <InputText @bind-Value="@trainerDto.ConfirmPassword" class="form-control" type="password" disabled="@isDisabled"></InputText>
@@ -75,6 +75,10 @@
                 <div class="form-group ms-auto">
                     <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
                     <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+                    @if (FormMode == "edit")
+                    {
+                        <input type="button" class="btn btn-danger" @onclick=@EndEmployment value="Koniec zatrudnienia" />
+                    }
                 </div>
             </EditForm>
         </div>
@@ -156,6 +160,13 @@
         await _httpClient.PutAsJsonAsync($"api/trainer/{CurrentID}", trainerDto);
         NavigationManager.NavigateTo("trainerList");
     }
+
+    protected void EndEmployment()
+    {
+        trainerDto.EmployedTo = DateTime.Today.AddMonths(1);
+        UpdateTrainer();
+    }
+
     void Cancel()
     {
         NavigationManager.NavigateTo("trainerList");

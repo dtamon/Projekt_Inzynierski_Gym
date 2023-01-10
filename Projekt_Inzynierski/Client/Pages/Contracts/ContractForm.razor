@@ -6,27 +6,35 @@
 
 <h3>Umowa</h3>
 <hr />
-<EditForm Model="@contractDto" OnValidSubmit=@OnValidSubmit>
-    <FluentValidationValidator />
-    <div class="form-group" hidden>
-        <input for="Id" class="form-control" @bind="@contractDto.Id" />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="@contractDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
+            <FluentValidationValidator />
+            <div class="form-group" hidden>
+                <input for="Id" class="form-control" @bind="@contractDto.Id" />
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <label for="Months" class="input-group-text col-md-3">Okres miesięcy:</label>
+                    <InputNumber @bind-Value="@contractDto.Months" class="form-control" disabled="@isDisabled"></InputNumber>
+                </div>
+                <ValidationMessage For="@(() => contractDto.Months)" />
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <label for="MonthlyCost" class="input-group-text col-md-3">Koszt miesięcznie:</label>
+                    <InputNumber @bind-Value="@contractDto.MonthlyCost" class="form-control" disabled="@isDisabled"></InputNumber>
+                </div>
+                <ValidationMessage For="@(() => contractDto.MonthlyCost)" />
+            </div>
+            <br />
+            <div class="form-group ms-auto">
+                <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+                <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+            </div>
+        </EditForm>
     </div>
-    <div class="form-group col-md-3">
-        <label for="Months" class="col-form-label">Czas obowiązywania w miesiącach:</label>
-        <InputNumber @bind-Value="@contractDto.Months" class="form-control" disabled="@isDisabled"></InputNumber>
-        <ValidationMessage For="@(() => contractDto.Months)" />
-    </div>
-    <div class="form-group col-md-3">
-        <label for="MonthlyCost" class="col-form-label">Koszt miesięczny:</label>
-        <InputNumber @bind-Value="@contractDto.MonthlyCost" class="form-control" disabled="@isDisabled"></InputNumber>
-        <ValidationMessage For="@(() => contractDto.MonthlyCost)" />
-    </div>
-    <br />
-    <div class="form-group col-md-3">
-        <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
-        <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
-    </div>
-</EditForm>
+</div>
 @code {
     [Parameter]
     public string CurrentID { get; set; }

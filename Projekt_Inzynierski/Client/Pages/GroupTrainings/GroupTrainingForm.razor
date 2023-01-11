@@ -1,8 +1,10 @@
 ﻿@page "/groupTrainingAdd"
 @page "/groupTrainingForm/{FormMode}/{CurrentID}"
+@attribute [Authorize(Roles = "Trainer")]
 @using Projekt_Inzynierski.Core.DTOs;
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
+@inject AuthenticationStateProvider authStateProvider
 
 <h3>Dane Treningu Grupowego</h3>
 <hr />
@@ -35,7 +37,7 @@
                     </div>
                     <ValidationMessage For="@(() => groupTrainingDto.StartDate)" />
                     <ValidationMessage For="@(() => groupTrainingDto.TrainerIds)" />
-                </div>    
+                </div>
                 <br />
                 <div class="form-group ms-auto">
                     <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
@@ -46,14 +48,22 @@
         <div class="col-auto">
             <div class="vstack gap-3">
                 <div class="hstack gap-2">
-                    <label for="Spec" class="control-label fs-5">Trenerzy</label>
+                    @if(FormMode is null)
+                    {
+                        <label for="Spec" class="control-label fs-5">Dodatkowi trenerzy</label>
+                    }
+                    else
+                    {
+                        <label for="Spec" class="control-label fs-5">Trenerzy</label>
+                    }
+
                     <button @onclick="AddValue" class="btn btn-success">+</button>
                 </div>
                 @for (int i = 0; i < groupTrainingDto.TrainerIds.Count; i++)
                 {
                     int index = i;
                     <div class="d-flex justify-content-between align-items-baseline hstack gap-2">
-                        <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(index, Convert.ToInt32(e.Value))" value="@groupTrainingDto.TrainerIds[i]">
+                        <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(index, Convert.ToInt32(e.Value))" value="@groupTrainingDto.TrainerIds[i]" disabled="@(i == 0 ? true : false )">
                             <option selected style="display:none"> -- wybierz trenera -- </option>
                             @if (trainers != null)
                             {
@@ -63,7 +73,10 @@
                                 }
                             }
                         </select>
-                        <button @onclick="() => RemoveValue(index)" class="btn btn-outline-danger">X</button>
+                        @if (i > 0)
+                        {
+                            <button @onclick="() => RemoveValue(index)" class="btn btn-outline-danger">X</button>
+                        }   
                     </div>
                 }
             </div>
@@ -102,24 +115,41 @@
     {
         if (FormMode != "edit")
         {
-            CreateTrainer();
+            CreateGroupTraining();
         }
         else
         {
-            UpdateTrainer();
+            UpdateGroupTraining();
         }
     }
 
-    protected async void CreateTrainer()
+    protected async void CreateGroupTraining()
     {
-        await _httpClient.PostAsJsonAsync("api/groupTraining", groupTrainingDto);
-        NavigationManager.NavigateTo("groupTrainingList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await _httpClient.PostAsJsonAsync("api/groupTraining", groupTrainingDto);
+            NavigationManager.NavigateTo("groupTrainingList");
+        }
+        else
+            NavigationManager.NavigateTo("/login");
+
     }
 
-    protected async void UpdateTrainer()
+    protected async void UpdateGroupTraining()
     {
-        await _httpClient.PutAsJsonAsync($"api/groupTraining/{CurrentID}", groupTrainingDto);
-        NavigationManager.NavigateTo("groupTrainingList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await _httpClient.PutAsJsonAsync($"api/groupTraining/{CurrentID}", groupTrainingDto);
+            NavigationManager.NavigateTo("groupTrainingList");
+        }
+        else
+            NavigationManager.NavigateTo("/login");
     }
 
     void Cancel()

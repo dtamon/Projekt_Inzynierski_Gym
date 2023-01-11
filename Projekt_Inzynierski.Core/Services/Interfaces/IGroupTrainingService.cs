@@ -15,5 +15,6 @@ namespace Projekt_Inzynierski.Core.Services.Interfaces
         public Task DeleteGroupTrainingAsync(int id);
         public Task<ICollection<GroupTrainingDto>> GetAllGroupTrainingsAsync();
         public Task<GroupTrainingDto?> GetGroupTrainingByIdAsync(int id);
+        public Task AddClientToGroupTrainingAsync(int id);
     }
 }

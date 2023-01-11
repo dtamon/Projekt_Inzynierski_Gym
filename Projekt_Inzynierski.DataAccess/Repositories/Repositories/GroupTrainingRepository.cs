@@ -32,12 +32,12 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
 
         public async Task<ICollection<GroupTraining>> GetAllGroupTrainingsAsync()
         {
-            return await _context.GroupTraining.ToListAsync();
+            return await _context.GroupTraining.Include(x => x.Trainers).ThenInclude(x => x.Specializations).Include(x => x.Clients).ToListAsync();
         }
 
         public async Task<GroupTraining?> GetGroupTrainingByIdAsync(int id)
         {
-            return await _context.GroupTraining.FirstOrDefaultAsync(s => s.Id == id);
+            return await _context.GroupTraining.Include(x => x.Trainers).ThenInclude(x => x.Specializations).Include(x => x.Clients).FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task UpdateGroupTrainingAsync(GroupTraining groupTraining)

@@ -67,6 +67,8 @@ builder.Services.AddScoped<ITrainerService, TrainerService>();
 builder.Services.AddScoped<ITrainingEquipmentService, TrainingEquipmentService>();
 builder.Services.AddScoped<IVisitService, VisitService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddHttpContextAccessor();
 
 //Automapper
 builder.Services.AddAutoMapper(typeof(Projekt_Inzynierski.Core.GymMappingProfile).Assembly);

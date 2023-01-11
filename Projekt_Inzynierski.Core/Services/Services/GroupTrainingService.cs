@@ -17,18 +17,27 @@ namespace Projekt_Inzynierski.Core.Services.Services
         private readonly IClientRepository _clientRepository;
         private readonly ITrainerRepository _trainerRepository;
         private readonly IMapper _mapper;
+        private readonly IUserContextService _userContextService;
 
-        public GroupTrainingService(IGroupTrainingRepository groupTrainingRepository, IClientRepository clientRepository, ITrainerRepository trainerRepository, IMapper mapper)
+        public GroupTrainingService(IGroupTrainingRepository groupTrainingRepository, IClientRepository clientRepository, ITrainerRepository trainerRepository, IMapper mapper, IUserContextService userContextService)
         {
             _groupTrainingRepository = groupTrainingRepository;
             _clientRepository = clientRepository;
             _trainerRepository = trainerRepository;
             _mapper = mapper;
+            _userContextService = userContextService;
         }
 
         public async Task CreateGroupTrainingAsync(GroupTrainingDto groupTrainingDto)
         {
             var trainers = new List<Trainer>();
+
+            //get singed in user id
+            var createdById = (int)_userContextService.GetUserId;
+            var createdBy = await _trainerRepository.GetTrainerByIdAsync(createdById);
+
+            trainers.Add(createdBy);
+
             foreach (var trainerId in groupTrainingDto.TrainerIds)
             {
                 var trainer = await _trainerRepository.GetTrainerByIdAsync(trainerId);
@@ -40,6 +49,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
 
             var newGroupTraining = new GroupTraining()
             {
+                TrainingType = groupTrainingDto.TrainingType,
                 MaxCLients = groupTrainingDto.MaxClients,
                 StartDate = groupTrainingDto.StartDate,
                 Trainers = trainers,
@@ -94,6 +104,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
 
             if (groupTraining != null)
             {
+                groupTraining.TrainingType = groupTrainingDto.TrainingType;
                 groupTraining.MaxCLients = groupTrainingDto.MaxClients;
                 groupTraining.StartDate = groupTrainingDto.StartDate;
                 groupTraining.Clients = clients;
@@ -103,6 +114,20 @@ namespace Projekt_Inzynierski.Core.Services.Services
             }
 
 
+        }
+        public async Task AddClientToGroupTrainingAsync(int id)
+        {
+            var groupTraining = await _groupTrainingRepository.GetGroupTrainingByIdAsync(id);
+
+            var userId = (int)_userContextService.GetUserId;
+            var user = await _clientRepository.GetClientByIdAsync(userId);
+
+            if (groupTraining != null)
+            {
+                groupTraining.Clients.Add(user);
+
+                await _groupTrainingRepository.UpdateGroupTrainingAsync(groupTraining);
+            }
         }
     }
 }

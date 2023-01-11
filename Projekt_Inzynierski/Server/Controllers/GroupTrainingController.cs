@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Projekt_Inzynierski.Core.DTOs;
 using Projekt_Inzynierski.Core.Services.Interfaces;
@@ -30,6 +31,7 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Trainer")]
         public async Task<IActionResult> CreateGroupTraining(GroupTrainingDto groupTrainingDto)
         {
             await _groupTrainingService.CreateGroupTrainingAsync(groupTrainingDto);
@@ -48,6 +50,13 @@ namespace Projekt_Inzynierski.Server.Controllers
         {
             await _groupTrainingService.DeleteGroupTrainingAsync(id);
             return Ok("Zajęcia grupowe usunięte pomyślnie");
+        }
+
+        [HttpPut("signup")]
+        public async Task<IActionResult> SignUpForGroupTraining(int id)
+        {
+            await _groupTrainingService.AddClientToGroupTrainingAsync(id);
+            return Ok("Pomyślnie zapisano na trening");
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿@page "/groupTrainingList"
 @using Projekt_Inzynierski.Core.DTOs;
+@attribute [Authorize(Roles = "Client,Trainer")]
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
+@inject AuthenticationStateProvider authStateProvider
 
 <div class="d-flex justify-content-between">
     <h3>Lista Treningów</h3>
@@ -34,20 +36,29 @@ else
                     <td>@groupTraining.TrainingType</td>
                     <td>@groupTraining.MaxClients</td>
                     <td>@groupTraining.FreeSpots</td>
-                    <td>@groupTraining.StartDate</td>
+                    <td>@groupTraining.StartDate.ToShortDateString()</td>
                     <td>
-                        @foreach (var trainer in groupTraining.Trainers)
+                        @foreach (var trainer in groupTraining.TrainersNames)
                         {
-                            <p>@trainer.FirstName @trainer.LastName</p>
+                            <p>@trainer</p>
                         }
                     </td>
                     <td class="hstack">
-                        <a class="nav-link" href="groupTrainingForm/edit/@groupTraining.Id">
-                            <span class="oi oi-pencil" aria-hidden="true"></span>
-                        </a>
-                        <a class="nav-link" href="" @onclick="@(() => {DeleteTrainer(groupTraining.Id); })">
-                            <span class="oi oi-trash" aria-hidden="true"></span>
-                        </a>
+                        @if (Role == "Trainer")
+                        {
+                            <a class="nav-link" href="groupTrainingForm/edit/@groupTraining.Id">
+                                <span class="oi oi-pencil" aria-hidden="true"></span>
+                            </a>
+                            <a class="nav-link" href="" @onclick="@(() => {DeleteGroupTraining(groupTraining.Id); })">
+                                <span class="oi oi-trash" aria-hidden="true"></span>
+                            </a>
+                        }
+                        else if (Role == "Client")
+                        {
+                            <a class="nav-link" href="" @onclick="@(() => {SignUpForTraining(groupTraining.Id); })">
+                                <span class="oi oi-plus" aria-hidden="true"></span>Zapisz się
+                            </a>
+                        }
                     </td>
                 </tr>
             }
@@ -58,15 +69,25 @@ else
 @code {
     ICollection<GroupTrainingDto> groupTrainings = new List<GroupTrainingDto>();
 
+    string Role = "";
+
     protected override async Task OnInitializedAsync()
     {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var role = await customAuthStateProvider.GetRole();
+        Role = role;
         groupTrainings = await _httpClient.GetFromJsonAsync<ICollection<GroupTrainingDto>>("api/groupTraining");
     }
 
-    protected async void DeleteTrainer(int id)
+    protected async void DeleteGroupTraining(int id)
     {
-
         await _httpClient.DeleteAsync($"api/groupTraining/{id}");
+        NavigationManager.NavigateTo("groupTrainingList");
+    }
+
+    protected async void SignUpForTraining(int id)
+    {
+        await _httpClient.PutAsJsonAsync($"api/groupTraining/signUp", id);
         NavigationManager.NavigateTo("groupTrainingList");
     }
 }

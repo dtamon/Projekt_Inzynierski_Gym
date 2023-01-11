@@ -32,9 +32,6 @@ namespace Projekt_Inzynierski.Core
             CreateMap<SpecializationDto, Specialization>();
             CreateMap<Specialization, SpecializationDto>();
 
-            CreateMap<Specialization, int>().ConvertUsing(source => source.Id);
-            CreateMap<int, Specialization>().ForMember(d => d.Id, o => o.MapFrom(src => src));
-
             CreateMap<TrainerAccountDto, Trainer>()
                 .ForMember(d => d.Specializations, o => o.MapFrom(s => s.SpecializationIds.ToList()))
                 .ForMember(d => d.GroupTrainings, o => o.MapFrom(s => s.GroupTrainingIds.ToList()));
@@ -51,8 +48,6 @@ namespace Projekt_Inzynierski.Core
                 .ForMember(d => d.Specializations, o => o.MapFrom(s => s.Specializations))
                 .ForMember(d => d.GroupTrainingIds, o => o.MapFrom(s => s.GroupTrainings))
                 .ForMember(d => d.GroupTrainings, o => o.MapFrom(s => s.GroupTrainings));
-
-
 
             CreateMap<TrainingEquipmentDto, TrainingEquipment>();
             CreateMap<TrainingEquipment, TrainingEquipmentDto>();
@@ -73,7 +68,18 @@ namespace Projekt_Inzynierski.Core
                 .ForMember(d => d.ClientIds, o => o.MapFrom(s => s.Clients))
                 .ForMember(d => d.Clients, o => o.MapFrom(s => s.Clients))
                 .ForMember(d => d.TrainerIds, o => o.MapFrom(s => s.Trainers))
-                .ForMember(d => d.Trainers, o => o.MapFrom(s => s.Trainers));
+                .ForMember(d => d.TrainersNames, o => o.MapFrom(s => s.Trainers));
+
+            CreateMap<Specialization, int>().ConvertUsing(source => source.Id);
+            CreateMap<int, Specialization>().ForMember(d => d.Id, o => o.MapFrom(src => src));
+
+            CreateMap<GroupTraining, int>().ConvertUsing(source => source.Id);
+            CreateMap<int, GroupTraining>().ForMember(d => d.Id, o => o.MapFrom(src => src));
+
+            CreateMap<Trainer, int>().ConvertUsing(source => source.Id);
+            CreateMap<int, Trainer>().ForMember(d => d.Id, o => o.MapFrom(src => src));
+
+            CreateMap<Trainer, string>().ConvertUsing(source => $"{source.FirstName} {source.LastName}");
         }
     }
 }

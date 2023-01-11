@@ -73,5 +73,18 @@ namespace Projekt_Inzynierski.Client.Extensions
             catch { }
             return result;
         }
+
+        public async Task<string> GetRole()
+        {
+            var result = string.Empty;
+            try
+            {
+                var userSession = await _sessionStorageService.ReadEncryptedItemAsync<UserSession>("UserSession");
+                if (userSession != null & DateTime.Now < userSession.ExpiryTimeStamp)
+                    result = userSession.Role;
+            }
+            catch { }
+            return result;
+        }
     }
 }

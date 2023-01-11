@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Projekt_Inzynierski.Core.Validators
 {
-    public class ClientValidator : AbstractValidator<ClientDto>
+    public class ClientValidator : AbstractValidator<ClientAccountDto>
     {
         public ClientValidator(/*GymDbContext dbContext*/)
         {

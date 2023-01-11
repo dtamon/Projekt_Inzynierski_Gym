@@ -25,7 +25,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
             _passwordHasher = passwordHasher;
         }
 
-        public async Task CreateEmployeeAsync(EmployeeDto employeeDto)
+        public async Task CreateEmployeeAsync(EmployeeAccountDto employeeDto)
         {
             employeeDto.EmployedFrom = DateTime.Today;
 
@@ -45,17 +45,17 @@ namespace Projekt_Inzynierski.Core.Services.Services
             }
         }
 
-        public async Task<ICollection<EmployeeDto>> GetAllEmployeesAsync()
+        public async Task<ICollection<EmployeeViewDto>> GetAllEmployeesAsync()
         {
-            return _mapper.Map<ICollection<EmployeeDto>>(await _employeeRepository.GetAllEmployeesAsync());
+            return _mapper.Map<ICollection<EmployeeViewDto>>(await _employeeRepository.GetAllEmployeesAsync());
         }
 
-        public async Task<EmployeeDto?> GetEmployeeByIdAsync(int id)
+        public async Task<EmployeeViewDto?> GetEmployeeByIdAsync(int id)
         {
-            return _mapper.Map<EmployeeDto>(await _employeeRepository.GetEmployeeByIdAsync(id));
+            return _mapper.Map<EmployeeViewDto>(await _employeeRepository.GetEmployeeByIdAsync(id));
         }
 
-        public async Task UpdateEmployeeAsync(EmployeeDto employeeDto, int id)
+        public async Task UpdateEmployeeAsync(EmployeeViewDto employeeDto, int id)
         {
             var employee = await _employeeRepository.GetEmployeeByIdAsync(id);
             if (employee != null)

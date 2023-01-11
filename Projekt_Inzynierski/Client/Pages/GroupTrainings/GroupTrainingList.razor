@@ -1,0 +1,72 @@
+﻿@page "/groupTrainingList"
+@using Projekt_Inzynierski.Core.DTOs;
+@inject NavigationManager NavigationManager
+@inject HttpClient _httpClient
+
+<div class="d-flex justify-content-between">
+    <h3>Lista Treningów</h3>
+    <NavLink class="nav-link" href="groupTrainingAdd">
+        <input type="button" class="btn btn-success" value="+ Dodaj" />
+    </NavLink>
+</div>
+
+@if (groupTrainings == null)
+{
+    <p><em>Ładowanie...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Typ treningu</th>
+                <th>Limit miejsc</th>
+                <th>Ilość wolnych miejsc</th>
+                <th>Data rozpoczęcia</th>
+                <th>Trenerzy</th>
+                <th>Operacje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var groupTraining in groupTrainings)
+            {
+                <tr>
+                    <td>@groupTraining.TrainingType</td>
+                    <td>@groupTraining.MaxClients</td>
+                    <td>@groupTraining.FreeSpots</td>
+                    <td>@groupTraining.StartDate</td>
+                    <td>
+                        @foreach (var trainer in groupTraining.Trainers)
+                        {
+                            <p>@trainer.FirstName @trainer.LastName</p>
+                        }
+                    </td>
+                    <td class="hstack">
+                        <a class="nav-link" href="groupTrainingForm/edit/@groupTraining.Id">
+                            <span class="oi oi-pencil" aria-hidden="true"></span>
+                        </a>
+                        <a class="nav-link" href="" @onclick="@(() => {DeleteTrainer(groupTraining.Id); })">
+                            <span class="oi oi-trash" aria-hidden="true"></span>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    ICollection<GroupTrainingDto> groupTrainings = new List<GroupTrainingDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        groupTrainings = await _httpClient.GetFromJsonAsync<ICollection<GroupTrainingDto>>("api/groupTraining");
+    }
+
+    protected async void DeleteTrainer(int id)
+    {
+
+        await _httpClient.DeleteAsync($"api/groupTraining/{id}");
+        NavigationManager.NavigateTo("groupTrainingList");
+    }
+}

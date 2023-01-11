@@ -8,82 +8,151 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <EditForm Model="@clientDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
-            <FluentValidationValidator />
-            <div class="form-group" hidden>
-                <input for="Id" class="form-control" @bind="@clientDto.Id" />
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="Email" class="input-group-text col-md-3">Email:</label>
-                    <InputText @bind-Value="@clientDto.Email" class="form-control" disabled="@isDisabled"></InputText>
+        @if (FormMode is null)
+        {
+            <EditForm Model="@clientRegisterDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
+                <FluentValidationValidator />
+                <div class="form-group" hidden>
+                    <input for="Id" class="form-control" @bind="@clientRegisterDto.Id" />
                 </div>
-                <ValidationMessage For="@(() => clientDto.Email)" />
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="Password" class="input-group-text col-md-3">Hasło:</label>
-                    <InputText @bind-Value="@clientDto.Password" class="form-control" type="password" disabled="@isDisabled"></InputText>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="Email" class="input-group-text col-md-3">Email:</label>
+                        <InputText @bind-Value="@clientRegisterDto.Email" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => clientRegisterDto.Email)" />
                 </div>
-                <ValidationMessage For="@(() => clientDto.Password)" />
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="ConfirmPassword" class="input-group-text col-md-3">Powtórz hasło:</label>
-                    <InputText @bind-Value="@clientDto.ConfirmPassword" class="form-control" type="password" disabled="@isDisabled"></InputText>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="Password" class="input-group-text col-md-3">Hasło:</label>
+                        <InputText @bind-Value="@clientRegisterDto.Password" class="form-control" type="password" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => clientRegisterDto.Password)" />
                 </div>
-                <ValidationMessage For="@(() => clientDto.ConfirmPassword)" />
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="FirstName" class="input-group-text col-md-3">Imię:</label>
-                    <InputText @bind-Value="@clientDto.FirstName" class="form-control" disabled="@isDisabled"></InputText>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="ConfirmPassword" class="input-group-text col-md-3">Powtórz hasło:</label>
+                        <InputText @bind-Value="@clientRegisterDto.ConfirmPassword" class="form-control" type="password" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => clientRegisterDto.ConfirmPassword)" />
                 </div>
-                <ValidationMessage For="@(() => clientDto.FirstName)" />
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="LastName" class="input-group-text col-md-3">Nazwisko:</label>
-                    <InputText @bind-Value="@clientDto.LastName" class="form-control" disabled="@isDisabled"></InputText>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="FirstName" class="input-group-text col-md-3">Imię:</label>
+                        <InputText @bind-Value="@clientRegisterDto.FirstName" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => clientRegisterDto.FirstName)" />
                 </div>
-                <ValidationMessage For="@(() => clientDto.LastName)" />
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="PhoneNr" class="input-group-text col-md-3">Numer telefonu:</label>
-                    <InputText @bind-Value="@clientDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="LastName" class="input-group-text col-md-3">Nazwisko:</label>
+                        <InputText @bind-Value="@clientRegisterDto.LastName" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => clientRegisterDto.LastName)" />
                 </div>
-                <ValidationMessage For="@(() => clientDto.PhoneNr)" />
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
-                    <InputText @bind-Value="@clientDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="PhoneNr" class="input-group-text col-md-3">Numer telefonu:</label>
+                        <InputText @bind-Value="@clientRegisterDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => clientRegisterDto.PhoneNr)" />
                 </div>
-                <ValidationMessage For="@(() => clientDto.Pesel)" />
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="ContractId" class="input-group-text col-md-3">Umowa:</label>
-                    <InputSelect @bind-Value="@clientDto.ContractId" class="form-select" disabled="@isDisabled">
-                        <option selected style="display:none"> -- wybierz umowę -- </option>
-                        @if (contracts != null)
-                        {
-                            @foreach (var contract in contracts)
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
+                        <InputText @bind-Value="@clientRegisterDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => clientRegisterDto.Pesel)" />
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="ContractId" class="input-group-text col-md-3">Umowa:</label>
+                        <InputSelect @bind-Value="@clientRegisterDto.ContractId" class="form-select" disabled="@isDisabled">
+                            <option selected style="display:none"> -- wybierz umowę -- </option>
+                            @if (contracts != null)
                             {
-                                <option value="@contract.Id">@contract.Months miesięcy, @contract.MonthlyCost zł miesięcznie</option>
+                                @foreach (var contract in contracts)
+                                {
+                                    <option value="@contract.Id">@contract.Months miesięcy, @contract.MonthlyCost zł miesięcznie</option>
+                                }
                             }
-                        }
-                    </InputSelect>
+                        </InputSelect>
+                    </div>
+                    <ValidationMessage For="@(() => clientRegisterDto.ContractId)" />
                 </div>
-                <ValidationMessage For="@(() => clientDto.ContractId)" />
-            </div>
-            <br />
-            <div class="form-group ms-auto">
-                <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
-                <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
-            </div>
-        </EditForm>
+                <br />
+                <div class="form-group ms-auto">
+                    <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+                    <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+                </div>
+            </EditForm>
+        }
+        else
+        {
+            <EditForm Model="@clientViewDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
+                <FluentValidationValidator />
+                <div class="form-group" hidden>
+                    <input for="Id" class="form-control" @bind="@clientViewDto.Id" />
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="Email" class="input-group-text col-md-3">Email:</label>
+                        <InputText @bind-Value="@clientViewDto.Email" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => clientViewDto.Email)" />
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="FirstName" class="input-group-text col-md-3">Imię:</label>
+                        <InputText @bind-Value="@clientViewDto.FirstName" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => clientViewDto.FirstName)" />
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="LastName" class="input-group-text col-md-3">Nazwisko:</label>
+                        <InputText @bind-Value="@clientViewDto.LastName" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => clientViewDto.LastName)" />
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="PhoneNr" class="input-group-text col-md-3">Numer telefonu:</label>
+                        <InputText @bind-Value="@clientViewDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => clientViewDto.PhoneNr)" />
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
+                        <InputText @bind-Value="@clientViewDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => clientViewDto.Pesel)" />
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="ContractId" class="input-group-text col-md-3">Umowa:</label>
+                        <InputSelect @bind-Value="@clientViewDto.ContractId" class="form-select" disabled="@isDisabled">
+                            <option selected style="display:none"> -- wybierz umowę -- </option>
+                            @if (contracts != null)
+                            {
+                                @foreach (var contract in contracts)
+                                {
+                                    <option value="@contract.Id">@contract.Months miesięcy, @contract.MonthlyCost zł miesięcznie</option>
+                                }
+                            }
+                        </InputSelect>
+                    </div>
+                    <ValidationMessage For="@(() => clientViewDto.ContractId)" />
+                </div>
+                <br />
+                <div class="form-group ms-auto">
+                    <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+                    <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+                </div>
+            </EditForm>
+        }
+
     </div>
 </div>
 @code {
@@ -92,7 +161,8 @@
     [Parameter]
     public string FormMode { get; set; }
 
-    ClientDto clientDto = new ClientDto();
+    ClientAccountDto clientRegisterDto = new ClientAccountDto();
+    ClientViewDto clientViewDto = new ClientViewDto();
     ICollection<ContractDto> contracts = new List<ContractDto>();
     bool isDisabled;
 
@@ -105,10 +175,10 @@
         contracts = await _httpClient.GetFromJsonAsync<ICollection<ContractDto>>("api/contract");
         if (FormMode == "edit" || FormMode == "details")
         {
-            var fetchedClient = await _httpClient.GetFromJsonAsync<ClientDto>($"api/client/{CurrentID}");
+            var fetchedClient = await _httpClient.GetFromJsonAsync<ClientViewDto>($"api/client/{CurrentID}");
             if (fetchedClient != null)
             {
-                clientDto = fetchedClient;
+                clientViewDto = fetchedClient;
             }
         }
 
@@ -128,13 +198,13 @@
 
     protected async void CreateClient()
     {
-        await _httpClient.PostAsJsonAsync("api/client", clientDto);
+        await _httpClient.PostAsJsonAsync("api/client", clientRegisterDto);
         NavigationManager.NavigateTo("clientList");
     }
 
     protected async void UpdateClient()
     {
-        await _httpClient.PutAsJsonAsync($"api/client/{CurrentID}", clientDto);
+        await _httpClient.PutAsJsonAsync($"api/client/{CurrentID}", clientViewDto);
         NavigationManager.NavigateTo("clientList");
     }
     void Cancel()

@@ -8,78 +8,140 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <EditForm Model="@employeeDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
-            <FluentValidationValidator />
-            <div class="form-group" hidden>
-                <input for="Id" class="form-control" @bind="@employeeDto.Id" />
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="Email" class="input-group-text col-md-3">Email:</label>
-                    <InputText @bind-Value="@employeeDto.Email" class="form-control" disabled="@isDisabled"></InputText>
+        @if (FormMode is null)
+        {
+            <EditForm Model="@employeeRegisterDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
+                <FluentValidationValidator />
+                <div class="form-group" hidden>
+                    <input for="Id" class="form-control" @bind="@employeeRegisterDto.Id" />
                 </div>
-                <ValidationMessage For="@(() => employeeDto.Email)" />
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="Password" class="input-group-text col-md-3">Hasło:</label>
-                    <InputText @bind-Value="@employeeDto.Password" class="form-control" type="password" disabled="@isDisabled"></InputText>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="Email" class="input-group-text col-md-3">Email:</label>
+                        <InputText @bind-Value="@employeeRegisterDto.Email" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => employeeRegisterDto.Email)" />
                 </div>
-                <ValidationMessage For="@(() => employeeDto.Password)" />
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="ConfirmPassword" class="input-group-text col-md-3">Powtórz hasło:</label>
-                    <InputText @bind-Value="@employeeDto.ConfirmPassword" class="form-control" type="password" disabled="@isDisabled"></InputText>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="Password" class="input-group-text col-md-3">Hasło:</label>
+                        <InputText @bind-Value="@employeeRegisterDto.Password" class="form-control" type="password" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => employeeRegisterDto.Password)" />
                 </div>
-                <ValidationMessage For="@(() => employeeDto.ConfirmPassword)" />
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="FirstName" class="input-group-text col-md-3">Imię:</label>
-                    <InputText @bind-Value="@employeeDto.FirstName" class="form-control" disabled="@isDisabled"></InputText>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="ConfirmPassword" class="input-group-text col-md-3">Powtórz hasło:</label>
+                        <InputText @bind-Value="@employeeRegisterDto.ConfirmPassword" class="form-control" type="password" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => employeeRegisterDto.ConfirmPassword)" />
                 </div>
-                <ValidationMessage For="@(() => employeeDto.FirstName)" />
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="LastName" class="input-group-text col-md-3">Nazwisko:</label>
-                    <InputText @bind-Value="@employeeDto.LastName" class="form-control" disabled="@isDisabled"></InputText>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="FirstName" class="input-group-text col-md-3">Imię:</label>
+                        <InputText @bind-Value="@employeeRegisterDto.FirstName" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => employeeRegisterDto.FirstName)" />
                 </div>
-                <ValidationMessage For="@(() => employeeDto.LastName)" />
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="PhoneNr" class="input-group-text col-md-3">Numer tel.:</label>
-                    <InputText @bind-Value="@employeeDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="LastName" class="input-group-text col-md-3">Nazwisko:</label>
+                        <InputText @bind-Value="@employeeRegisterDto.LastName" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => employeeRegisterDto.LastName)" />
                 </div>
-                <ValidationMessage For="@(() => employeeDto.PhoneNr)" />
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
-                    <InputText @bind-Value="@employeeDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="PhoneNr" class="input-group-text col-md-3">Numer tel.:</label>
+                        <InputText @bind-Value="@employeeRegisterDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => employeeRegisterDto.PhoneNr)" />
                 </div>
-                <ValidationMessage For="@(() => employeeDto.Pesel)" />
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="Sal" class="input-group-text col-md-3">Wynagrodzenie:</label>
-                    <InputNumber @bind-Value="@employeeDto.Salary" class="form-control" disabled="@isDisabled"></InputNumber>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
+                        <InputText @bind-Value="@employeeRegisterDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => employeeRegisterDto.Pesel)" />
                 </div>
-                <ValidationMessage For="@(() => employeeDto.Salary)" />
-            </div>
-            <br />
-            <div class="form-group ms-auto">
-                <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
-                <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
-                @if (FormMode == "edit")
-                {
-                    <input type="button" class="btn btn-danger" @onclick=@EndEmployment value="Koniec zatrudnienia" />
-                }
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="Sal" class="input-group-text col-md-3">Wynagrodzenie:</label>
+                        <InputNumber @bind-Value="@employeeRegisterDto.Salary" class="form-control" disabled="@isDisabled"></InputNumber>
+                    </div>
+                    <ValidationMessage For="@(() => employeeRegisterDto.Salary)" />
+                </div>
+                <br />
+                <div class="form-group ms-auto">
+                    <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+                    <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+                </div>
+            </EditForm>
+        }
+        else
+        {
+            <EditForm Model="@employeeViewDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
+                <FluentValidationValidator />
+                <div class="form-group" hidden>
+                    <input for="Id" class="form-control" @bind="@employeeViewDto.Id" />
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="Email" class="input-group-text col-md-3">Email:</label>
+                        <InputText @bind-Value="@employeeViewDto.Email" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => employeeViewDto.Email)" />
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="FirstName" class="input-group-text col-md-3">Imię:</label>
+                        <InputText @bind-Value="@employeeViewDto.FirstName" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => employeeViewDto.FirstName)" />
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="LastName" class="input-group-text col-md-3">Nazwisko:</label>
+                        <InputText @bind-Value="@employeeViewDto.LastName" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => employeeViewDto.LastName)" />
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="PhoneNr" class="input-group-text col-md-3">Numer tel.:</label>
+                        <InputText @bind-Value="@employeeViewDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => employeeViewDto.PhoneNr)" />
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
+                        <InputText @bind-Value="@employeeViewDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => employeeViewDto.Pesel)" />
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="Sal" class="input-group-text col-md-3">Wynagrodzenie:</label>
+                        <InputNumber @bind-Value="@employeeViewDto.Salary" class="form-control" disabled="@isDisabled"></InputNumber>
+                    </div>
+                    <ValidationMessage For="@(() => employeeViewDto.Salary)" />
+                </div>
+                <br />
+                <div class="form-group ms-auto hstack gap-1">
+                    <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+                    <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+                    @if (FormMode == "edit" && employeeViewDto.EmployedTo is null)
+                    {
+                        <input type="button" class="btn btn-danger" @onclick=@EndEmployment value="Koniec zatrudnienia" />
+                    } else if (FormMode == "edit" && !(employeeViewDto.EmployedTo is null))
+                    {
+                        <input type="button" class="btn btn-success" @onclick=@ContinueEmployment value="Wznów zatrudnienie" />
+                    }
+                </div>
+            </EditForm>
+        }
 
-            </div>
-        </EditForm>
     </div>
 </div>
 @code {
@@ -88,7 +150,8 @@
     [Parameter]
     public string FormMode { get; set; }
 
-    EmployeeDto employeeDto = new EmployeeDto();
+    EmployeeAccountDto employeeRegisterDto = new EmployeeAccountDto();
+    EmployeeViewDto employeeViewDto = new EmployeeViewDto();
     bool isDisabled;
 
     protected override async Task OnInitializedAsync()
@@ -99,10 +162,10 @@
         }
         if (FormMode == "edit" || FormMode == "details")
         {
-            var fetchedEmployee = await _httpClient.GetFromJsonAsync<EmployeeDto>($"api/employee/{CurrentID}");
+            var fetchedEmployee = await _httpClient.GetFromJsonAsync<EmployeeViewDto>($"api/employee/{CurrentID}");
             if (fetchedEmployee != null)
             {
-                employeeDto = fetchedEmployee;
+                employeeViewDto = fetchedEmployee;
             }
         }
 
@@ -122,21 +185,28 @@
 
     protected async void CreateEmployee()
     {
-        await _httpClient.PostAsJsonAsync("api/employee", employeeDto);
+        await _httpClient.PostAsJsonAsync("api/employee", employeeRegisterDto);
         NavigationManager.NavigateTo("employeeList");
     }
 
     protected async void UpdateEmployee()
     {
-        await _httpClient.PutAsJsonAsync($"api/employee/{CurrentID}", employeeDto);
+        await _httpClient.PutAsJsonAsync($"api/employee/{CurrentID}", employeeViewDto);
         NavigationManager.NavigateTo("employeeList");
     }
 
     protected void EndEmployment()
     {
-        employeeDto.EmployedTo = DateTime.Today.AddMonths(1);
+        employeeViewDto.EmployedTo = DateTime.Today.AddMonths(1);
         UpdateEmployee();
     }
+
+    protected void ContinueEmployment()
+    {
+        employeeViewDto.EmployedTo = null;
+        UpdateEmployee();
+    }
+
     void Cancel()
     {
         NavigationManager.NavigateTo("employeeList");

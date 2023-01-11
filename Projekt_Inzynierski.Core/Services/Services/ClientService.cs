@@ -27,7 +27,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
             _passwordHasher = passwordHasher;
         }
 
-        public async Task CreateClientAsync(ClientDto clientDto)
+        public async Task CreateClientAsync(ClientAccountDto clientDto)
         {
             clientDto.ContractStart = DateTime.Today;
             var contract = await _contractRepository.GetContractByIdAsync(clientDto.ContractId);
@@ -51,17 +51,17 @@ namespace Projekt_Inzynierski.Core.Services.Services
             }
         }
 
-        public async Task<ICollection<ClientDto>> GetAllClientsAsync()
+        public async Task<ICollection<ClientViewDto>> GetAllClientsAsync()
         {
-            return _mapper.Map<ICollection<ClientDto>>(await _clientRepository.GetAllClientsAsync());
+            return _mapper.Map<ICollection<ClientViewDto>>(await _clientRepository.GetAllClientsAsync());
         }
 
-        public async Task<ClientDto?> GetClientByIdAsync(int id)
+        public async Task<ClientViewDto?> GetClientByIdAsync(int id)
         {
-            return _mapper.Map<ClientDto>(await _clientRepository.GetClientByIdAsync(id));
+            return _mapper.Map<ClientViewDto>(await _clientRepository.GetClientByIdAsync(id));
         }
 
-        public async Task UpdateClientAsync(ClientDto clientDto, int id)
+        public async Task UpdateClientAsync(ClientViewDto clientDto, int id)
         {
             var client = await _clientRepository.GetClientByIdAsync(id);
             if (client != null)

@@ -9,10 +9,10 @@ namespace Projekt_Inzynierski.Core.Services.Interfaces
 {
     public interface IClientService
     {
-        public Task CreateClientAsync(ClientDto clientDto);
-        public Task UpdateClientAsync(ClientDto clientDto, int id);
+        public Task CreateClientAsync(ClientAccountDto clientDto);
+        public Task UpdateClientAsync(ClientViewDto clientDto, int id);
         public Task DeleteClientAsync(int id);
-        Task<ICollection<ClientDto>> GetAllClientsAsync();
-        Task<ClientDto?> GetClientByIdAsync(int id);
+        Task<ICollection<ClientViewDto>> GetAllClientsAsync();
+        Task<ClientViewDto?> GetClientByIdAsync(int id);
     }
 }

@@ -44,7 +44,7 @@
     public string FormMode { get; set; }
 
     VisitDto visitDto = new VisitDto();
-    ICollection<ClientDto> clients = new List<ClientDto>();
+    ICollection<ClientAccountDto> clients = new List<ClientAccountDto>();
     bool isDisabled;
 
     protected override async Task OnInitializedAsync()
@@ -53,7 +53,7 @@
         {
             isDisabled = true;
         }
-        clients = await _httpClient.GetFromJsonAsync<ICollection<ClientDto>>("api/client");
+        clients = await _httpClient.GetFromJsonAsync<ICollection<ClientAccountDto>>("api/client");
         if (FormMode == "edit" || FormMode == "details")
         {
             var fetchedVisit = await _httpClient.GetFromJsonAsync<VisitDto>($"api/visit/{CurrentID}");

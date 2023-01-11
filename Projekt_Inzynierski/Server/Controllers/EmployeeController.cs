@@ -29,14 +29,14 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateEmployee(EmployeeDto employeeDto)
+        public async Task<IActionResult> CreateEmployee(EmployeeAccountDto employeeDto)
         {
             await _employeeService.CreateEmployeeAsync(employeeDto);
             return Ok("Pracownik dodany pomyślnie");
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEmployee(int id, EmployeeDto employeeDto)
+        public async Task<IActionResult> UpdateEmployee(int id, EmployeeViewDto employeeDto)
         {
             await _employeeService.UpdateEmployeeAsync(employeeDto, id);
             return Ok("Pracownik zaktualizowany pomyślnie");

@@ -1,0 +1,133 @@
+﻿@page "/groupTrainingAdd"
+@page "/groupTrainingForm/{FormMode}/{CurrentID}"
+@using Projekt_Inzynierski.Core.DTOs;
+@inject NavigationManager NavigationManager
+@inject HttpClient _httpClient
+
+<h3>Dane Treningu Grupowego</h3>
+<hr />
+<div>
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="@groupTrainingDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
+                <FluentValidationValidator />
+                <div class="form-group" hidden>
+                    <input for="Id" class="form-control" @bind="@groupTrainingDto.Id" />
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="TrainingType" class="input-group-text col-md-3">Typ treningu:</label>
+                        <InputText @bind-Value="@groupTrainingDto.TrainingType" class="form-control" disabled="@isDisabled"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => groupTrainingDto.TrainingType)" />
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="MaxClients" class="input-group-text col-md-3">Ilość miejsc:</label>
+                        <InputNumber @bind-Value="@groupTrainingDto.MaxClients" class="form-control" type="password" disabled="@isDisabled"></InputNumber>
+                    </div>
+                    <ValidationMessage For="@(() => groupTrainingDto.MaxClients)" />
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="StartDate" class="input-group-text col-md-3">Data rozpoczęcia:</label>
+                        <InputDate @bind-Value="@groupTrainingDto.StartDate" class="form-control" disabled="@isDisabled"></InputDate>
+                    </div>
+                    <ValidationMessage For="@(() => groupTrainingDto.StartDate)" />
+                    <ValidationMessage For="@(() => groupTrainingDto.TrainerIds)" />
+                </div>    
+                <br />
+                <div class="form-group ms-auto">
+                    <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+                    <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+                </div>
+            </EditForm>
+        </div>
+        <div class="col-auto">
+            <div class="vstack gap-3">
+                <div class="hstack gap-2">
+                    <label for="Spec" class="control-label fs-5">Trenerzy</label>
+                    <button @onclick="AddValue" class="btn btn-success">+</button>
+                </div>
+                @for (int i = 0; i < groupTrainingDto.TrainerIds.Count; i++)
+                {
+                    int index = i;
+                    <div class="d-flex justify-content-between align-items-baseline hstack gap-2">
+                        <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(index, Convert.ToInt32(e.Value))" value="@groupTrainingDto.TrainerIds[i]">
+                            <option selected style="display:none"> -- wybierz trenera -- </option>
+                            @if (trainers != null)
+                            {
+                                @foreach (var trainer in trainers)
+                                {
+                                    <option value="@trainer.Id">@trainer.FirstName @trainer.LastName, @trainer.Pesel</option>
+                                }
+                            }
+                        </select>
+                        <button @onclick="() => RemoveValue(index)" class="btn btn-outline-danger">X</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string CurrentID { get; set; }
+    [Parameter]
+    public string FormMode { get; set; }
+
+    ICollection<TrainerViewDto> trainers = new List<TrainerViewDto>();
+    GroupTrainingDto groupTrainingDto = new GroupTrainingDto();
+    bool isDisabled;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (FormMode == "details")
+        {
+            isDisabled = true;
+        }
+        trainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerViewDto>>("api/trainer");
+        @if (FormMode == "edit")
+        {
+            var groupTraining = await _httpClient.GetFromJsonAsync<GroupTrainingDto>($"api/groupTraining/{CurrentID}");
+            if (groupTraining != null)
+            {
+                groupTrainingDto = groupTraining;
+            }
+        }
+    }
+
+    protected void OnValidSubmit()
+    {
+        if (FormMode != "edit")
+        {
+            CreateTrainer();
+        }
+        else
+        {
+            UpdateTrainer();
+        }
+    }
+
+    protected async void CreateTrainer()
+    {
+        await _httpClient.PostAsJsonAsync("api/groupTraining", groupTrainingDto);
+        NavigationManager.NavigateTo("groupTrainingList");
+    }
+
+    protected async void UpdateTrainer()
+    {
+        await _httpClient.PutAsJsonAsync($"api/groupTraining/{CurrentID}", groupTrainingDto);
+        NavigationManager.NavigateTo("groupTrainingList");
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("groupTrainingList");
+    }
+
+    private void AddValue() => groupTrainingDto.TrainerIds.Add(0);
+    private void UpdateValue(int i, int value) => groupTrainingDto.TrainerIds[i] = value;
+    private void RemoveValue(int i) => groupTrainingDto.TrainerIds.RemoveAt(i);
+}

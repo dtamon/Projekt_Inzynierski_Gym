@@ -29,14 +29,14 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTrainer(TrainerDto trainerDto)
+        public async Task<IActionResult> CreateTrainer(TrainerAccountDto trainerDto)
         {
             await _trainerService.CreateTrainerAsync(trainerDto);
             return Ok("Trener dodany pomyślnie");
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTrainer(int id, TrainerDto trainerDto)
+        public async Task<IActionResult> UpdateTrainer(int id, TrainerViewDto trainerDto)
         {
             await _trainerService.UpdateTrainerAsync(trainerDto, id);
             return Ok("Trener zaktualizowany pomyślnie");

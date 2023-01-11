@@ -19,6 +19,7 @@ namespace Projekt_Inzynierski.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllClients()
         {
+            var clients = await _clientService.GetAllClientsAsync();
             return Ok(await _clientService.GetAllClientsAsync());
         }
 
@@ -29,14 +30,14 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateClient(ClientDto clientDto)
+        public async Task<IActionResult> CreateClient(ClientAccountDto clientDto)
         {
             await _clientService.CreateClientAsync(clientDto);
             return Ok("Klient dodany pomyślnie");
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateClient(int id, ClientDto clientDto)
+        public async Task<IActionResult> UpdateClient(int id, ClientViewDto clientDto)
         {
             await _clientService.UpdateClientAsync(clientDto, id);
             return Ok("Klient zaktualizowany pomyślnie");

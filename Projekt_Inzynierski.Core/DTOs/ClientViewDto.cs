@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Projekt_Inzynierski.Core.DTOs
 {
-    public class EmployeeDto
+    public class ClientViewDto
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -14,11 +14,10 @@ namespace Projekt_Inzynierski.Core.DTOs
         public string PhoneNr { get; set; }
         public string Email { get; set; }
         public string Pesel { get; set; }
-        public string Password { get; set; }
-        public string ConfirmPassword { get; set; }
-        public string Role { get; set; } = "Employee";
-        public DateTime EmployedFrom { get; set; }
-        public DateTime EmployedTo { get; set; }
-        public int Salary { get; set; }
+        public int ContractId { get; set; }
+        public int? ContractMonths { get; set; }
+        public int? ContractMonthlyCost { get; set; }
+        public DateTime ContractStart { get; set; }
+        public DateTime ContractEnd { get; set; }
     }
 }

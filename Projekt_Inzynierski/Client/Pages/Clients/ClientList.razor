@@ -57,11 +57,11 @@ else
     </table>
 }
 @code {
-    ICollection<ClientDto> clients = new List<ClientDto>();
+    ICollection<ClientViewDto> clients = new List<ClientViewDto>();
 
     protected override async Task OnInitializedAsync()
     {
-        clients = await _httpClient.GetFromJsonAsync<ICollection<ClientDto>>("api/client");
+        clients = await _httpClient.GetFromJsonAsync<ICollection<ClientViewDto>>("api/client");
     }
 
     protected async void DeleteClient(int id)

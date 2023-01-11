@@ -39,7 +39,7 @@ else
                     <td>@employee.Email</td>
                     <td>@employee.Pesel</td>
                     <td>@employee.Salary</td>
-                    <td>@(employee.EmployedTo < DateTime.Today ? null : employee.EmployedTo.ToShortDateString())</td>
+                    <td>@(employee.EmployedTo is null ? null : ((DateTime)employee.EmployedTo).ToShortDateString())</td>
                     <td class="hstack">
                         <a class="nav-link" href="employeeForm/details/@employee.Id">
                             <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
@@ -58,11 +58,11 @@ else
 }
 
 @code {
-    ICollection<EmployeeDto> employees = new List<EmployeeDto>();
+    ICollection<EmployeeViewDto> employees = new List<EmployeeViewDto>();
 
     protected override async Task OnInitializedAsync()
     {
-        employees = await _httpClient.GetFromJsonAsync<ICollection<EmployeeDto>>("api/employee");
+        employees = await _httpClient.GetFromJsonAsync<ICollection<EmployeeViewDto>>("api/employee");
     }
 
     protected async void DeleteEmployee(int id)

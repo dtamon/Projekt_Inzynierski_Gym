@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Projekt_Inzynierski.Core.DTOs
 {
-    public class ClientDto
+    public class ClientAccountDto
     {
         public int Id { get; set; }
         public string FirstName { get; set; }

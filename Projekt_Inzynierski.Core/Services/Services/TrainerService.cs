@@ -26,7 +26,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
             _mapper = mapper;
             _passwordHasher = passwordHasher;
         }
-        public async Task CreateTrainerAsync(TrainerDto trainerDto)
+        public async Task CreateTrainerAsync(TrainerAccountDto trainerDto)
         {
             var specializations = new List<Specialization>();
             foreach (var specializaitonId in trainerDto.SpecializationIds)
@@ -44,6 +44,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
                 PhoneNr = trainerDto.PhoneNr,
                 Email = trainerDto.Email,
                 Pesel = trainerDto.Pesel,
+                Role = trainerDto.Role,
                 EmployedFrom = DateTime.Today,
                 Salary = trainerDto.Salary,
                 Specializations = specializations
@@ -63,17 +64,17 @@ namespace Projekt_Inzynierski.Core.Services.Services
             }
         }
 
-        public async Task<ICollection<TrainerDto>> GetAllTrainersAsync()
+        public async Task<ICollection<TrainerViewDto>> GetAllTrainersAsync()
         {
-            return _mapper.Map<ICollection<TrainerDto>>(await _trainerRepository.GetAllTrainersAsync());
+            return _mapper.Map<ICollection<TrainerViewDto>>(await _trainerRepository.GetAllTrainersAsync());
         }
 
-        public async Task<TrainerDto?> GetTrainerByIdAsync(int id)
+        public async Task<TrainerViewDto?> GetTrainerByIdAsync(int id)
         {
-            return _mapper.Map<TrainerDto>(await _trainerRepository.GetTrainerByIdAsync(id));
+            return _mapper.Map<TrainerViewDto>(await _trainerRepository.GetTrainerByIdAsync(id));
         }
 
-        public async Task UpdateTrainerAsync(TrainerDto trainerDto, int id)
+        public async Task UpdateTrainerAsync(TrainerViewDto trainerDto, int id)
         {
             var specializations = new List<Specialization>();
             foreach (var specializaitonId in trainerDto.SpecializationIds)

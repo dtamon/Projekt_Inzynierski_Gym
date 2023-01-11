@@ -8,105 +8,197 @@
 <hr />
 <div>
     <div class="row">
-        <div class="col-md-4">
-            <EditForm Model="@trainerDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
-                <FluentValidationValidator />
-                <div class="form-group" hidden>
-                    <input for="Id" class="form-control" @bind="@trainerDto.Id" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="Email" class="input-group-text col-md-3">Email:</label>
-                        <InputText @bind-Value="@trainerDto.Email" class="form-control" disabled="@isDisabled"></InputText>
+        @if (FormMode is null)
+        {
+            <div class="col-md-4">
+                <EditForm Model="@trainerAccountDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
+                    <FluentValidationValidator />
+                    <div class="form-group" hidden>
+                        <input for="Id" class="form-control" @bind="@trainerAccountDto.Id" />
                     </div>
-                    <ValidationMessage For="@(() => trainerDto.Email)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="Password" class="input-group-text col-md-3">Hasło:</label>
-                        <InputText @bind-Value="@trainerDto.Password" class="form-control" type="password" disabled="@isDisabled"></InputText>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="Email" class="input-group-text col-md-3">Email:</label>
+                            <InputText @bind-Value="@trainerAccountDto.Email" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => trainerAccountDto.Email)" />
                     </div>
-                    <ValidationMessage For="@(() => trainerDto.Password)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="ConfirmPassword" class="input-group-text col-md-3">Powtórz hasło:</label>
-                        <InputText @bind-Value="@trainerDto.ConfirmPassword" class="form-control" type="password" disabled="@isDisabled"></InputText>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="Password" class="input-group-text col-md-3">Hasło:</label>
+                            <InputText @bind-Value="@trainerAccountDto.Password" class="form-control" type="password" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => trainerAccountDto.Password)" />
                     </div>
-                    <ValidationMessage For="@(() => trainerDto.ConfirmPassword)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="FirstName" class="input-group-text col-md-3">Imię:</label>
-                        <InputText @bind-Value="@trainerDto.FirstName" class="form-control" disabled="@isDisabled"></InputText>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="ConfirmPassword" class="input-group-text col-md-3">Powtórz hasło:</label>
+                            <InputText @bind-Value="@trainerAccountDto.ConfirmPassword" class="form-control" type="password" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => trainerAccountDto.ConfirmPassword)" />
                     </div>
-                    <ValidationMessage For="@(() => trainerDto.FirstName)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="LastName" class="input-group-text col-md-3">Nazwisko:</label>
-                        <InputText @bind-Value="@trainerDto.LastName" class="form-control" disabled="@isDisabled"></InputText>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="FirstName" class="input-group-text col-md-3">Imię:</label>
+                            <InputText @bind-Value="@trainerAccountDto.FirstName" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => trainerAccountDto.FirstName)" />
                     </div>
-                    <ValidationMessage For="@(() => trainerDto.LastName)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="PhoneNr" class="input-group-text col-md-3">Numer tel.:</label>
-                        <InputText @bind-Value="@trainerDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="LastName" class="input-group-text col-md-3">Nazwisko:</label>
+                            <InputText @bind-Value="@trainerAccountDto.LastName" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => trainerAccountDto.LastName)" />
                     </div>
-                    <ValidationMessage For="@(() => trainerDto.PhoneNr)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
-                        <InputText @bind-Value="@trainerDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="PhoneNr" class="input-group-text col-md-3">Numer tel.:</label>
+                            <InputText @bind-Value="@trainerAccountDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => trainerAccountDto.PhoneNr)" />
                     </div>
-                    <ValidationMessage For="@(() => trainerDto.Pesel)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="Sal" class="input-group-text col-md-3">Wynagrodzenie:</label>
-                        <InputNumber @bind-Value="@trainerDto.Salary" class="form-control" disabled="@isDisabled"></InputNumber>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
+                            <InputText @bind-Value="@trainerAccountDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => trainerAccountDto.Pesel)" />
                     </div>
-                    <ValidationMessage For="@(() => trainerDto.Salary)" />
-                    <ValidationMessage For="@(() => trainerDto.SpecializationIds)" />
-                </div>
-                <br />
-                <div class="form-group ms-auto">
-                    <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
-                    <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
-                    @if (FormMode == "edit")
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="Sal" class="input-group-text col-md-3">Wynagrodzenie:</label>
+                            <InputNumber @bind-Value="@trainerAccountDto.Salary" class="form-control" disabled="@isDisabled"></InputNumber>
+                        </div>
+                        <ValidationMessage For="@(() => trainerAccountDto.Salary)" />
+                        <ValidationMessage For="@(() => trainerAccountDto.SpecializationIds)" />
+                    </div>
+                    <br />
+                    <div class="form-group ms-auto">
+                        <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+                        <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+                    </div>
+                </EditForm>
+            </div>
+            <div class="col-auto">
+                <div class="vstack gap-3">
+                    <div class="hstack gap-2">
+                        <label for="Spec" class="control-label fs-5">Specializacje</label>
+                        <button @onclick="AddValue" class="btn btn-success">+</button>
+                    </div>
+                    @for (int i = 0; i < trainerAccountDto.SpecializationIds.Count; i++)
                     {
-                        <input type="button" class="btn btn-danger" @onclick=@EndEmployment value="Koniec zatrudnienia" />
+                        int index = i;
+                        <div class="d-flex justify-content-between align-items-baseline hstack gap-2">
+                            <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(index, Convert.ToInt32(e.Value))" value="@trainerAccountDto.SpecializationIds[i]">
+                                <option selected style="display:none"> -- wybierz specjalizację -- </option>
+                                @if (specializations != null)
+                                {
+                                    @foreach (var spec in specializations)
+                                    {
+                                        <option value="@spec.Id">@spec.SpecName</option>
+                                    }
+                                }
+                            </select>
+                            <button @onclick="() => RemoveValue(index)" class="btn btn-outline-danger">X</button>
+                        </div>
                     }
                 </div>
-            </EditForm>
-        </div>
-        <div class="col-auto">
-            <div class="vstack gap-3">
-                <div class="hstack gap-2">
-                    <label for="Spec" class="control-label fs-5">Specializacje</label>
-                    <button @onclick="AddValue" class="btn btn-success">+</button>
-                </div>
-                @for (int i = 0; i < trainerDto.SpecializationIds.Count; i++)
-                {
-                    int index = i;
-                    <div class="d-flex justify-content-between align-items-baseline hstack gap-2">
-                        <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(index, Convert.ToInt32(e.Value))" value="@trainerDto.SpecializationIds[i]">
-                            <option selected style="display:none"> -- wybierz specjalizację -- </option>
-                            @if (specializations != null)
-                            {
-                                @foreach (var spec in specializations)
-                                {
-                                    <option value="@spec.Id">@spec.SpecName</option>
-                                }
-                            }
-                        </select>
-                        <button @onclick="() => RemoveValue(index)" class="btn btn-outline-danger">X</button>
-                    </div>
-                }
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="col-md-4">
+                <EditForm Model="@trainerViewDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
+                    <FluentValidationValidator />
+                    <div class="form-group" hidden>
+                        <input for="Id" class="form-control" @bind="@trainerViewDto.Id" />
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="Email" class="input-group-text col-md-3">Email:</label>
+                            <InputText @bind-Value="@trainerViewDto.Email" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => trainerViewDto.Email)" />
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="FirstName" class="input-group-text col-md-3">Imię:</label>
+                            <InputText @bind-Value="@trainerViewDto.FirstName" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => trainerViewDto.FirstName)" />
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="LastName" class="input-group-text col-md-3">Nazwisko:</label>
+                            <InputText @bind-Value="@trainerViewDto.LastName" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => trainerViewDto.LastName)" />
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="PhoneNr" class="input-group-text col-md-3">Numer tel.:</label>
+                            <InputText @bind-Value="@trainerViewDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => trainerViewDto.PhoneNr)" />
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
+                            <InputText @bind-Value="@trainerViewDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => trainerViewDto.Pesel)" />
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="Sal" class="input-group-text col-md-3">Wynagrodzenie:</label>
+                            <InputNumber @bind-Value="@trainerViewDto.Salary" class="form-control" disabled="@isDisabled"></InputNumber>
+                        </div>
+                        <ValidationMessage For="@(() => trainerViewDto.Salary)" />
+                        <ValidationMessage For="@(() => trainerViewDto.SpecializationIds)" />
+                    </div>
+                    <br />
+                    <div class="form-group ms-auto hstack gap-1">
+                        <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+                        <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+                        @if (FormMode == "edit" && trainerViewDto.EmployedTo is null)
+                        {
+                            <input type="button" class="btn btn-danger" @onclick=@EndEmployment value="Koniec zatrudnienia" />
+                        }
+                        else if (FormMode == "edit" && !(trainerViewDto.EmployedTo is null))
+                        {
+                            <input type="button" class="btn btn-success" @onclick=@ContinueEmployment value="Wznów zatrudnienie" />
+                        }
+                    </div>
+                </EditForm>
+            </div>
+            <div class="col-auto">
+                <div class="vstack gap-3">
+                    <div class="hstack gap-2">
+                        <label for="Spec" class="control-label fs-5">Specializacje</label>
+                        <button @onclick="AddValue" class="btn btn-success">+</button>
+                    </div>
+                    @for (int i = 0; i < trainerAccountDto.SpecializationIds.Count; i++)
+                    {
+                        int index = i;
+                        <div class="d-flex justify-content-between align-items-baseline hstack gap-2">
+                            <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(index, Convert.ToInt32(e.Value))" value="@trainerAccountDto.SpecializationIds[i]">
+                                <option selected style="display:none"> -- wybierz specjalizację -- </option>
+                                @if (specializations != null)
+                                {
+                                    @foreach (var spec in specializations)
+                                    {
+                                        <option value="@spec.Id">@spec.SpecName</option>
+                                    }
+                                }
+                            </select>
+                            <button @onclick="() => RemoveValue(index)" class="btn btn-outline-danger">X</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
     </div>
 </div>
 
@@ -117,7 +209,8 @@
     public string FormMode { get; set; }
 
     ICollection<SpecializationDto> specializations = new List<SpecializationDto>();
-    TrainerDto trainerDto = new TrainerDto();
+    TrainerAccountDto trainerAccountDto = new TrainerAccountDto();
+    TrainerViewDto trainerViewDto = new TrainerViewDto();
     bool isDisabled;
 
     protected override async Task OnInitializedAsync()
@@ -129,10 +222,10 @@
         specializations = await _httpClient.GetFromJsonAsync<ICollection<SpecializationDto>>("api/specialization");
         @if (FormMode == "edit")
         {
-            var fetchedTrainer = await _httpClient.GetFromJsonAsync<TrainerDto>($"api/trainer/{CurrentID}");
+            var fetchedTrainer = await _httpClient.GetFromJsonAsync<TrainerAccountDto>($"api/trainer/{CurrentID}");
             if (fetchedTrainer != null)
             {
-                trainerDto = fetchedTrainer;
+                trainerAccountDto = fetchedTrainer;
             }
         }
     }
@@ -151,19 +244,25 @@
 
     protected async void CreateTrainer()
     {
-        await _httpClient.PostAsJsonAsync("api/trainer", trainerDto);
+        await _httpClient.PostAsJsonAsync("api/trainer", trainerAccountDto);
         NavigationManager.NavigateTo("trainerList");
     }
 
     protected async void UpdateTrainer()
     {
-        await _httpClient.PutAsJsonAsync($"api/trainer/{CurrentID}", trainerDto);
+        await _httpClient.PutAsJsonAsync($"api/trainer/{CurrentID}", trainerViewDto);
         NavigationManager.NavigateTo("trainerList");
     }
 
     protected void EndEmployment()
     {
-        trainerDto.EmployedTo = DateTime.Today.AddMonths(1);
+        trainerViewDto.EmployedTo = DateTime.Today.AddMonths(1);
+        UpdateTrainer();
+    }
+
+    protected void ContinueEmployment()
+    {
+        trainerViewDto.EmployedTo = null;
         UpdateTrainer();
     }
 
@@ -172,7 +271,7 @@
         NavigationManager.NavigateTo("trainerList");
     }
 
-    private void AddValue() => trainerDto.SpecializationIds.Add(0);
-    private void UpdateValue(int i, int value) => trainerDto.SpecializationIds[i] = value;
-    private void RemoveValue(int i) => trainerDto.SpecializationIds.RemoveAt(i);
+    private void AddValue() => trainerAccountDto.SpecializationIds.Add(0);
+    private void UpdateValue(int i, int value) => trainerAccountDto.SpecializationIds[i] = value;
+    private void RemoveValue(int i) => trainerAccountDto.SpecializationIds.RemoveAt(i);
 }

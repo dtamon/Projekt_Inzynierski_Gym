@@ -14,16 +14,20 @@ namespace Projekt_Inzynierski.Core
         public GymMappingProfile()
         {
 
-            CreateMap<ClientDto, Client>();
-            CreateMap<Client, ClientDto>()
+            CreateMap<ClientAccountDto, Client>();
+            CreateMap<Client, ClientAccountDto>();
+            CreateMap<ClientViewDto, Client>();
+            CreateMap<Client, ClientViewDto>()
                 .ForMember(d => d.ContractMonths, o => o.MapFrom(s => s.Contract.Months))
                 .ForMember(d => d.ContractMonthlyCost, o => o.MapFrom(s => s.Contract.MonthlyCost));
 
             CreateMap<ContractDto, Contract>();
             CreateMap<Contract, ContractDto>();
 
-            CreateMap<EmployeeDto, Employee>();
-            CreateMap<Employee, EmployeeDto>();
+            CreateMap<EmployeeAccountDto, Employee>();
+            CreateMap<Employee, EmployeeAccountDto>();
+            CreateMap<EmployeeViewDto, Employee>();
+            CreateMap<Employee, EmployeeViewDto>();
 
             CreateMap<SpecializationDto, Specialization>();
             CreateMap<Specialization, SpecializationDto>();
@@ -31,11 +35,24 @@ namespace Projekt_Inzynierski.Core
             CreateMap<Specialization, int>().ConvertUsing(source => source.Id);
             CreateMap<int, Specialization>().ForMember(d => d.Id, o => o.MapFrom(src => src));
 
-            CreateMap<TrainerDto, Trainer>()
-                .ForMember(d => d.Specializations, o => o.MapFrom(s => s.SpecializationIds.ToList()));
-            CreateMap<Trainer, TrainerDto>()
+            CreateMap<TrainerAccountDto, Trainer>()
+                .ForMember(d => d.Specializations, o => o.MapFrom(s => s.SpecializationIds.ToList()))
+                .ForMember(d => d.GroupTrainings, o => o.MapFrom(s => s.GroupTrainingIds.ToList()));
+            CreateMap<Trainer, TrainerAccountDto>()
                 .ForMember(d => d.SpecializationIds, o => o.MapFrom(s => s.Specializations))
-                .ForMember(d => d.Specializations, o => o.MapFrom(s => s.Specializations));
+                .ForMember(d => d.Specializations, o => o.MapFrom(s => s.Specializations))
+                .ForMember(d => d.GroupTrainingIds, o => o.MapFrom(s => s.GroupTrainings))
+                .ForMember(d => d.GroupTrainings, o => o.MapFrom(s => s.GroupTrainings));
+            CreateMap<TrainerViewDto, Trainer>()
+                .ForMember(d => d.Specializations, o => o.MapFrom(s => s.SpecializationIds.ToList()))
+                .ForMember(d => d.GroupTrainings, o => o.MapFrom(s => s.GroupTrainingIds.ToList()));
+            CreateMap<Trainer, TrainerViewDto>()
+                .ForMember(d => d.SpecializationIds, o => o.MapFrom(s => s.Specializations))
+                .ForMember(d => d.Specializations, o => o.MapFrom(s => s.Specializations))
+                .ForMember(d => d.GroupTrainingIds, o => o.MapFrom(s => s.GroupTrainings))
+                .ForMember(d => d.GroupTrainings, o => o.MapFrom(s => s.GroupTrainings));
+
+
 
             CreateMap<TrainingEquipmentDto, TrainingEquipment>();
             CreateMap<TrainingEquipment, TrainingEquipmentDto>();

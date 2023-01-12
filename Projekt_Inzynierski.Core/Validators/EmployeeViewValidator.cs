@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Projekt_Inzynierski.Core.DTOs;
-using Projekt_Inzynierski.DataAccess.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Projekt_Inzynierski.Core.Validators
 {
-    public class TrainerValidator : AbstractValidator<TrainerAccountDto>
+    public class EmployeeViewValidator : AbstractValidator<EmployeeViewDto>
     {
-        public TrainerValidator(/*GymDbContext dbContext*/)
+        public EmployeeViewValidator()
         {
             RuleFor(x => x.FirstName)
                 .NotEmpty().WithMessage("Imię jest wymagane")
@@ -27,53 +26,43 @@ namespace Projekt_Inzynierski.Core.Validators
                 .NotEmpty().WithMessage("Numer telefonu jest wymagany")
                 .Length(9, 9).WithMessage("Numer telefonu musi zawierać 9 cyfr")
                 .Matches("^[0-9]*$").WithMessage("Numer telefonu może zawierać tylko cyfry");
-                //.Custom((value, context) =>
-                //{
-                //    var phoneNrInUse = dbContext.Person.Any(s => s.PhoneNr == value);
-                //    if (phoneNrInUse)
-                //    {
-                //        context.AddFailure("PhoneNr", "Podany Numer Telefonu jest w użyciu");
-                //    }
-                //});
+            //.Custom((value, context) =>
+            //{
+            //    var emailInUse = dbContext.Person.Any(s => s.Email == value);
+            //    if (emailInUse)
+            //    {
+            //        context.AddFailure("Email", "Podany Email jest w użyciu");
+            //    }
+            //});
 
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Email jest wymagany")
                 .EmailAddress().WithMessage("Email ma niepoprawny format");
-                //.Custom((value, context) =>
-                //{
-                //    var emailInUse = dbContext.Person.Any(s => s.Email == value);
-                //    if (emailInUse)
-                //    {
-                //        context.AddFailure("Email", "Podany Email jest w użyciu");
-                //    }
-                //});
+            //.Custom((value, context) =>
+            //{
+            //    var emailInUse = dbContext.Person.Any(s => s.Email == value);
+            //    if (emailInUse)
+            //    {
+            //        context.AddFailure("Email", "Podany Email jest w użyciu");
+            //    }
+            //});
 
             RuleFor(x => x.Pesel)
                 .NotEmpty().WithMessage("Pesel jest wymagany")
                 .Length(11, 11).WithMessage("Pesel musi zawierać 11 cyfr")
                 .Matches("^[0-9]*$").WithMessage("Pesel może zawierać tylko cyfry");
-                //.Custom((value, context) =>
-                //{
-                //    var peselInDb = dbContext.Person.Any(s => s.Pesel == value);
-                //    if (peselInDb)
-                //    {
-                //        context.AddFailure("Pesel", "Podany pesel jest w użyciu");
-                //    }
-                //});
-
-            RuleFor(x => x.Password)
-                .NotEmpty().WithMessage("Hasło jest wymagane");
-
-            RuleFor(x => x.ConfirmPassword)
-                .Equal(x => x.Password).WithMessage("Hasło i potwierdzenie hasła są różne");
+            //.Custom((value, context) =>
+            //{
+            //    var peselInDb = dbContext.Person.Any(s => s.Pesel == value);
+            //    if (peselInDb)
+            //    {
+            //        context.AddFailure("Pesel", "Podany pesel jest w użyciu");
+            //    }
+            //});
 
             RuleFor(x => x.Salary)
                 .NotEmpty().WithMessage("Wynagrodzenie jest wymagane")
                 .GreaterThan(0).WithMessage("Wynagrodzenie musi być liczbą dodatnią");
-
-
-            RuleFor(x => x.SpecializationIds)
-                .NotEmpty().WithMessage("Wymagana jest przynajmniej jedna specjalizacja");
         }
     }
 }

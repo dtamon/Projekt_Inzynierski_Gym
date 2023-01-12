@@ -52,9 +52,10 @@ namespace Projekt_Inzynierski.Server.Controllers
             return Ok("Zajęcia grupowe usunięte pomyślnie");
         }
 
-        [HttpPut("signup")]
+        [HttpPost("signUp/{id}")]
         public async Task<IActionResult> SignUpForGroupTraining(int id)
         {
+            var idd = id;
             await _groupTrainingService.AddClientToGroupTrainingAsync(id);
             return Ok("Pomyślnie zapisano na trening");
         }

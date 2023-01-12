@@ -78,7 +78,7 @@ builder.Services.AddFluentValidationAutoValidation(config =>
 {
     config.DisableDataAnnotationsValidation = true;
 })
-    .AddValidatorsFromAssemblyContaining<EmployeeValidator>(ServiceLifetime.Transient);
+    .AddValidatorsFromAssemblyContaining<EmployeeAccountValidator>(ServiceLifetime.Transient);
 
 //Authentication
 builder.Services.AddScoped<IPasswordHasher<Client>, PasswordHasher<Client>>();

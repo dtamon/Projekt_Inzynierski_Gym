@@ -87,7 +87,15 @@ else
 
     protected async void SignUpForTraining(int id)
     {
-        await _httpClient.PutAsJsonAsync($"api/groupTraining/signUp", id);
-        NavigationManager.NavigateTo("groupTrainingList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await _httpClient.PostAsJsonAsync($"api/groupTraining/signUp/{id}", id);
+            NavigationManager.NavigateTo("groupTrainingList");
+        }
+        else
+            NavigationManager.NavigateTo("/login");
     }
 }

@@ -8,7 +8,7 @@
 
 <h3>Dane Treningu Grupowego</h3>
 <hr />
-<div>
+<div class="vstack gap-3">
     <div class="row">
         <div class="col-md-4">
             <EditForm Model="@groupTrainingDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
@@ -63,7 +63,7 @@
                 {
                     int index = i;
                     <div class="d-flex justify-content-between align-items-baseline hstack gap-2">
-                        <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(index, Convert.ToInt32(e.Value))" value="@groupTrainingDto.TrainerIds[i]" disabled="@(i == 0 ? true : false )">
+                        <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(index, Convert.ToInt32(e.Value))" value="@groupTrainingDto.TrainerIds[i]" disabled="@((i == 0 && FormMode == "edit") ? true : false )">
                             <option selected style="display:none"> -- wybierz trenera -- </option>
                             @if (trainers != null)
                             {
@@ -81,6 +81,33 @@
                 }
             </div>
         </div>
+    </div>
+    <hr />
+    <div class="row">
+        <h3>Zapisani klienci</h3>
+        <table class="table auto">
+            <thead>
+                <tr>
+                    <th>Imię</th>
+                    <th>Nazwisko</th>
+                    <th>Numer tel.</th>
+                    <th>Email</th>
+                    <th>Pesel</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var client in groupTrainingDto.Clients)
+                {
+                    <tr>
+                        <td>@client.FirstName</td>
+                        <td>@client.LastName</td>
+                        <td>@client.PhoneNr</td>
+                        <td>@client.Email</td>
+                        <td>@client.Pesel</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
 

@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Projekt_Inzynierski.Core.Validators
 {
-    public class EmployeeValidator : AbstractValidator<EmployeeAccountDto>
+    public class EmployeeAccountValidator : AbstractValidator<EmployeeAccountDto>
     {
-        public EmployeeValidator(/*GymDbContext dbContext*/)
+        public EmployeeAccountValidator(/*GymDbContext dbContext*/)
         {
 
             RuleFor(x => x.FirstName)

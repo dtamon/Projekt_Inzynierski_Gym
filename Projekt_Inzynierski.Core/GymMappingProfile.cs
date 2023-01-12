@@ -79,6 +79,9 @@ namespace Projekt_Inzynierski.Core
             CreateMap<Trainer, int>().ConvertUsing(source => source.Id);
             CreateMap<int, Trainer>().ForMember(d => d.Id, o => o.MapFrom(src => src));
 
+            CreateMap<Client, int>().ConvertUsing(source => source.Id);
+            CreateMap<int, Client>().ForMember(d => d.Id, o => o.MapFrom(src => src));
+
             CreateMap<Trainer, string>().ConvertUsing(source => $"{source.FirstName} {source.LastName}");
         }
     }

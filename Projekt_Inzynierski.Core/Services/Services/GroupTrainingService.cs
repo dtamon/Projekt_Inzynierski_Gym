@@ -120,7 +120,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
             var groupTraining = await _groupTrainingRepository.GetGroupTrainingByIdAsync(id);
 
             var userId = (int)_userContextService.GetUserId;
-            var user = await _clientRepository.GetClientByIdAsync(userId);
+            var user = await _clientRepository.GetClientByIdAsync(1);
 
             if (groupTraining != null)
             {

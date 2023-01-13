@@ -5,6 +5,7 @@ using Projekt_Inzynierski.DataAccess.Entities;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,6 +70,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
 
         public async Task<ICollection<GroupTrainingDto>> GetAllGroupTrainingsAsync()
         {
+            var clientId = (int)_userContextService.GetUserId;
             return _mapper.Map<ICollection<GroupTrainingDto>>(await _groupTrainingRepository.GetAllGroupTrainingsAsync());
         }
 
@@ -115,19 +117,59 @@ namespace Projekt_Inzynierski.Core.Services.Services
 
 
         }
-        public async Task AddClientToGroupTrainingAsync(int id)
+        public async Task SignUpForTraining(int id)
         {
             var groupTraining = await _groupTrainingRepository.GetGroupTrainingByIdAsync(id);
 
             var userId = (int)_userContextService.GetUserId;
             var user = await _clientRepository.GetClientByIdAsync(1);
 
-            if (groupTraining != null)
+            if (groupTraining != null && user != null)
             {
                 groupTraining.Clients.Add(user);
 
                 await _groupTrainingRepository.UpdateGroupTrainingAsync(groupTraining);
             }
+        }
+
+        public async Task SignOutOfTraining(int id)
+        {
+            var groupTraining = await _groupTrainingRepository.GetGroupTrainingByIdAsync(id);
+
+            var userId = (int)_userContextService.GetUserId;
+            var user = await _clientRepository.GetClientByIdAsync(1);
+
+            if (groupTraining != null && user != null)
+            {
+                groupTraining.Clients.Remove(user);
+
+                await _groupTrainingRepository.UpdateGroupTrainingAsync(groupTraining);
+            }
+        }
+
+        public async Task<ICollection<GroupTrainingDto>> GetGroupTrainingsByUserId()
+        {
+            var userRole = _userContextService.GetUserRole;
+            var trainings = new List<GroupTrainingDto>();
+
+            if (userRole == "Trainer")
+            {
+                var trainerId = (int)_userContextService.GetUserId;
+                trainings = _mapper.Map<List<GroupTrainingDto>>(await _groupTrainingRepository.GetTrainingsByTrainerId(trainerId));
+            } 
+            else if (userRole == "Client")
+            {
+                var clientId = (int)_userContextService.GetUserId;
+                trainings = _mapper.Map<List<GroupTrainingDto>>(await _groupTrainingRepository.GetTrainingsByClientId(clientId));
+            }
+
+            return trainings;
+        }
+
+        public async Task<ICollection<GroupTrainingDto>> GetTrainingsWhereClientIsAbsent()
+        {
+            var userId = (int)_userContextService.GetUserId;
+            return _mapper.Map<ICollection<GroupTrainingDto>>(await _groupTrainingRepository.GetTrainingsWhereClientIsAbsent(userId));
         }
     }
 }

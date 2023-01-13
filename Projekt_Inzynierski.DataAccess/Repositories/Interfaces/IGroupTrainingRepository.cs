@@ -14,5 +14,8 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Interfaces
         public Task<GroupTraining?> GetGroupTrainingByIdAsync(int id);
         public Task UpdateGroupTrainingAsync(GroupTraining groupTraining);
         public Task DeleteGroupTrainingAsync(GroupTraining groupTraining);
+        public Task<ICollection<GroupTraining>> GetTrainingsByTrainerId(int id);
+        public Task<ICollection<GroupTraining>> GetTrainingsByClientId(int id);
+        public Task<ICollection<GroupTraining>> GetTrainingsWhereClientIsAbsent(int clientId);
     }
 }

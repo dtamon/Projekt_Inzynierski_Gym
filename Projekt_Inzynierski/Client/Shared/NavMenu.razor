@@ -9,54 +9,81 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <AuthorizeView Roles="Admin,Client">
-            <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="counter">
-                        <span class="oi oi-plus" aria-hidden="true"></span> Counter
-                    </NavLink>
-                </div>
-            </Authorized>
-        </AuthorizeView>
-        <AuthorizeView Roles="Client">
-            <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="fetchdata">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-                    </NavLink>
-                </div>
-            </Authorized>
-        </AuthorizeView>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="clientList">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Klienci
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="contractList">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Umowy
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="employeeList">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Pracownicy
-            </NavLink>
-        </div>
-        <NavLink class="nav-link" @onclick="() => expandSubNav = !expandSubNav">
-            <span class="oi oi-list-rich" aria-hidden="true"></span> Treningi grupowe
+        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <span class="oi oi-home" aria-hidden="true"></span> Strona główna
         </NavLink>
-        @if (expandSubNav)
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="counter">
+                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="fetchdata">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+            </NavLink>
+        </div>
+
+        <NavLink class="nav-link" @onclick="() => expandClient = !expandClient">
+            <span class="oi oi-list-rich" aria-hidden="true"></span> Klienci
+        </NavLink>
+        @if (expandClient)
         {
             <div class="nav-item px-3">
-                <NavLink class="nav-link" href="groupTrainingList">
-                    <span class="oi oi-list-rich" aria-hidden="true"></span> Treningi grupowe
+                <NavLink class="nav-link" href="clientList">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Klienci
                 </NavLink>
             </div>
+        }
+
+        <NavLink class="nav-link" @onclick="() => expandContract = !expandContract">
+            <span class="oi oi-list-rich" aria-hidden="true"></span> Umowy
+        </NavLink>
+        @if (expandContract)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="contractList">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Lista Umów
+                </NavLink>
+            </div>
+        }
+
+        <NavLink class="nav-link" @onclick="() => expandEmployee = !expandEmployee">
+            <span class="oi oi-list-rich" aria-hidden="true"></span> Pracownicy
+        </NavLink>
+        @if (expandEmployee)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="employeeList">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Lista Pracownicy
+                </NavLink>
+            </div>
+        }
+
+        <AuthorizeView Roles="Client, Trainer">
+            <Authorized>
+                <NavLink class="nav-link" @onclick="() => expandGroupTraining = !expandGroupTraining">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Treningi grupowe
+                </NavLink>
+            </Authorized>
+        </AuthorizeView>
+        @if (expandGroupTraining)
+        {
+            <AuthorizeView Roles="Client">
+                <Authorized>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="groupTrainingList/clientTrainings">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Twoje treningi
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="groupTrainingList">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Zaplanowane treningi
+                        </NavLink>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
             <AuthorizeView Roles="Trainer">
                 <Authorized>
                     <div class="nav-item px-3">
@@ -64,36 +91,69 @@
                             <span class="oi oi-list-rich" aria-hidden="true"></span> Dodaj nowy trening
                         </NavLink>
                     </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="groupTrainingList">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Twoje treningi
+                        </NavLink>
+                    </div>
                 </Authorized>
             </AuthorizeView>
         }
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="specializationList">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Specjalizacje trenerów
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="trainerList">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Trenerzy
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="equipmentList">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Sprzęt do ćwiczeń
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="visitList">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Wizyty klientów
-            </NavLink>
-        </div>
+
+        <NavLink class="nav-link" @onclick="() => expandSpecialization = !expandSpecialization">
+            <span class="oi oi-list-rich" aria-hidden="true"></span> Specjalizacje trenerów
+        </NavLink>
+        @if (expandSpecialization)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="specializationList">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Lista Specjalizacji
+                </NavLink>
+            </div>
+        }
+
+        <NavLink class="nav-link" @onclick="() => expandTrainer = !expandTrainer">
+            <span class="oi oi-list-rich" aria-hidden="true"></span> Trenerzy
+        </NavLink>
+        @if (expandTrainer)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="trainerList">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Lista Trenerów
+                </NavLink>
+            </div>
+        }
+
+        <NavLink class="nav-link" @onclick="() => expandTrainingEquipment = !expandTrainingEquipment">
+            <span class="oi oi-list-rich" aria-hidden="true"></span> Sprzęt do ćwiczeń
+        </NavLink>
+        @if (expandTrainingEquipment)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="equipmentList">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Sprzęt do ćwiczeń
+                </NavLink>
+            </div>
+        }
+
+        <NavLink class="nav-link" @onclick="() => expandVisit = !expandVisit">
+            <span class="oi oi-list-rich" aria-hidden="true"></span> Wizyty klientów
+        </NavLink>
+        @if (expandVisit)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="visitList">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Lista wizyt
+                </NavLink>
+            </div>
+        }
     </nav>
 </div>
 
 @code {
     private bool collapseNavMenu = true;
-    private bool expandSubNav;
+    private bool expandClient, expandContract, expandEmployee, expandGroupTraining, expandSpecialization, expandTrainer, expandTrainingEquipment, expandVisit;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()

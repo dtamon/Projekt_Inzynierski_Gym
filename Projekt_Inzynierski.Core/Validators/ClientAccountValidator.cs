@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Projekt_Inzynierski.Core.DTOs;
 using Projekt_Inzynierski.DataAccess.Context;
+using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Projekt_Inzynierski.Core.Validators
 {
     public class ClientAccountValidator : AbstractValidator<ClientAccountDto>
     {
-        public ClientAccountValidator(GymDbContext dbContext)
+        public ClientAccountValidator(/*GymDbContext dbContext*/)
         {
             RuleFor(x => x.FirstName)
                 .NotEmpty().WithMessage("Imię jest wymagane")
@@ -26,27 +27,27 @@ namespace Projekt_Inzynierski.Core.Validators
             RuleFor(x => x.PhoneNr)
                 .NotEmpty().WithMessage("Numer telefonu jest wymagany")
                 .Length(9, 9).WithMessage("Numer telefonu musi zawierać 9 cyfr")
-                .Matches("^[0-9]*$").WithMessage("Numer telefonu może zawierać tylko cyfry")
-                .Custom((value, context) =>
-                {
-                    var phoneNrInUse = dbContext.Person.Any(s => s.PhoneNr == value);
-                    if (phoneNrInUse)
-                    {
-                        context.AddFailure("PhoneNr", "Podany Numer Telefonu jest w użyciu");
-                    }
-                });
+                .Matches("^[0-9]*$").WithMessage("Numer telefonu może zawierać tylko cyfry");
+            //.Custom(async (value, context) =>
+            //{
+            //    var phoneNrInUse = await personRepository.IsPhoneNrTaken(value);
+            //    if (phoneNrInUse)
+            //    {
+            //        context.AddFailure("PhoneNr", "Podany Numer Telefonu jest w użyciu");
+            //    }
+            //});
 
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Email jest wymagany")
                 .EmailAddress().WithMessage("Email ma niepoprawny format");
-            //.Custom((value, context) =>
-            //{
-            //    var emailInUse = dbContext.Person.Any(s => s.Email == value);
-            //    if (emailInUse)
-            //    {
-            //        context.AddFailure("Email", "Podany Email jest w użyciu");
-            //    }
-            //});
+                //.Custom((value, context) =>
+                //{
+                //    var emailInUse = dbContext.Person.Any(s => s.Email == value);
+                //    if (emailInUse)
+                //    {
+                //        context.AddFailure("Email", "Podany Email jest w użyciu");
+                //    }
+                //});
 
             RuleFor(x => x.Pesel)
                 .NotEmpty().WithMessage("Pesel jest wymagany")

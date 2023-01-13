@@ -6,6 +6,9 @@ using Projekt_Inzynierski.Client;
 using Projekt_Inzynierski.Client.Authentication;
 using Projekt_Inzynierski.Client.Extensions;
 using Projekt_Inzynierski.DataAccess.Context;
+using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
+using Projekt_Inzynierski.DataAccess.Repositories.Repositories;
+using Projekt_Inzynierski.DataAccess.Repositories;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -17,5 +20,16 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddAuthorizationCore();
+
+//Repositories 
+//builder.Services.AddScoped<IClientRepository, ClientRepository>();
+//builder.Services.AddScoped<IContractRepository, ContractRepository>();
+//builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+//builder.Services.AddScoped<IGroupTrainingRepository, GroupTrainingRepository>();
+//builder.Services.AddScoped<ISpecializationRepository, SpecializationRepository>();
+//builder.Services.AddScoped<ITrainerRepository, TrainerRepository>();
+//builder.Services.AddScoped<ITrainingEquipmentRepository, TrainingEquipmentRepository>();
+//builder.Services.AddScoped<IVisitRepository, VisitRepository>();
+//builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 
 await builder.Build().RunAsync();

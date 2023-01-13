@@ -22,5 +22,20 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
         {
             return await _context.Person.FirstOrDefaultAsync(x => x.Email == email);
         }
+
+        public async Task<bool> IsEmailTaken(string email)
+        {
+            return await _context.Person.AnyAsync(x => x.Email == email);
+        }
+
+        public async Task<bool> IsPeselTaken(string pesel)
+        {
+            return await _context.Person.AnyAsync(x => x.Pesel == pesel);
+        }
+
+        public async Task<bool> IsPhoneNrTaken(string phoneNr)
+        {
+            return await _context.Person.AnyAsync(x => x.PhoneNr == phoneNr);
+        }
     }
 }

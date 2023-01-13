@@ -19,12 +19,14 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Trainer")]
         public async Task<IActionResult> GetAllGroupTrainings()
         {
             return Ok(await _groupTrainingService.GetAllGroupTrainingsAsync());
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Trainer")]
         public async Task<IActionResult> GetGroupTrainingById(int id)
         {
             return Ok(await _groupTrainingService.GetGroupTrainingByIdAsync(id));
@@ -39,6 +41,7 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Trainer")]
         public async Task<IActionResult> UpdateGroupTraining(int id, GroupTrainingDto groupTrainingDto)
         {
             await _groupTrainingService.UpdateGroupTrainingAsync(groupTrainingDto, id);
@@ -46,6 +49,7 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Trainer")]
         public async Task<IActionResult> DeleteGroupTraining(int id)
         {
             await _groupTrainingService.DeleteGroupTrainingAsync(id);
@@ -53,11 +57,33 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpPost("signUp/{id}")]
-        public async Task<IActionResult> SignUpForGroupTraining(int id)
+        [Authorize(Roles = "Client")]
+        public async Task<IActionResult> SignUpForTraining(int id)
         {
-            var idd = id;
-            await _groupTrainingService.AddClientToGroupTrainingAsync(id);
+            await _groupTrainingService.SignUpForTraining(id);
             return Ok("Pomyślnie zapisano na trening");
+        }
+
+        [HttpPost("signOut/{id}")]
+        [Authorize(Roles = "Client")]
+        public async Task<IActionResult> SignOutOfTraining(int id)
+        {
+            await _groupTrainingService.SignOutOfTraining(id);
+            return Ok("Pomyślnie wypisano się z treningu");
+        }
+
+        [HttpGet("yourGroupTrainings")]
+        [Authorize(Roles = "Client,Trainer")]
+        public async Task<IActionResult> GetTrainingByUserId()
+        {
+            return Ok(await _groupTrainingService.GetGroupTrainingsByUserId());
+        }
+
+        [HttpGet("trainingsNotSignedUp")]
+        [Authorize(Roles = "Client")]
+        public async Task<IActionResult> GetTrainingsWhereClientIsAbsent()
+        {
+            return Ok(await _groupTrainingService.GetTrainingsWhereClientIsAbsent());
         }
     }
 }

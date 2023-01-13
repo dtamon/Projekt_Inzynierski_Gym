@@ -11,5 +11,6 @@ namespace Projekt_Inzynierski.Core.Services.Interfaces
     {
         ClaimsPrincipal User { get; }
         int? GetUserId { get; }
+        string? GetUserRole { get; }
     }
 }

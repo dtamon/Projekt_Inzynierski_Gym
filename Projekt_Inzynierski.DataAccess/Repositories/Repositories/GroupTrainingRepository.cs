@@ -32,7 +32,7 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
 
         public async Task<ICollection<GroupTraining>> GetAllGroupTrainingsAsync()
         {
-            return await _context.GroupTraining.Include(x => x.Trainers).ThenInclude(x => x.Specializations).Include(x => x.Clients).ToListAsync();
+            return await _context.GroupTraining.Include(x => x.Trainers).ThenInclude(x => x.Specializations).Include(x => x.Clients).Where(x => x.StartDate > DateTime.Now).ToListAsync();
         }
 
         public async Task<GroupTraining?> GetGroupTrainingByIdAsync(int id)
@@ -44,6 +44,24 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
         {
             _context.GroupTraining.Update(groupTraining);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<ICollection<GroupTraining>> GetTrainingsByTrainerId(int id)
+        {
+            var trainer = await _context.Trainer.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.GroupTraining.Include(x => x.Trainers).ThenInclude(x => x.Specializations).Include(x => x.Clients).Where(x => x.Trainers.Contains(trainer)).ToListAsync();
+        }
+        public async Task<ICollection<GroupTraining>> GetTrainingsByClientId(int id)
+        {
+            var client = await _context.Client.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.GroupTraining.Include(x => x.Trainers).ThenInclude(x => x.Specializations).Include(x => x.Clients).Where(x => x.Clients.Contains(client)).ToListAsync();
+        }
+
+        //Ger group training list where client is not signed up
+        public async Task<ICollection<GroupTraining>> GetTrainingsWhereClientIsAbsent(int clientId)
+        {
+            var client = await _context.Client.FirstOrDefaultAsync(x => x.Id == clientId);
+            return await _context.GroupTraining.Include(x => x.Trainers).ThenInclude(x => x.Specializations).Include(x => x.Clients).Where(x => !x.Clients.Contains(client)).ToListAsync();
         }
     }
 }

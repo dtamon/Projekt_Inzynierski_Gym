@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Projekt_Inzynierski.Core.DTOs
 {
-    public class TrainerViewDto
+    public class TrainerSimpleDto
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -17,9 +17,5 @@ namespace Projekt_Inzynierski.Core.DTOs
         public DateTime EmployedFrom { get; set; }
         public DateTime? EmployedTo { get; set; }
         public int Salary { get; set; }
-        public List<int> SpecializationIds { get; set; } = new List<int>();
-        public ICollection<string> SpecializationNames { get; set; } = new List<string>();
-        public ICollection<int> GroupTrainingIds { get; set; } = new List<int>();
-        public ICollection<GroupTrainingDto> GroupTrainings { get; set; } = new List<GroupTrainingDto>();
     }
 }

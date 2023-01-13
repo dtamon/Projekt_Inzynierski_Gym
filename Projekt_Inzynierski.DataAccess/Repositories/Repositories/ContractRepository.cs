@@ -38,7 +38,7 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
 
         public async Task<Contract?> GetContractByIdAsync(int id)
         {
-            return await _context.Contract.FirstOrDefaultAsync(s => s.Id == id);
+            return await _context.Contract.Include(c => c.Clients).FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task UpdateContractAsync(Contract contract)

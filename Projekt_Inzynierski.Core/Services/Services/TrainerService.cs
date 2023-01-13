@@ -71,6 +71,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
 
         public async Task<TrainerViewDto?> GetTrainerByIdAsync(int id)
         {
+            var trainer = await _trainerRepository.GetTrainerByIdAsync(id);
             return _mapper.Map<TrainerViewDto>(await _trainerRepository.GetTrainerByIdAsync(id));
         }
 
@@ -95,6 +96,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
                 trainer.Pesel = trainerDto.Pesel;
                 trainer.Salary = trainerDto.Salary;
                 trainer.Specializations = specializations;
+                trainer.EmployedTo = trainerDto.EmployedTo;
 
                 await _trainerRepository.UpdateTrainerAsync(trainer);
 

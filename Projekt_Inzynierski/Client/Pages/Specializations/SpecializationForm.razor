@@ -6,7 +6,7 @@
 
 <h3>Specjalizacja</h3>
 <hr />
-<div class="row">
+<div class="row gap-5">
     <div class="col-md-4">
         <EditForm Model="@specializationDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
             <FluentValidationValidator />
@@ -21,12 +21,55 @@
                 <ValidationMessage For="@(() => specializationDto.SpecName)" />
             </div>
             <br />
-            <div class="form-group ms-auto">
-                <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
-                <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
-            </div>
+            @if (!isDisabled)
+            {
+                <div class="form-group ms-auto">
+                    <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+                    <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+                </div>
+            }
         </EditForm>
     </div>
+    @if (isDisabled)
+    {
+        <div class="col-md">
+            <h3>Trenerzy posiadający tą specjalizację</h3>
+            @if (specializationDto.Trainers == null)
+            {
+                <p><em>Ładowanie...</em></p>
+            }
+            else
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Imię</th>
+                            <th>Nazwisko</th>
+                            <th>Numer tel.</th>
+                            <th>Email</th>
+                            <th>Pesel</th>
+                            <th>Koniec umowy</th>
+                            <th>Wynagrodzenie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var trainer in specializationDto.Trainers)
+                        {
+                            <tr>
+                                <td>@trainer.FirstName</td>
+                                <td>@trainer.LastName</td>
+                                <td>@trainer.PhoneNr</td>
+                                <td>@trainer.Email</td>
+                                <td>@trainer.Pesel</td>
+                                <td>@(trainer.EmployedTo is null ? null : ((DateTime)trainer.EmployedTo).ToShortDateString())</td>
+                                <td>@trainer.Salary</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    }
 </div>
 
 @code {
@@ -44,7 +87,7 @@
         {
             isDisabled = true;
         }
-        @if (FormMode == "edit")
+        @if (FormMode == "edit" || FormMode == "details")
         {
             var fetchedSpecialization = await _httpClient.GetFromJsonAsync<SpecializationDto>($"api/specialization/{CurrentID}");
             if (fetchedSpecialization != null)

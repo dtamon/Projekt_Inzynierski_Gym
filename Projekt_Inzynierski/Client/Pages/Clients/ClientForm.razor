@@ -6,153 +6,188 @@
 
 <h3>Dane Klienta</h3>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        @if (FormMode is null)
-        {
-            <EditForm Model="@clientRegisterDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
-                <FluentValidationValidator />
-                <div class="form-group" hidden>
-                    <input for="Id" class="form-control" @bind="@clientRegisterDto.Id" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="Email" class="input-group-text col-md-3">Email:</label>
-                        <InputText @bind-Value="@clientRegisterDto.Email" class="form-control" disabled="@isDisabled"></InputText>
+<div>
+    <div class="row gap-5">
+        <div class="col-md-4">
+            @if (FormMode is null)
+            {
+                <EditForm Model="@clientRegisterDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
+                    <FluentValidationValidator />
+                    <div class="form-group" hidden>
+                        <input for="Id" class="form-control" @bind="@clientRegisterDto.Id" />
                     </div>
-                    <ValidationMessage For="@(() => clientRegisterDto.Email)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="Password" class="input-group-text col-md-3">Hasło:</label>
-                        <InputText @bind-Value="@clientRegisterDto.Password" class="form-control" type="password" disabled="@isDisabled"></InputText>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="Email" class="input-group-text col-md-3">Email:</label>
+                            <InputText @bind-Value="@clientRegisterDto.Email" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => clientRegisterDto.Email)" />
                     </div>
-                    <ValidationMessage For="@(() => clientRegisterDto.Password)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="ConfirmPassword" class="input-group-text col-md-3">Powtórz hasło:</label>
-                        <InputText @bind-Value="@clientRegisterDto.ConfirmPassword" class="form-control" type="password" disabled="@isDisabled"></InputText>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="Password" class="input-group-text col-md-3">Hasło:</label>
+                            <InputText @bind-Value="@clientRegisterDto.Password" class="form-control" type="password" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => clientRegisterDto.Password)" />
                     </div>
-                    <ValidationMessage For="@(() => clientRegisterDto.ConfirmPassword)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="FirstName" class="input-group-text col-md-3">Imię:</label>
-                        <InputText @bind-Value="@clientRegisterDto.FirstName" class="form-control" disabled="@isDisabled"></InputText>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="ConfirmPassword" class="input-group-text col-md-3">Powtórz hasło:</label>
+                            <InputText @bind-Value="@clientRegisterDto.ConfirmPassword" class="form-control" type="password" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => clientRegisterDto.ConfirmPassword)" />
                     </div>
-                    <ValidationMessage For="@(() => clientRegisterDto.FirstName)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="LastName" class="input-group-text col-md-3">Nazwisko:</label>
-                        <InputText @bind-Value="@clientRegisterDto.LastName" class="form-control" disabled="@isDisabled"></InputText>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="FirstName" class="input-group-text col-md-3">Imię:</label>
+                            <InputText @bind-Value="@clientRegisterDto.FirstName" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => clientRegisterDto.FirstName)" />
                     </div>
-                    <ValidationMessage For="@(() => clientRegisterDto.LastName)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="PhoneNr" class="input-group-text col-md-3">Numer telefonu:</label>
-                        <InputText @bind-Value="@clientRegisterDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="LastName" class="input-group-text col-md-3">Nazwisko:</label>
+                            <InputText @bind-Value="@clientRegisterDto.LastName" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => clientRegisterDto.LastName)" />
                     </div>
-                    <ValidationMessage For="@(() => clientRegisterDto.PhoneNr)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
-                        <InputText @bind-Value="@clientRegisterDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="PhoneNr" class="input-group-text col-md-3">Numer telefonu:</label>
+                            <InputText @bind-Value="@clientRegisterDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => clientRegisterDto.PhoneNr)" />
                     </div>
-                    <ValidationMessage For="@(() => clientRegisterDto.Pesel)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="ContractId" class="input-group-text col-md-3">Umowa:</label>
-                        <InputSelect @bind-Value="@clientRegisterDto.ContractId" class="form-select" disabled="@isDisabled">
-                            <option selected style="display:none"> -- wybierz umowę -- </option>
-                            @if (contracts != null)
-                            {
-                                @foreach (var contract in contracts)
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
+                            <InputText @bind-Value="@clientRegisterDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => clientRegisterDto.Pesel)" />
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="ContractId" class="input-group-text col-md-3">Umowa:</label>
+                            <InputSelect @bind-Value="@clientRegisterDto.ContractId" class="form-select" disabled="@isDisabled">
+                                <option selected style="display:none"> -- wybierz umowę -- </option>
+                                @if (contracts != null)
                                 {
-                                    <option value="@contract.Id">@contract.Months miesięcy, @contract.MonthlyCost zł miesięcznie</option>
+                                    @foreach (var contract in contracts)
+                                    {
+                                        <option value="@contract.Id">@contract.Months miesięcy, @contract.MonthlyCost zł miesięcznie</option>
+                                    }
                                 }
-                            }
-                        </InputSelect>
+                            </InputSelect>
+                        </div>
+                        <ValidationMessage For="@(() => clientRegisterDto.ContractId)" />
                     </div>
-                    <ValidationMessage For="@(() => clientRegisterDto.ContractId)" />
-                </div>
-                <br />
-                <div class="form-group ms-auto">
-                    <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
-                    <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
-                </div>
-            </EditForm>
-        }
-        else
-        {
-            <EditForm Model="@clientViewDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
-                <FluentValidationValidator />
-                <div class="form-group" hidden>
-                    <input for="Id" class="form-control" @bind="@clientViewDto.Id" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="Email" class="input-group-text col-md-3">Email:</label>
-                        <InputText @bind-Value="@clientViewDto.Email" class="form-control" disabled="@isDisabled"></InputText>
+                    <br />
+                    <div class="form-group ms-auto">
+                        <input type="submit" class="btn btn-primary" value="Aktualizuj" />
+                        <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
                     </div>
-                    <ValidationMessage For="@(() => clientViewDto.Email)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="FirstName" class="input-group-text col-md-3">Imię:</label>
-                        <InputText @bind-Value="@clientViewDto.FirstName" class="form-control" disabled="@isDisabled"></InputText>
+                </EditForm>
+            }
+            else
+            {
+                <EditForm Model="@clientViewDto" OnValidSubmit=@OnValidSubmit class="vstack gap-3">
+                    <FluentValidationValidator />
+                    <div class="form-group" hidden>
+                        <input for="Id" class="form-control" @bind="@clientViewDto.Id" />
                     </div>
-                    <ValidationMessage For="@(() => clientViewDto.FirstName)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="LastName" class="input-group-text col-md-3">Nazwisko:</label>
-                        <InputText @bind-Value="@clientViewDto.LastName" class="form-control" disabled="@isDisabled"></InputText>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="Email" class="input-group-text col-md-3">Email:</label>
+                            <InputText @bind-Value="@clientViewDto.Email" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => clientViewDto.Email)" />
                     </div>
-                    <ValidationMessage For="@(() => clientViewDto.LastName)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="PhoneNr" class="input-group-text col-md-3">Numer telefonu:</label>
-                        <InputText @bind-Value="@clientViewDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="FirstName" class="input-group-text col-md-3">Imię:</label>
+                            <InputText @bind-Value="@clientViewDto.FirstName" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => clientViewDto.FirstName)" />
                     </div>
-                    <ValidationMessage For="@(() => clientViewDto.PhoneNr)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
-                        <InputText @bind-Value="@clientViewDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="LastName" class="input-group-text col-md-3">Nazwisko:</label>
+                            <InputText @bind-Value="@clientViewDto.LastName" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => clientViewDto.LastName)" />
                     </div>
-                    <ValidationMessage For="@(() => clientViewDto.Pesel)" />
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="ContractId" class="input-group-text col-md-3">Umowa:</label>
-                        <InputSelect @bind-Value="@clientViewDto.ContractId" class="form-select" disabled="@isDisabled">
-                            <option selected style="display:none"> -- wybierz umowę -- </option>
-                            @if (contracts != null)
-                            {
-                                @foreach (var contract in contracts)
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="PhoneNr" class="input-group-text col-md-3">Numer telefonu:</label>
+                            <InputText @bind-Value="@clientViewDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => clientViewDto.PhoneNr)" />
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
+                            <InputText @bind-Value="@clientViewDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
+                        </div>
+                        <ValidationMessage For="@(() => clientViewDto.Pesel)" />
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="ContractId" class="input-group-text col-md-3">Umowa:</label>
+                            <InputSelect @bind-Value="@clientViewDto.ContractId" class="form-select" disabled="@isDisabled">
+                                <option selected style="display:none"> -- wybierz umowę -- </option>
+                                @if (contracts != null)
                                 {
-                                    <option value="@contract.Id">@contract.Months miesięcy, @contract.MonthlyCost zł miesięcznie</option>
+                                    @foreach (var contract in contracts)
+                                    {
+                                        <option value="@contract.Id">@contract.Months miesięcy, @contract.MonthlyCost zł miesięcznie</option>
+                                    }
                                 }
-                            }
-                        </InputSelect>
+                            </InputSelect>
+                        </div>
+                        <ValidationMessage For="@(() => clientViewDto.ContractId)" />
                     </div>
-                    <ValidationMessage For="@(() => clientViewDto.ContractId)" />
-                </div>
-                <br />
-                <div class="form-group ms-auto">
-                    <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
-                    <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
-                </div>
-            </EditForm>
-        }
+                    <br />
+                    @if (!isDisabled)
+                    {
+                        <div class="form-group ms-auto">
+                            <input type="submit" class="btn btn-primary" value="Aktualizuj" />
+                            <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+                        </div>
+                    }
+                </EditForm>
+            }
 
+        </div>
+        @if (isDisabled)
+        {
+            <div class="col-md">
+                <h3>Wizyty klienta</h3>
+                @if (clientViewDto.Visits == null)
+                {
+                    <p><em>Ładowanie...</em></p>
+                }
+                else
+                {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Dzień wizyty</th>
+                                <th>Godzina</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var visit in clientViewDto.Visits)
+                        {
+                            <tr>
+                                <td>@visit.VisitDate.ToShortDateString()</td>
+                                <td>@visit.VisitDate.ToShortTimeString()</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                }
+            </div>
+        }
     </div>
 </div>
 @code {

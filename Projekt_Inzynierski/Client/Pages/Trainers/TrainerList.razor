@@ -24,8 +24,8 @@ else
                 <th>Numer tel.</th>
                 <th>Email</th>
                 <th>Pesel</th>
-                <th>Koniec umowy</th>
                 <th>Wynagrodzenie</th>
+                <th>Koniec umowy</th>
                 <th>Specjalizacje</th>
                 <th>Operacja</th>
             </tr>
@@ -42,12 +42,15 @@ else
                     <td>@trainer.Salary</td>
                     <td>@(trainer.EmployedTo is null ? null : ((DateTime)trainer.EmployedTo).ToShortDateString())</td>
                     <td>
-                        @foreach (var spec in trainer.Specializations)
+                        @foreach (var specialization in trainer.SpecializationNames)
                         {
-                            <p>@spec.SpecName</p>
+                            <p>@specialization</p>
                         }
                     </td>
                     <td class="hstack">
+                        <a class="nav-link" href="trainerForm/details/@trainer.Id">
+                            <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
+                        </a>
                         <a class="nav-link" href="trainerForm/edit/@trainer.Id">
                             <span class="oi oi-pencil" aria-hidden="true"></span>
                         </a>

@@ -31,12 +31,12 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
 
         public async Task<ICollection<Client>> GetAllClientsAsync()
         {
-            return await _context.Client.Include(c => c.Contract).ToListAsync();
+            return await _context.Client.Include(c => c.Contract).Include(v => v.Visits).ToListAsync();
         }
 
         public async Task<Client?> GetClientByIdAsync(int id)
         {
-            return await _context.Client.Include(c => c.Contract).FirstOrDefaultAsync(s => s.Id == id);
+            return await _context.Client.Include(c => c.Contract).Include(v => v.Visits).FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task UpdateClientAsync(Client client)

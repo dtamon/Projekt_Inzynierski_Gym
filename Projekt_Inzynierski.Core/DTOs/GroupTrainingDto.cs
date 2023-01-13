@@ -17,6 +17,6 @@ namespace Projekt_Inzynierski.Core.DTOs
         public List<int> ClientIds { get; set; } = new List<int>();
         public List<int> TrainerIds { get; set; } = new List<int>();
         public ICollection<ClientViewDto> Clients { get; set; } = new List<ClientViewDto>();
-        public ICollection<string> TrainersNames { get; set; } = new List<string>();
+        public ICollection<TrainerSimpleDto> Trainers { get; set; } = new List<TrainerSimpleDto>();
     }
 }

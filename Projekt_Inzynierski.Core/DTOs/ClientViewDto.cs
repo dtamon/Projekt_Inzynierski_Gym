@@ -19,5 +19,6 @@ namespace Projekt_Inzynierski.Core.DTOs
         public int? ContractMonthlyCost { get; set; }
         public DateTime ContractStart { get; set; }
         public DateTime ContractEnd { get; set; }
+        public virtual ICollection<VisitDto> Visits { get; set; } = new List<VisitDto>();
     }
 }

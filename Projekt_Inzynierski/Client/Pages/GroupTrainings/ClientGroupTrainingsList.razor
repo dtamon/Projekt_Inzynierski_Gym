@@ -38,9 +38,9 @@ else
                     <td>@groupTraining.FreeSpots</td>
                     <td>@groupTraining.StartDate.ToShortDateString() @groupTraining.StartDate.ToShortTimeString()</td>
                     <td>
-                        @foreach (var trainer in groupTraining.TrainersNames)
+                        @foreach (var trainer in groupTraining.Trainers)
                         {
-                            <p>@trainer</p>
+                            <p>@trainer.FirstName @trainer.LastName</p>
                         }
                     </td>
                     <td class="hstack">

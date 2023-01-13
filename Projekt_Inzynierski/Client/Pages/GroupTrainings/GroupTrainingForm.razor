@@ -164,7 +164,7 @@
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             await _httpClient.PostAsJsonAsync("api/groupTraining", groupTrainingDto);
-            NavigationManager.NavigateTo("groupTrainingList/yours");
+            NavigationManager.NavigateTo("groupTrainingList");
         }
         else
             NavigationManager.NavigateTo("/login");
@@ -179,7 +179,7 @@
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             await _httpClient.PutAsJsonAsync($"api/groupTraining/{CurrentID}", groupTrainingDto);
-            NavigationManager.NavigateTo("groupTrainingList/yours");
+            NavigationManager.NavigateTo("groupTrainingList");
         }
         else
             NavigationManager.NavigateTo("/login");
@@ -187,7 +187,7 @@
 
     void Cancel()
     {
-        NavigationManager.NavigateTo("groupTrainingList/yours");
+        NavigationManager.NavigateTo("groupTrainingList");
     }
 
     private void AddValue() => groupTrainingDto.TrainerIds.Add(0);

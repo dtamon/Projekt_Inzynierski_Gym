@@ -37,7 +37,7 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
 
         public async Task<Specialization?> GetSpecializationByIdAsync(int id)
         {
-            return await _context.Specialization.FirstOrDefaultAsync(s => s.Id == id);
+            return await _context.Specialization.Include(t => t.Trainers).FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task UpdateSpecializationAsync(Specialization specialization)

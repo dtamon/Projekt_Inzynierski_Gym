@@ -49,35 +49,24 @@
         <div class="col-auto">
             <div class="vstack gap-3">
                 <div class="hstack gap-2">
-                    @if (FormMode is null)
-                    {
-                        <label for="Spec" class="control-label fs-5">Dodatkowi trenerzy</label>
-                    }
-                    else
-                    {
-                        <label for="Spec" class="control-label fs-5">Trenerzy</label>
-                    }
-
+                    <label for="Spec" class="control-label fs-5">Dodatkowi trenerzy</label>
                     <button @onclick="AddValue" class="btn btn-success">+</button>
                 </div>
                 @for (int i = 0; i < groupTrainingDto.TrainerIds.Count; i++)
                 {
                     int index = i;
                     <div class="d-flex justify-content-between align-items-baseline hstack gap-2">
-                        <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(index, Convert.ToInt32(e.Value))" value="@groupTrainingDto.TrainerIds[i]" disabled="@((i == 0 && FormMode == "edit") ? true : false )">
+                        <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(index, Convert.ToInt32(e.Value))" value="@groupTrainingDto.TrainerIds[i]">
                             <option selected style="display:none"> -- wybierz trenera -- </option>
-                            @if (trainers != null)
+                            @if (otherTrainers != null)
                             {
-                                @foreach (var trainer in trainers)
+                                @foreach (var trainer in otherTrainers)
                                 {
                                     <option value="@trainer.Id">@trainer.FirstName @trainer.LastName, @trainer.Pesel</option>
                                 }
                             }
                         </select>
-                        @if (i > 0)
-                        {
-                            <button @onclick="() => RemoveValue(index)" class="btn btn-outline-danger">X</button>
-                        }
+                        <button @onclick="() => RemoveValue(index)" class="btn btn-outline-danger">X</button>
                     </div>
                 }
             </div>
@@ -118,18 +107,27 @@
     [Parameter]
     public string FormMode { get; set; }
 
-    ICollection<TrainerViewDto> trainers = new List<TrainerViewDto>();
+    ICollection<TrainerViewDto> otherTrainers = new List<TrainerViewDto>();
     GroupTrainingDto groupTrainingDto = new GroupTrainingDto();
     bool isDisabled;
 
     protected override async Task OnInitializedAsync()
     {
-        trainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerViewDto>>("api/trainer");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            otherTrainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerViewDto>>("api/trainer/others");
+        }
+        else
+            NavigationManager.NavigateTo("/login");
+        
 
         if (FormMode == "details")
         {
             isDisabled = true;
-        }     
+        }
         else if (FormMode == "edit")
         {
             var groupTraining = await _httpClient.GetFromJsonAsync<GroupTrainingDto>($"api/groupTraining/{CurrentID}");
@@ -137,11 +135,11 @@
             {
                 groupTrainingDto = groupTraining;
             }
-        } 
+        }
         else
         {
             groupTrainingDto.StartDate = DateTime.Now;
-        } 
+        }
     }
 
     protected void OnValidSubmit()

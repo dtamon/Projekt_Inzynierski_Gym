@@ -35,9 +35,14 @@ namespace Projekt_Inzynierski.DataAccess.Repositories
             return await _context.Trainer.Include(t => t.Specializations).ToListAsync();
         }
 
+        public async Task<ICollection<Trainer>> GetOtherTrainersAsync(int id)
+        {
+            return await _context.Trainer.Include(t => t.Specializations).Where(t => t.Id != id).ToListAsync();
+        }
+
         public async Task<Trainer?> GetTrainerByIdAsync(int id)
         {
-            return await _context.Trainer.Include(t => t.Specializations).Include(t => t.GroupTrainings).ThenInclude(t => t.Trainers).FirstOrDefaultAsync(s => s.Id == id);
+            return await _context.Trainer.Include(t => t.Specializations).Include(t => t.GroupTrainings).ThenInclude(t => t.Trainers).Include(t => t.CreatedGroupTrainings).ThenInclude(t => t.Trainers).FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task UpdateTrainerAsync(Trainer trainer)

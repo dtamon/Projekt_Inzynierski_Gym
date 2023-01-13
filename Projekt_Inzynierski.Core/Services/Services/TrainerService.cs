@@ -18,13 +18,15 @@ namespace Projekt_Inzynierski.Core.Services.Services
         private readonly ISpecializationRepository _specializationRepository;
         private readonly IMapper _mapper;
         private readonly IPasswordHasher<Trainer> _passwordHasher;
+        private readonly IUserContextService _userContextService;
 
-        public TrainerService(ITrainerRepository trainerRepository, ISpecializationRepository specializationRepository, IMapper mapper, IPasswordHasher<Trainer> passwordHasher)
+        public TrainerService(ITrainerRepository trainerRepository, ISpecializationRepository specializationRepository, IMapper mapper, IPasswordHasher<Trainer> passwordHasher, IUserContextService userContextService)
         {
             _trainerRepository = trainerRepository;
             _specializationRepository = specializationRepository;
             _mapper = mapper;
             _passwordHasher = passwordHasher;
+            _userContextService = userContextService;
         }
         public async Task CreateTrainerAsync(TrainerAccountDto trainerDto)
         {
@@ -67,6 +69,12 @@ namespace Projekt_Inzynierski.Core.Services.Services
         public async Task<ICollection<TrainerViewDto>> GetAllTrainersAsync()
         {
             return _mapper.Map<ICollection<TrainerViewDto>>(await _trainerRepository.GetAllTrainersAsync());
+        }
+
+        public async Task<ICollection<TrainerViewDto>> GetOtherTrainersAsync()
+        {
+            var trainerId = (int)_userContextService.GetUserId;
+            return _mapper.Map<ICollection<TrainerViewDto>>(await _trainerRepository.GetOtherTrainersAsync(trainerId));
         }
 
         public async Task<TrainerViewDto?> GetTrainerByIdAsync(int id)

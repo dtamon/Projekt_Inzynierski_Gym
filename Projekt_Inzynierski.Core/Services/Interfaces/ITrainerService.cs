@@ -13,6 +13,7 @@ namespace Projekt_Inzynierski.Core.Services.Interfaces
         public Task UpdateTrainerAsync(TrainerViewDto trainerDto, int id);
         public Task DeleteTrainerAsync(int id);
         public Task<ICollection<TrainerViewDto>> GetAllTrainersAsync();
+        public Task<ICollection<TrainerViewDto>> GetOtherTrainersAsync();
         public Task<TrainerViewDto?> GetTrainerByIdAsync(int id);
 
     }

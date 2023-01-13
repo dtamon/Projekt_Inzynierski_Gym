@@ -21,5 +21,6 @@ namespace Projekt_Inzynierski.Core.DTOs
         public ICollection<string> SpecializationNames { get; set; } = new List<string>();
         public ICollection<int> GroupTrainingIds { get; set; } = new List<int>();
         public ICollection<GroupTrainingDto> GroupTrainings { get; set; } = new List<GroupTrainingDto>();
+        public ICollection<GroupTrainingDto> CreatedGroupTrainings { get; set; } = new List<GroupTrainingDto>();
     }
 }

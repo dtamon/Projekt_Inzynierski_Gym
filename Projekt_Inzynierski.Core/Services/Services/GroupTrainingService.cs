@@ -35,9 +35,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
 
             //get singed in user id
             var createdById = (int)_userContextService.GetUserId;
-            var createdBy = await _trainerRepository.GetTrainerByIdAsync(createdById);
-
-            trainers.Add(createdBy);
+            var createdByTrainer = await _trainerRepository.GetTrainerByIdAsync(createdById);
 
             foreach (var trainerId in groupTrainingDto.TrainerIds)
             {
@@ -53,6 +51,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
                 TrainingType = groupTrainingDto.TrainingType,
                 MaxCLients = groupTrainingDto.MaxClients,
                 StartDate = groupTrainingDto.StartDate,
+                TrainerId = createdById,
                 Trainers = trainers,
             };
             

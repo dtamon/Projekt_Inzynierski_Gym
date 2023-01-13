@@ -47,7 +47,8 @@ namespace Projekt_Inzynierski.Core
                 .ForMember(d => d.SpecializationIds, o => o.MapFrom(s => s.Specializations))
                 .ForMember(d => d.SpecializationNames, o => o.MapFrom(s => s.Specializations))
                 .ForMember(d => d.GroupTrainingIds, o => o.MapFrom(s => s.GroupTrainings))
-                .ForMember(d => d.GroupTrainings, o => o.MapFrom(s => s.GroupTrainings));
+                .ForMember(d => d.GroupTrainings, o => o.MapFrom(s => s.GroupTrainings))
+                .ForMember(d => d.CreatedGroupTrainings, o=> o.MapFrom(s => s.CreatedGroupTrainings));
 
             CreateMap<TrainerSimpleDto, Trainer>();
             CreateMap<Trainer, TrainerSimpleDto>();
@@ -70,6 +71,7 @@ namespace Projekt_Inzynierski.Core
                 .ForMember(d => d.FreeSpots, o => o.MapFrom(s => s.MaxCLients - s.Clients.Count()))
                 .ForMember(d => d.ClientIds, o => o.MapFrom(s => s.Clients))
                 .ForMember(d => d.Clients, o => o.MapFrom(s => s.Clients))
+                .ForMember(d => d.CreatedByTrainer, o => o.MapFrom(s => s.Trainer))
                 .ForMember(d => d.TrainerIds, o => o.MapFrom(s => s.Trainers))
                 .ForMember(d => d.Trainers, o => o.MapFrom(s => s.Trainers));
 

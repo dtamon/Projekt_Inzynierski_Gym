@@ -38,12 +38,15 @@ else
                         <td>Niesprawny</td>
                     }
 
-                    <td>
+                    <td class="hstack">
+                        <a class="nav-link" href="equipmentForm/details/@equipment.Id">
+                            <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
+                        </a>
                         <a class="nav-link" href="equipmentForm/edit/@equipment.Id">
-                            <span class="oi oi-pencil" aria-hidden="true"></span>Edytuj
+                            <span class="oi oi-pencil" aria-hidden="true"></span>
                         </a>
                         <a class="nav-link" href="" @onclick="@(() => {DeleteContract(equipment.Id); })">
-                            <span class="oi oi-trash" aria-hidden="true"></span>Usuń
+                            <span class="oi oi-trash" aria-hidden="true"></span>
                         </a>
                     </td>
                 </tr>

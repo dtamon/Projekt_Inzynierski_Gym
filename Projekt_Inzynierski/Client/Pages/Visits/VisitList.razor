@@ -23,7 +23,7 @@ else
                 <th>Nazwisko</th>
                 <th>Email</th>
                 <th>Pesel</th>
-                <th>Data wizyty</th>
+                <th>Data i godzina wizyty</th>
                 <th>Operacja</th>
             </tr>
         </thead>
@@ -35,7 +35,7 @@ else
                     <td>@visit.LastName</td>
                     <td>@visit.Email</td>
                     <td>@visit.Pesel</td>
-                    <td>@visit.VisitDate.ToShortDateString()</td>
+                    <td>@visit.VisitDate.ToShortDateString() @visit.VisitDate.ToShortTimeString()</td>
                     <td class="hstack">
                         <a class="nav-link" href="visitForm/details/@visit.Id">
                             <span class="oi oi-magnifying-glass" aria-client="true"></span>

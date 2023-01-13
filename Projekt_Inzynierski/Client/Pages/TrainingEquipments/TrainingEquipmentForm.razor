@@ -16,7 +16,7 @@
             <div class="form-group">
                 <div class="input-group">
                     <label for="SerialNr" class="input-group-text col-md-3">Numer seryjny:</label>
-                    <InputText @bind-Value="@equipmentDto.SerialNr" class="form-control"></InputText>
+                    <InputText @bind-Value="@equipmentDto.SerialNr" class="form-control" disabled="@isDisabled"></InputText>
                 </div>
                 <ValidationMessage For="@(() => equipmentDto.SerialNr)" />
             </div>
@@ -25,15 +25,18 @@
                 <div class="input-group">
                     <label for="TechnicalState" class="input-group-text col-md-3">Czy jest sprawny?</label>
                     <div class="form-control">
-                        <InputCheckbox @bind-Value="@equipmentDto.TechnicalState" class="form-check-input" />
+                        <InputCheckbox @bind-Value="@equipmentDto.TechnicalState" class="form-check-input" disabled="@isDisabled"/>
                     </div>
                 </div>
             </div>
             <br />
-            <div class="form-group ms-auto">
-                <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
-                <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
-            </div>
+            @if (!isDisabled)
+            {
+                <div class="form-group ms-auto">
+                    <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+                    <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+                </div>
+            }
         </EditForm>
     </div>
 </div>
@@ -44,10 +47,15 @@
     public string FormMode { get; set; }
 
     TrainingEquipmentDto equipmentDto = new TrainingEquipmentDto();
+    bool isDisabled;
 
     protected override async Task OnInitializedAsync()
     {
-        @if (FormMode == "edit")
+        if (FormMode == "details")
+        {
+            isDisabled = true;
+        }
+        if (FormMode == "edit" || FormMode == "details")
         {
             var fetchedEquipment = await _httpClient.GetFromJsonAsync<TrainingEquipmentDto>($"api/trainingEquipment/{CurrentID}");
             if (fetchedEquipment != null)

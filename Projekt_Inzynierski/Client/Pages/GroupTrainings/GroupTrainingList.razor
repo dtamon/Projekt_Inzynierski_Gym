@@ -22,10 +22,11 @@ else
         <thead>
             <tr>
                 <th>Typ treningu</th>
+                <th>Prowadzony przez</th>
                 <th>Limit miejsc</th>
                 <th>Ilość wolnych miejsc</th>
                 <th>Data i godzina rozpoczęcia</th>
-                <th>Trenerzy</th>
+                <th>Dodatkowi trenerzy</th>
                 <th>Operacje</th>
             </tr>
         </thead>
@@ -34,6 +35,7 @@ else
             {
                 <tr>
                     <td>@groupTraining.TrainingType</td>
+                    <td>@groupTraining.CreatedByTrainer.FirstName @groupTraining.CreatedByTrainer.LastName</td>
                     <td>@groupTraining.MaxClients</td>
                     <td>@groupTraining.FreeSpots</td>
                     <td>@groupTraining.StartDate.ToShortDateString() @groupTraining.StartDate.ToShortTimeString()</td>

@@ -12,8 +12,10 @@ namespace Projekt_Inzynierski.DataAccess.Entities
         public string TrainingType { get; set; }
         public int MaxCLients { get; set; }
         public DateTime StartDate { get; set; }
-        public virtual ICollection<Client> Clients { get; set; }
-        public virtual ICollection<Trainer> Trainers { get; set; }
+        public int TrainerId { get; set; }
+        public Trainer Trainer { get; set; }
+        public virtual ICollection<Client> Clients { get; set; } = new List<Client>();
+        public virtual ICollection<Trainer> Trainers { get; set; } = new List<Trainer>();
 
         public GroupTraining() { }
     }

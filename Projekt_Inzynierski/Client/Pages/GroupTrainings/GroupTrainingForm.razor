@@ -16,6 +16,15 @@
                 <div class="form-group" hidden>
                     <input for="Id" class="form-control" @bind="@groupTrainingDto.Id" />
                 </div>
+                @if (isDisabled)
+                {
+                    <div class="form-group">
+                        <div class="input-group">
+                            <label for="TrainingType" class="input-group-text col-md-3">Prowadzący:</label>
+                            <input type="text" value="@groupTrainingDto.CreatedByTrainer.FirstName @groupTrainingDto.CreatedByTrainer.LastName, @groupTrainingDto.CreatedByTrainer.Pesel" class="form-control" disabled="@isDisabled" />
+                        </div>
+                    </div>
+                }
                 <div class="form-group">
                     <div class="input-group">
                         <label for="TrainingType" class="input-group-text col-md-3">Typ treningu:</label>
@@ -40,23 +49,29 @@
                     <ValidationMessage For="@(() => groupTrainingDto.TrainerIds)" />
                 </div>
                 <br />
-                <div class="form-group ms-auto">
-                    <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
-                    <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
-                </div>
+                @if (!isDisabled)
+                {
+                    <div class="form-group ms-auto">
+                        <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+                        <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+                    </div>
+                }
             </EditForm>
         </div>
         <div class="col-auto">
             <div class="vstack gap-3">
                 <div class="hstack gap-2">
                     <label for="Spec" class="control-label fs-5">Dodatkowi trenerzy</label>
-                    <button @onclick="AddValue" class="btn btn-success">+</button>
+                    @if (!isDisabled)
+                    {
+                        <button @onclick="AddValue" class="btn btn-success">+</button>
+                    }
                 </div>
                 @for (int i = 0; i < groupTrainingDto.TrainerIds.Count; i++)
                 {
                     int index = i;
                     <div class="d-flex justify-content-between align-items-baseline hstack gap-2">
-                        <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(index, Convert.ToInt32(e.Value))" value="@groupTrainingDto.TrainerIds[i]">
+                        <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(index, Convert.ToInt32(e.Value))" value="@groupTrainingDto.TrainerIds[i]" disabled="@isDisabled">
                             <option selected style="display:none"> -- wybierz trenera -- </option>
                             @if (otherTrainers != null)
                             {
@@ -66,39 +81,55 @@
                                 }
                             }
                         </select>
-                        <button @onclick="() => RemoveValue(index)" class="btn btn-outline-danger">X</button>
+                        @if (!isDisabled)
+                        {
+                            <button @onclick="() => RemoveValue(index)" class="btn btn-outline-danger">X</button>
+                        }
                     </div>
                 }
             </div>
         </div>
     </div>
-    <hr />
-    <div class="row">
-        <h3>Zapisani klienci</h3>
-        <table class="table auto">
-            <thead>
-                <tr>
-                    <th>Imię</th>
-                    <th>Nazwisko</th>
-                    <th>Numer tel.</th>
-                    <th>Email</th>
-                    <th>Pesel</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var client in groupTrainingDto.Clients)
-                {
-                    <tr>
-                        <td>@client.FirstName</td>
-                        <td>@client.LastName</td>
-                        <td>@client.PhoneNr</td>
-                        <td>@client.Email</td>
-                        <td>@client.Pesel</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+
+    @if (isDisabled)
+    {
+        <hr />
+        <div class="row">
+            @if (groupTrainingDto.Clients == null)
+            {
+                <p><em>Ładowanie...</em></p>
+            }
+            else
+            {
+
+                <h3>Zapisani klienci</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Imię</th>
+                            <th>Nazwisko</th>
+                            <th>Numer tel.</th>
+                            <th>Email</th>
+                            <th>Pesel</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var client in groupTrainingDto.Clients)
+                        {
+                            <tr>
+                                <td>@client.FirstName</td>
+                                <td>@client.LastName</td>
+                                <td>@client.PhoneNr</td>
+                                <td>@client.Email</td>
+                                <td>@client.Pesel</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            }
+        </div>
+    }
 </div>
 
 @code {
@@ -118,28 +149,28 @@
         if (!string.IsNullOrEmpty(token))
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            otherTrainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerViewDto>>("api/trainer/others");
-        }
-        else
-            NavigationManager.NavigateTo("/login");
-        
 
-        if (FormMode == "details")
-        {
-            isDisabled = true;
-        }
-        else if (FormMode == "edit")
-        {
-            var groupTraining = await _httpClient.GetFromJsonAsync<GroupTrainingDto>($"api/groupTraining/{CurrentID}");
-            if (groupTraining != null)
+            if (FormMode == "details")
             {
-                groupTrainingDto = groupTraining;
+                isDisabled = true;
+            }
+            if (FormMode == "edit" || FormMode == "details")
+            {
+                otherTrainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerViewDto>>("api/trainer");
+                var groupTraining = await _httpClient.GetFromJsonAsync<GroupTrainingDto>($"api/groupTraining/{CurrentID}");
+                if (groupTraining != null)
+                {
+                    groupTrainingDto = groupTraining;
+                }
+            }
+            else
+            {
+                otherTrainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerViewDto>>("api/trainer/others");
+                groupTrainingDto.StartDate = DateTime.Now;
             }
         }
         else
-        {
-            groupTrainingDto.StartDate = DateTime.Now;
-        }
+            NavigationManager.NavigateTo("/login");
     }
 
     protected void OnValidSubmit()

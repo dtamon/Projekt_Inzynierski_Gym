@@ -5,9 +5,15 @@
 
 <div class="d-flex justify-content-between">
     <h3>Lista Wizyt</h3>
-    <NavLink class="nav-link" href="visitAdd">
-        <input type="button" class="btn btn-success" value="+ Dodaj" />
-    </NavLink>
+    <div class="hstack gap-1">
+        <div class="input-group">
+            <input type="text" class="form-control" @bind="@searchPhrase" />
+            <input type="button" class="btn btn-primary" @onclick=@Search value="Szukaj" />
+        </div>
+        <NavLink class="nav-link" href="visitAdd">
+            <input type="button" class="btn btn-success" value="+ Dodaj" />
+        </NavLink>
+    </div>
 </div>
 
 @if (visits == null)
@@ -55,15 +61,22 @@ else
 
 @code {
     ICollection<VisitDto> visits = new List<VisitDto>();
+    private string searchPhrase;
 
     protected override async Task OnInitializedAsync()
     {
-        visits = await _httpClient.GetFromJsonAsync<ICollection<VisitDto>>("api/visit");
+        visits = await _httpClient.GetFromJsonAsync<ICollection<VisitDto>>($"api/visit?searchPhrase={searchPhrase}");
     }
 
     protected async void DeleteVisit(int id)
     {
         await _httpClient.DeleteAsync($"api/visit/{id}");
         NavigationManager.NavigateTo("visitList");
+    }
+
+    protected async void Search()
+    {
+        await OnInitializedAsync();
+        StateHasChanged();
     }
 }

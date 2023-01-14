@@ -5,9 +5,15 @@
 
 <div class="d-flex justify-content-between">
     <h3>Lista Specializacji</h3>
-    <NavLink class="nav-link" href="specializationAdd">
-        <input type="button" class="btn btn-success" value="+ Dodaj" />
-    </NavLink>
+    <div class="hstack gap-1">
+        <div class="input-group">
+            <input type="text" class="form-control" @bind="@searchPhrase" />
+            <input type="button" class="btn btn-primary" @onclick=@Search value="Szukaj" />
+        </div>
+        <NavLink class="nav-link" href="specializationAdd">
+            <input type="button" class="btn btn-success" value="+ Dodaj" />
+        </NavLink>
+    </div>
 </div>
 
 @if (specializations == null)
@@ -47,15 +53,22 @@ else
 
 @code {
     ICollection<SpecializationDto> specializations = new List<SpecializationDto>();
+    private string searchPhrase;
 
     protected override async Task OnInitializedAsync()
     {
-        specializations = await _httpClient.GetFromJsonAsync<ICollection<SpecializationDto>>("api/specialization");
+        specializations = await _httpClient.GetFromJsonAsync<ICollection<SpecializationDto>>($"api/specialization?searchPhrase={searchPhrase}");
     }
 
     protected async void DeleteSpecialization(int id)
     {
         await _httpClient.DeleteAsync($"api/specialization/{id}");
         NavigationManager.NavigateTo("specializationList");
+    }
+
+    protected async void Search()
+    {
+        await OnInitializedAsync();
+        StateHasChanged();
     }
 }

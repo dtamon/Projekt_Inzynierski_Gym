@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Projekt_Inzynierski.DataAccess.Context;
 using Projekt_Inzynierski.DataAccess.Entities;
+using Projekt_Inzynierski.DataAccess.Queries;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -30,9 +31,12 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ICollection<Employee>> GetAllEmployeesAsync()
+        public async Task<ICollection<Employee>> GetAllEmployeesAsync(SearchQuery query)
         {
-            return await _context.Employee.ToListAsync();
+            return await _context.Employee.Where(x => query.SearchPhrase == null || (x.FirstName.ToLower().Contains(query.SearchPhrase.ToLower())
+                                                        || x.LastName.ToLower().Contains(query.SearchPhrase.ToLower())
+                                                        || x.Pesel.ToLower().Contains(query.SearchPhrase.ToLower())))
+                .ToListAsync();
         }
 
         public async Task<Employee?> GetEmployeeByIdAsync(int id)

@@ -2,6 +2,7 @@
 using Projekt_Inzynierski.Core.DTOs;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
+using Projekt_Inzynierski.DataAccess.Queries;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -67,10 +68,10 @@ namespace Projekt_Inzynierski.Core.Services.Services
             }
         }
 
-        public async Task<ICollection<GroupTrainingDto>> GetAllGroupTrainingsAsync()
+        public async Task<ICollection<GroupTrainingDto>> GetAllGroupTrainingsAsync(SearchQuery query)
         {
             var clientId = (int)_userContextService.GetUserId;
-            return _mapper.Map<ICollection<GroupTrainingDto>>(await _groupTrainingRepository.GetAllGroupTrainingsAsync());
+            return _mapper.Map<ICollection<GroupTrainingDto>>(await _groupTrainingRepository.GetAllGroupTrainingsAsync(query));
         }
 
         public async Task<GroupTrainingDto?> GetGroupTrainingByIdAsync(int id)
@@ -146,7 +147,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
             }
         }
 
-        public async Task<ICollection<GroupTrainingDto>> GetGroupTrainingsByUserId()
+        public async Task<ICollection<GroupTrainingDto>> GetGroupTrainingsByUserId(SearchQuery query)
         {
             var userRole = _userContextService.GetUserRole;
             var trainings = new List<GroupTrainingDto>();
@@ -154,21 +155,21 @@ namespace Projekt_Inzynierski.Core.Services.Services
             if (userRole == "Trainer")
             {
                 var trainerId = (int)_userContextService.GetUserId;
-                trainings = _mapper.Map<List<GroupTrainingDto>>(await _groupTrainingRepository.GetTrainingsByTrainerId(trainerId));
+                trainings = _mapper.Map<List<GroupTrainingDto>>(await _groupTrainingRepository.GetTrainingsByTrainerId(trainerId,  query));
             } 
             else if (userRole == "Client")
             {
                 var clientId = (int)_userContextService.GetUserId;
-                trainings = _mapper.Map<List<GroupTrainingDto>>(await _groupTrainingRepository.GetTrainingsByClientId(clientId));
+                trainings = _mapper.Map<List<GroupTrainingDto>>(await _groupTrainingRepository.GetTrainingsByClientId(clientId,  query));
             }
 
             return trainings;
         }
 
-        public async Task<ICollection<GroupTrainingDto>> GetTrainingsWhereClientIsAbsent()
+        public async Task<ICollection<GroupTrainingDto>> GetTrainingsWhereClientIsAbsent(SearchQuery query)
         {
             var userId = (int)_userContextService.GetUserId;
-            return _mapper.Map<ICollection<GroupTrainingDto>>(await _groupTrainingRepository.GetTrainingsWhereClientIsAbsent(userId));
+            return _mapper.Map<ICollection<GroupTrainingDto>>(await _groupTrainingRepository.GetTrainingsWhereClientIsAbsent(userId,  query));
         }
     }
 }

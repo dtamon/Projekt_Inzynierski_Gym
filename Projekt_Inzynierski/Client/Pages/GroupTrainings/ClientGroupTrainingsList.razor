@@ -7,9 +7,12 @@
 
 <div class="d-flex justify-content-between">
     <h3>Twoje Treningi</h3>
-    <NavLink class="nav-link" href="groupTrainingAdd">
-        <input type="button" class="btn btn-success" value="+ Dodaj" />
-    </NavLink>
+    <div class="hstack gap-1">
+        <div class="input-group">
+            <input type="text" class="form-control" @bind="@searchPhrase" />
+            <input type="button" class="btn btn-primary" @onclick=@Search value="Szukaj" />
+        </div>
+    </div>
 </div>
 
 @if (groupTrainings == null)
@@ -61,7 +64,7 @@ else
     public string ListMode { get; set; }
 
     ICollection<GroupTrainingDto> groupTrainings = new List<GroupTrainingDto>();
-
+    private string searchPhrase;
     private string Role = "";
 
     protected override async Task OnInitializedAsync()
@@ -73,7 +76,7 @@ else
 
         if (!string.IsNullOrEmpty(token))
         {
-            groupTrainings = await _httpClient.GetFromJsonAsync<ICollection<GroupTrainingDto>>("api/groupTraining/yourGroupTrainings");
+            groupTrainings = await _httpClient.GetFromJsonAsync<ICollection<GroupTrainingDto>>($"api/groupTraining/yourGroupTrainings?searchPhrase={searchPhrase}");
         }
         else
             NavigationManager.NavigateTo("/login");
@@ -91,5 +94,11 @@ else
         }
         else
             NavigationManager.NavigateTo("/login");
+    }
+
+    protected async void Search()
+    {
+        await OnInitializedAsync();
+        StateHasChanged();
     }
 }

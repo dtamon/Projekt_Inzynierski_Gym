@@ -2,6 +2,7 @@
 using Projekt_Inzynierski.Core.DTOs;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
+using Projekt_Inzynierski.DataAccess.Queries;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -36,9 +37,9 @@ namespace Projekt_Inzynierski.Core.Services.Services
             }
         }
 
-        public async Task<ICollection<ContractDto>> GetAllContractsAsync()
+        public async Task<ICollection<ContractDto>> GetAllContractsAsync(SearchQuery query)
         {
-            return _mapper.Map<ICollection<ContractDto>>(await _contractRepository.GetAllContractsAsync());
+            return _mapper.Map<ICollection<ContractDto>>(await _contractRepository.GetAllContractsAsync(query));
         }
 
         public async Task<ContractDto?> GetContractByIdAsync(int id)

@@ -172,7 +172,7 @@
                                 <input type="button" class="btn btn-success" @onclick=@ContinueEmployment value="Wznów zatrudnienie" />
                             }
                         </div>
-                    }  
+                    }
                 </EditForm>
             </div>
             <div class="col-md-auto">
@@ -209,44 +209,47 @@
         }
         @if (isDisabled)
         {
-            <h3>Prowadzone treningi</h3>
-            @if (trainerViewDto.CreatedGroupTrainings == null)
-            {
-                <p><em>Ładowanie...</em></p>
-            }
-            else
-            {
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Typ treningu</th>
-                            @*<th>Trener prowadzący</th>*@
-                            <th>Limit miejsc</th>
-                            <th>Ilość wolnych miejsc</th>
-                            <th>Data i godzina rozpoczęcia</th>
-                            <th>Dodatkowi Trenerzy</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var groupTraining in trainerViewDto.CreatedGroupTrainings)
-                        {
+            <hr />
+            <div class="row">
+                <h3>Prowadzone treningi</h3>
+                @if (trainerViewDto.CreatedGroupTrainings == null)
+                {
+                    <p><em>Ładowanie...</em></p>
+                }
+                else
+                {
+                    <table class="table table-striped">
+                        <thead>
                             <tr>
-                                <td>@groupTraining.TrainingType</td>
-                                @*<td>@groupTraining.CreatedByTrainer.FirstName @groupTraining.CreatedByTrainer.LastName</td>*@
-                                <td>@groupTraining.MaxClients</td>
-                                <td>@groupTraining.FreeSpots</td>
-                                <td>@groupTraining.StartDate.ToShortDateString() @groupTraining.StartDate.ToShortTimeString()</td>
-                                <td>
-                                    @foreach (var trainer in groupTraining.Trainers)
-                                    {
-                                        <p>@trainer.FirstName @trainer.LastName</p>
-                                    }
-                                </td>
+                                <th>Typ treningu</th>
+                                @*<th>Trener prowadzący</th>*@
+                                <th>Limit miejsc</th>
+                                <th>Ilość wolnych miejsc</th>
+                                <th>Data i godzina rozpoczęcia</th>
+                                <th>Dodatkowi Trenerzy</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            }
+                        </thead>
+                        <tbody>
+                            @foreach (var groupTraining in trainerViewDto.CreatedGroupTrainings)
+                            {
+                                <tr>
+                                    <td>@groupTraining.TrainingType</td>
+                                    @*<td>@groupTraining.CreatedByTrainer.FirstName @groupTraining.CreatedByTrainer.LastName</td>*@
+                                    <td>@groupTraining.MaxClients</td>
+                                    <td>@groupTraining.FreeSpots</td>
+                                    <td>@groupTraining.StartDate.ToShortDateString() @groupTraining.StartDate.ToShortTimeString()</td>
+                                    <td>
+                                        @foreach (var trainer in groupTraining.Trainers)
+                                        {
+                                            <p>@trainer.FirstName @trainer.LastName</p>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
         }
 
     </div>
@@ -272,7 +275,7 @@
             isDisabled = true;
         }
         specializations = await _httpClient.GetFromJsonAsync<ICollection<SpecializationDto>>("api/specialization");
-        @if (FormMode == "edit" || FormMode == "details")
+        if (FormMode == "edit" || FormMode == "details")
         {
             var fetchedTrainer = await _httpClient.GetFromJsonAsync<TrainerViewDto>($"api/trainer/{CurrentID}");
             if (fetchedTrainer != null)

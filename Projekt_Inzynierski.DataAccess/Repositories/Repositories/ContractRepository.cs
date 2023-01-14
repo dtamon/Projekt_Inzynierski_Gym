@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Projekt_Inzynierski.DataAccess.Context;
 using Projekt_Inzynierski.DataAccess.Entities;
+using Projekt_Inzynierski.DataAccess.Queries;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -31,9 +32,11 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ICollection<Contract>> GetAllContractsAsync()
+        public async Task<ICollection<Contract>> GetAllContractsAsync(SearchQuery query)
         {
-            return await _context.Contract.ToListAsync();
+            return await _context.Contract.Where(x => query.SearchPhrase == null || (x.Months == int.Parse(query.SearchPhrase))
+                                                        || x.MonthlyCost == int.Parse(query.SearchPhrase))
+                .ToListAsync();
         }
 
         public async Task<Contract?> GetContractByIdAsync(int id)

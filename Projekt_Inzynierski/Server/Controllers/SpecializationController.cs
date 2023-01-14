@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Projekt_Inzynierski.Core.DTOs;
 using Projekt_Inzynierski.Core.Services.Interfaces;
+using Projekt_Inzynierski.DataAccess.Queries;
 
 namespace Projekt_Inzynierski.Server.Controllers
 {
@@ -17,9 +18,9 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllSpecializations()
+        public async Task<IActionResult> GetAllSpecializations([FromQuery] SearchQuery query)
         {
-            return Ok(await _specializationService.GetAllSpecializationsAsync());
+            return Ok(await _specializationService.GetAllSpecializationsAsync(query));
         }
 
         [HttpGet("{id}")]

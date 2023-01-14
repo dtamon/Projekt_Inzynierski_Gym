@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Projekt_Inzynierski.Core.DTOs;
 using Projekt_Inzynierski.Core.Services.Interfaces;
+using Projekt_Inzynierski.DataAccess.Queries;
 
 namespace Projekt_Inzynierski.Server.Controllers
 {
@@ -18,9 +19,9 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllTrainers()
+        public async Task<IActionResult> GetAllTrainers([FromQuery] SearchQuery query)
         {
-            return Ok(await _trainerService.GetAllTrainersAsync());
+            return Ok(await _trainerService.GetAllTrainersAsync(query));
         }
 
         [HttpGet("others")]

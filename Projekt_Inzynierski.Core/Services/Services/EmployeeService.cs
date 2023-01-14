@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Projekt_Inzynierski.Core.DTOs;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
+using Projekt_Inzynierski.DataAccess.Queries;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -45,9 +46,9 @@ namespace Projekt_Inzynierski.Core.Services.Services
             }
         }
 
-        public async Task<ICollection<EmployeeViewDto>> GetAllEmployeesAsync()
+        public async Task<ICollection<EmployeeViewDto>> GetAllEmployeesAsync(SearchQuery query)
         {
-            return _mapper.Map<ICollection<EmployeeViewDto>>(await _employeeRepository.GetAllEmployeesAsync());
+            return _mapper.Map<ICollection<EmployeeViewDto>>(await _employeeRepository.GetAllEmployeesAsync(query));
         }
 
         public async Task<EmployeeViewDto?> GetEmployeeByIdAsync(int id)

@@ -32,8 +32,8 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
 
         public async Task<ICollection<Client>> GetAllClientsAsync(SearchQuery query)
         {
-            return await _context.Client.Include(c => c.Contract).Include(v => v.Visits).
-                Where(x => query.SearchPhrase == null || (x.FirstName.ToLower().Contains(query.SearchPhrase.ToLower())
+            return await _context.Client.Include(c => c.Contract).Include(v => v.Visits)
+                .Where(x => query.SearchPhrase == null || (x.FirstName.ToLower().Contains(query.SearchPhrase.ToLower())
                                                         || x.LastName.ToLower().Contains(query.SearchPhrase.ToLower())
                                                         || x.Pesel.ToLower().Contains(query.SearchPhrase.ToLower())))
                 .ToListAsync();

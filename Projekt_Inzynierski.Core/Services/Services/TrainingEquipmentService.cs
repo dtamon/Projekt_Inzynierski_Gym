@@ -2,6 +2,7 @@
 using Projekt_Inzynierski.Core.DTOs;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
+using Projekt_Inzynierski.DataAccess.Queries;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -36,9 +37,9 @@ namespace Projekt_Inzynierski.Core.Services.Services
             }
         }
 
-        public async Task<ICollection<TrainingEquipmentDto>> GetAllTrainingEquipmentsAsync()
+        public async Task<ICollection<TrainingEquipmentDto>> GetAllTrainingEquipmentsAsync(SearchQuery query)
         {
-            return _mapper.Map<ICollection<TrainingEquipmentDto>>(await _trainingEquipmentRepository.GetAllTrainingEquipmentAsync());
+            return _mapper.Map<ICollection<TrainingEquipmentDto>>(await _trainingEquipmentRepository.GetAllTrainingEquipmentAsync(query));
         }
 
         public async Task<TrainingEquipmentDto?> GetTrainingEquipmentByIdAsync(int id)

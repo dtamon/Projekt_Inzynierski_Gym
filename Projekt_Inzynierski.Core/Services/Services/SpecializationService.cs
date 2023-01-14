@@ -2,6 +2,7 @@
 using Projekt_Inzynierski.Core.DTOs;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
+using Projekt_Inzynierski.DataAccess.Queries;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -35,9 +36,9 @@ namespace Projekt_Inzynierski.Core.Services.Services
             }
         }
 
-        public async Task<ICollection<SpecializationDto>> GetAllSpecializationsAsync()
+        public async Task<ICollection<SpecializationDto>> GetAllSpecializationsAsync(SearchQuery query)
         {
-            return _mapper.Map<ICollection<SpecializationDto>>(await _specializationRepository.GetAllSpecializationsAsync());
+            return _mapper.Map<ICollection<SpecializationDto>>(await _specializationRepository.GetAllSpecializationsAsync(query));
         }
 
         public async Task<SpecializationDto?> GetSpecializationByIdAsync(int id)

@@ -5,9 +5,15 @@
 
 <div class="d-flex justify-content-between">
     <h3>Lista Pracowników</h3>
-    <NavLink class="nav-link" href="employeeAdd">
-        <input type="button" class="btn btn-success" value="+ Dodaj" />
-    </NavLink>
+    <div class="hstack gap-1">
+        <div class="input-group">
+            <input type="text" class="form-control" @bind="@searchPhrase" />
+            <input type="button" class="btn btn-primary" @onclick=@Search value="Szukaj" />
+        </div>
+        <NavLink class="nav-link" href="employeeAdd">
+            <input type="button" class="btn btn-success" value="+ Dodaj" />
+        </NavLink>
+    </div>
 </div>
 
 @if (employees == null)
@@ -59,15 +65,22 @@ else
 
 @code {
     ICollection<EmployeeViewDto> employees = new List<EmployeeViewDto>();
+    private string searchPhrase;
 
     protected override async Task OnInitializedAsync()
     {
-        employees = await _httpClient.GetFromJsonAsync<ICollection<EmployeeViewDto>>("api/employee");
+        employees = await _httpClient.GetFromJsonAsync<ICollection<EmployeeViewDto>>($"api/employee?searchPhrase={searchPhrase}");
     }
 
     protected async void DeleteEmployee(int id)
     {
         await _httpClient.DeleteAsync($"api/employee/{id}");
         NavigationManager.NavigateTo("employeeList");
+    }
+
+    protected async void Search()
+    {
+        await OnInitializedAsync();
+        StateHasChanged();
     }
 }

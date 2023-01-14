@@ -6,9 +6,15 @@
 
 <div class="d-flex justify-content-between">
     <h3>Lista Kontraktów</h3>
-    <NavLink class="nav-link" href="contractAdd">
-        <input type="button" class="btn btn-success" value="+ Dodaj" />
-    </NavLink>
+    <div class="hstack gap-1">
+        <div class="input-group">
+            <input type="text" class="form-control" @bind="@searchPhrase" />
+            <input type="button" class="btn btn-primary" @onclick=@Search value="Szukaj" />
+        </div>
+        <NavLink class="nav-link" href="contractAdd">
+            <input type="button" class="btn btn-success" value="+ Dodaj" />
+        </NavLink>
+    </div>
 </div>
 
 @if (contracts == null)
@@ -49,15 +55,22 @@ else
 }
 @code {
     ICollection<ContractDto> contracts = new List<ContractDto>();
+    private string searchPhrase;
 
     protected override async Task OnInitializedAsync()
     {
-        contracts = await _httpClient.GetFromJsonAsync<ICollection<ContractDto>>("api/contract");
+        contracts = await _httpClient.GetFromJsonAsync<ICollection<ContractDto>>($"api/contract?searchPhrase={searchPhrase}");
     }
 
     protected async void DeleteContract(int id)
     {
         await _httpClient.DeleteAsync($"api/contract/{id}");
         NavigationManager.NavigateTo("contractList");
+    }
+
+    protected async void Search()
+    {
+        await OnInitializedAsync();
+        StateHasChanged();
     }
 }

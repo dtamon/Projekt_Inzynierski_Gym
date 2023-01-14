@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Projekt_Inzynierski.Core.DTOs;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.Core.Services.Services;
+using Projekt_Inzynierski.DataAccess.Queries;
 
 namespace Projekt_Inzynierski.Server.Controllers
 {
@@ -20,9 +21,9 @@ namespace Projekt_Inzynierski.Server.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Trainer")]
-        public async Task<IActionResult> GetAllGroupTrainings()
+        public async Task<IActionResult> GetAllGroupTrainings([FromQuery] SearchQuery query)
         {
-            return Ok(await _groupTrainingService.GetAllGroupTrainingsAsync());
+            return Ok(await _groupTrainingService.GetAllGroupTrainingsAsync(query));
         }
 
         [HttpGet("{id}")]
@@ -74,16 +75,16 @@ namespace Projekt_Inzynierski.Server.Controllers
 
         [HttpGet("yourGroupTrainings")]
         [Authorize(Roles = "Client,Trainer")]
-        public async Task<IActionResult> GetTrainingByUserId()
+        public async Task<IActionResult> GetTrainingByUserId([FromQuery] SearchQuery query)
         {
-            return Ok(await _groupTrainingService.GetGroupTrainingsByUserId());
+            return Ok(await _groupTrainingService.GetGroupTrainingsByUserId(query));
         }
 
         [HttpGet("trainingsNotSignedUp")]
         [Authorize(Roles = "Client")]
-        public async Task<IActionResult> GetTrainingsWhereClientIsAbsent()
+        public async Task<IActionResult> GetTrainingsWhereClientIsAbsent([FromQuery] SearchQuery query)
         {
-            return Ok(await _groupTrainingService.GetTrainingsWhereClientIsAbsent());
+            return Ok(await _groupTrainingService.GetTrainingsWhereClientIsAbsent(query));
         }
     }
 }

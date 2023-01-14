@@ -14,7 +14,6 @@
             <input type="button" class="btn btn-success" value="+ Dodaj" />
         </NavLink>
     </div>
-    
 </div>
 
 @if (clients == null)
@@ -69,7 +68,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        clients = await _httpClient.GetFromJsonAsync<ICollection<ClientViewDto>>($"api/client?searchPhrase=");
+        clients = await _httpClient.GetFromJsonAsync<ICollection<ClientViewDto>>($"api/client?searchPhrase={searchPhrase}");
     }
 
     protected async void DeleteClient(int id)
@@ -80,7 +79,7 @@ else
 
     protected async void Search()
     {
-        clients = await _httpClient.GetFromJsonAsync<ICollection<ClientViewDto>>($"api/client?searchPhrase={searchPhrase}");
+        await OnInitializedAsync();
         StateHasChanged();
     }
 }

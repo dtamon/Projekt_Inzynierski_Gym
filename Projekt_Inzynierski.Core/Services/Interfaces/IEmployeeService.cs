@@ -1,4 +1,5 @@
 ﻿using Projekt_Inzynierski.Core.DTOs;
+using Projekt_Inzynierski.DataAccess.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Projekt_Inzynierski.Core.Services.Interfaces
         public Task CreateEmployeeAsync(EmployeeAccountDto employeeDto);
         public Task UpdateEmployeeAsync(EmployeeViewDto employeeDto, int id);
         public Task DeleteEmployeeAsync(int id);
-        Task<ICollection<EmployeeViewDto>> GetAllEmployeesAsync();
+        Task<ICollection<EmployeeViewDto>> GetAllEmployeesAsync(SearchQuery query);
         Task<EmployeeViewDto?> GetEmployeeByIdAsync(int id);
     }
 }

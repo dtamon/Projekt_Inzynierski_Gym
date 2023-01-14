@@ -1,4 +1,5 @@
 ﻿using Projekt_Inzynierski.Core.DTOs;
+using Projekt_Inzynierski.DataAccess.Queries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Projekt_Inzynierski.Core.Services.Interfaces
         public Task CreateVisitAsync(VisitDto visitDto);
         public Task UpdateVisitAsync(VisitDto visitDto, int id);
         public Task DeleteVisitAsync(int id);
-        Task<ICollection<VisitDto>> GetAllVisitsAsync();
+        Task<ICollection<VisitDto>> GetAllVisitsAsync(SearchQuery query);
         Task<VisitDto?> GetVisitByIdAsync(int id);
     }
 }

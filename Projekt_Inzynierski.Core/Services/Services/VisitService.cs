@@ -2,6 +2,7 @@
 using Projekt_Inzynierski.Core.DTOs;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
+using Projekt_Inzynierski.DataAccess.Queries;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
 
         public async Task CreateVisitAsync(VisitDto visitDto)
         {
-            visitDto.VisitDate = DateTime.Today;
+            visitDto.VisitDate = DateTime.Now;
             await _visitRepository.CreateVisitAsync(_mapper.Map<Visit>(visitDto));
         }
 
@@ -37,9 +38,9 @@ namespace Projekt_Inzynierski.Core.Services.Services
             }
         }
 
-        public async Task<ICollection<VisitDto>> GetAllVisitsAsync()
+        public async Task<ICollection<VisitDto>> GetAllVisitsAsync(SearchQuery query)
         {
-            return _mapper.Map<ICollection<VisitDto>>(await _visitRepository.GetAllVisitsAsync());
+            return _mapper.Map<ICollection<VisitDto>>(await _visitRepository.GetAllVisitsAsync(query));
         }
 
         public async Task<VisitDto?> GetVisitByIdAsync(int id)

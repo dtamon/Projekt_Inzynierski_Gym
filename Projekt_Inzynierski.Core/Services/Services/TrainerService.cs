@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Projekt_Inzynierski.Core.DTOs;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
+using Projekt_Inzynierski.DataAccess.Queries;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -66,9 +67,9 @@ namespace Projekt_Inzynierski.Core.Services.Services
             }
         }
 
-        public async Task<ICollection<TrainerViewDto>> GetAllTrainersAsync()
+        public async Task<ICollection<TrainerViewDto>> GetAllTrainersAsync(SearchQuery query)
         {
-            return _mapper.Map<ICollection<TrainerViewDto>>(await _trainerRepository.GetAllTrainersAsync());
+            return _mapper.Map<ICollection<TrainerViewDto>>(await _trainerRepository.GetAllTrainersAsync(query));
         }
 
         public async Task<ICollection<TrainerViewDto>> GetOtherTrainersAsync()

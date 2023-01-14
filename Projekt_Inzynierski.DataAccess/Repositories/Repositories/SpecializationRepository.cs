@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Projekt_Inzynierski.DataAccess.Context;
 using Projekt_Inzynierski.DataAccess.Entities;
+using Projekt_Inzynierski.DataAccess.Queries;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -30,9 +31,11 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ICollection<Specialization>> GetAllSpecializationsAsync()
+        public async Task<ICollection<Specialization>> GetAllSpecializationsAsync(SearchQuery query)
         {
-            return await _context.Specialization.ToListAsync();
+            return await _context.Specialization
+                .Where(x => query.SearchPhrase == null || (x.SpecName.ToLower().Contains(query.SearchPhrase.ToLower())))
+                .ToListAsync();
         }
 
         public async Task<Specialization?> GetSpecializationByIdAsync(int id)

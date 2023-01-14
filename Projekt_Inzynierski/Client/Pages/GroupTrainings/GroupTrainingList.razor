@@ -7,9 +7,19 @@
 
 <div class="d-flex justify-content-between">
     <h3>Lista Treningów</h3>
-    <NavLink class="nav-link" href="groupTrainingAdd">
-        <input type="button" class="btn btn-success" value="+ Dodaj" />
-    </NavLink>
+    <div class="hstack gap-1">
+        <div class="input-group">
+            <input type="text" class="form-control" @bind="@searchPhrase" />
+            <input type="button" class="btn btn-primary" @onclick=@Search value="Szukaj" />
+        </div>
+        @if (Role == "Trainer")
+        {
+            <NavLink class="nav-link" href="groupTrainingAdd">
+                <input type="button" class="btn btn-success" value="+ Dodaj" />
+            </NavLink>
+        }
+    </div>
+    
 </div>
 
 @if (groupTrainings == null)
@@ -48,6 +58,9 @@ else
                     <td class="hstack">
                         @if (Role == "Trainer")
                         {
+                            <a class="nav-link" href="groupTrainingForm/details/@groupTraining.Id">
+                                <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
+                            </a>
                             <a class="nav-link" href="groupTrainingForm/edit/@groupTraining.Id">
                                 <span class="oi oi-pencil" aria-hidden="true"></span>
                             </a>
@@ -71,7 +84,7 @@ else
 @code {
 
     ICollection<GroupTrainingDto> groupTrainings = new List<GroupTrainingDto>();
-
+    private string searchPhrase;
     private string Role = "";
 
     protected override async Task OnInitializedAsync()
@@ -85,11 +98,11 @@ else
         {
             if (Role == "Trainer")
             {
-                groupTrainings = await _httpClient.GetFromJsonAsync<ICollection<GroupTrainingDto>>("api/groupTraining/yourGroupTrainings");
+                groupTrainings = await _httpClient.GetFromJsonAsync<ICollection<GroupTrainingDto>>($"api/groupTraining/yourGroupTrainings?searchPhrase={searchPhrase}");
             } 
             else if (Role == "Client")
             {
-                groupTrainings = await _httpClient.GetFromJsonAsync<ICollection<GroupTrainingDto>>("api/groupTraining/trainingsNotSignedUp");
+                groupTrainings = await _httpClient.GetFromJsonAsync<ICollection<GroupTrainingDto>>($"api/groupTraining/trainingsNotSignedUp?searchPhrase={searchPhrase}");
             }
 
         }
@@ -109,7 +122,7 @@ else
         }
         else
             NavigationManager.NavigateTo("/login");
-        
+
     }
 
     protected async void SignUpForTraining(int id)
@@ -124,5 +137,11 @@ else
         }
         else
             NavigationManager.NavigateTo("/login");
+    }
+
+    protected async void Search()
+    {
+        await OnInitializedAsync();
+        StateHasChanged();
     }
 }

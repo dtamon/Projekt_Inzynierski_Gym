@@ -13,12 +13,15 @@
             <div class="form-group" hidden>
                 <input for="Id" class="form-control" @bind="@visitDto.Id" />
             </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <label for="StartDate" class="input-group-text col-md-3">Data wizyty:</label>
-                    <input type="datetime" @bind="@visitDto.VisitDate" class="form-control" disabled="@isDisabled" />
+            @if (FormMode != null)
+            {
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="StartDate" class="input-group-text col-md-3">Data wizyty:</label>
+                        <input type="datetime" @bind="@visitDto.VisitDate" class="form-control" disabled="@isDisabled" />
+                    </div>
                 </div>
-            </div>
+            }
             <div class="form-group">
                 <div class="input-group">
                     <label for="Client" class="input-group-text col-md-3">Klient:</label>

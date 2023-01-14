@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Projekt_Inzynierski.DataAccess.Context;
 using Projekt_Inzynierski.DataAccess.Entities;
+using Projekt_Inzynierski.DataAccess.Queries;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -30,9 +31,14 @@ namespace Projekt_Inzynierski.DataAccess.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ICollection<Trainer>> GetAllTrainersAsync()
+        public async Task<ICollection<Trainer>> GetAllTrainersAsync(SearchQuery query)
         {
-            return await _context.Trainer.Include(t => t.Specializations).ToListAsync();
+            return await _context.Trainer.Include(t => t.Specializations)
+                .Where(x => query.SearchPhrase == null || (x.FirstName.ToLower().Contains(query.SearchPhrase.ToLower())
+                                                        || x.LastName.ToLower().Contains(query.SearchPhrase.ToLower())
+                                                        //|| x.Specializations.ToList().ForEach(x => x.SpecName.ToLower().Contains(query.SearchPhrase.ToLower()))
+                                                        || x.Pesel.ToLower().Contains(query.SearchPhrase.ToLower())))
+                .ToListAsync();
         }
 
         public async Task<ICollection<Trainer>> GetOtherTrainersAsync(int id)

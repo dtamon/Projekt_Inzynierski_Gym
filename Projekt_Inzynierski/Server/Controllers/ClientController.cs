@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Projekt_Inzynierski.Core.DTOs;
 using Projekt_Inzynierski.Core.Services.Interfaces;
+using Projekt_Inzynierski.DataAccess.Queries;
 
 namespace Projekt_Inzynierski.Server.Controllers
 {
@@ -17,10 +18,9 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllClients()
+        public async Task<IActionResult> GetAllClients([FromQuery]SearchQuery query)
         {
-            var clients = await _clientService.GetAllClientsAsync();
-            return Ok(await _clientService.GetAllClientsAsync());
+            return Ok(await _clientService.GetAllClientsAsync(query));
         }
 
         [HttpGet("{id}")]

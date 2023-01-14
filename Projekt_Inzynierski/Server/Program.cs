@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Projekt_Inzynierski.Core;
+using Projekt_Inzynierski.Core.Seeder;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.Core.Services.Services;
 using Projekt_Inzynierski.Core.Validators;
@@ -86,8 +87,13 @@ builder.Services.AddScoped<IPasswordHasher<Employee>, PasswordHasher<Employee>>(
 builder.Services.AddScoped<IPasswordHasher<Trainer>, PasswordHasher<Trainer>>();
 builder.Services.AddScoped<IPasswordHasher<Person>, PasswordHasher<Person>>();
 
+//Seeder
+builder.Services.AddScoped<DataSeeder>();
 
 var app = builder.Build();
+
+//Seed data
+app.Services.CreateScope().ServiceProvider.GetRequiredService<DataSeeder>().Seed();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

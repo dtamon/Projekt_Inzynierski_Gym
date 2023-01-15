@@ -1,6 +1,8 @@
 ﻿@page "/employeeAdd"
 @page "/employeeForm/{FormMode}/{CurrentID}"
 @using Projekt_Inzynierski.Core.DTOs;
+@attribute [Authorize(Roles = "Admin")]
+@inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
 
@@ -156,17 +158,27 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (FormMode == "details")
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
         {
-            isDisabled = true;
-        }
-        if (FormMode == "edit" || FormMode == "details")
-        {
-            var fetchedEmployee = await _httpClient.GetFromJsonAsync<EmployeeViewDto>($"api/employee/{CurrentID}");
-            if (fetchedEmployee != null)
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            if (FormMode == "details")
             {
-                employeeViewDto = fetchedEmployee;
+                isDisabled = true;
             }
+            if (FormMode == "edit" || FormMode == "details")
+            {
+                var fetchedEmployee = await _httpClient.GetFromJsonAsync<EmployeeViewDto>($"api/employee/{CurrentID}");
+                if (fetchedEmployee != null)
+                {
+                    employeeViewDto = fetchedEmployee;
+                }
+            }
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
         }
 
     }
@@ -185,14 +197,34 @@
 
     protected async void CreateEmployee()
     {
-        await _httpClient.PostAsJsonAsync("api/employee", employeeRegisterDto);
-        NavigationManager.NavigateTo("employeeList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await _httpClient.PostAsJsonAsync("api/employee", employeeRegisterDto);
+            NavigationManager.NavigateTo("employeeList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void UpdateEmployee()
     {
-        await _httpClient.PutAsJsonAsync($"api/employee/{CurrentID}", employeeViewDto);
-        NavigationManager.NavigateTo("employeeList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await _httpClient.PutAsJsonAsync($"api/employee/{CurrentID}", employeeViewDto);
+            NavigationManager.NavigateTo("employeeList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected void EndEmployment()

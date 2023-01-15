@@ -1,4 +1,4 @@
-﻿@page "/groupTrainingList"
+﻿@page "/groupTrainingList/list"
 @using Projekt_Inzynierski.Core.DTOs;
 @attribute [Authorize(Roles = "Client,Trainer")]
 @inject NavigationManager NavigationManager
@@ -107,7 +107,9 @@ else
 
         }
         else
+        {
             NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void DeleteGroupTraining(int id)
@@ -121,7 +123,9 @@ else
             NavigationManager.NavigateTo("groupTrainingList/yours");
         }
         else
+        {
             NavigationManager.NavigateTo("/login");
+        }
 
     }
 
@@ -136,7 +140,9 @@ else
             NavigationManager.NavigateTo("groupTrainingList/clientTrainings");
         }
         else
+        {
             NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void Search()

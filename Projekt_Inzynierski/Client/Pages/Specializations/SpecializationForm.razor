@@ -1,6 +1,8 @@
 ﻿@page "/specializationAdd"
 @page "/specializationForm/{FormMode}/{CurrentID}"
 @using Projekt_Inzynierski.Core.DTOs;
+@attribute [Authorize(Roles = "Admin")]
+@inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
 
@@ -83,17 +85,27 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (FormMode == "details")
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
         {
-            isDisabled = true;
-        }
-        @if (FormMode == "edit" || FormMode == "details")
-        {
-            var fetchedSpecialization = await _httpClient.GetFromJsonAsync<SpecializationDto>($"api/specialization/{CurrentID}");
-            if (fetchedSpecialization != null)
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            if (FormMode == "details")
             {
-                specializationDto = fetchedSpecialization;
+                isDisabled = true;
             }
+            @if (FormMode == "edit" || FormMode == "details")
+            {
+                var fetchedSpecialization = await _httpClient.GetFromJsonAsync<SpecializationDto>($"api/specialization/{CurrentID}");
+                if (fetchedSpecialization != null)
+                {
+                    specializationDto = fetchedSpecialization;
+                }
+            }
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
         }
     }
 
@@ -111,14 +123,34 @@
 
     protected async void CreateSpecialization()
     {
-        await _httpClient.PostAsJsonAsync("api/specialization", specializationDto);
-        NavigationManager.NavigateTo("specializationList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await _httpClient.PostAsJsonAsync("api/specialization", specializationDto);
+            NavigationManager.NavigateTo("specializationList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void UpdateSpecialization()
     {
-        await _httpClient.PutAsJsonAsync($"api/specialization/{CurrentID}", specializationDto);
-        NavigationManager.NavigateTo("specializationList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await _httpClient.PutAsJsonAsync($"api/specialization/{CurrentID}", specializationDto);
+            NavigationManager.NavigateTo("specializationList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
     void Cancel()
     {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Projekt_Inzynierski.Core.DTOs;
 using Projekt_Inzynierski.Core.Services.Interfaces;
@@ -18,18 +19,21 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Employee")]
         public async Task<IActionResult> GetAllContracts([FromQuery] SearchQuery query)
         {
             return Ok(await _contractService.GetAllContractsAsync(query));
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetContractById(int id)
         {
             return Ok(await _contractService.GetContractByIdAsync(id));
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateContract(ContractDto contractDto)
         {
             await _contractService.CreateContractAsync(contractDto);
@@ -37,6 +41,7 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateContract(int id, ContractDto contractDto)
         {
             await _contractService.UpdateContractAsync(contractDto, id);
@@ -44,6 +49,7 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteContract(int id)
         {
             await _contractService.DeleteContractAsync(id);

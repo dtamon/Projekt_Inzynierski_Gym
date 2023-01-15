@@ -170,7 +170,9 @@
             }
         }
         else
+        {
             NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected void OnValidSubmit()
@@ -193,10 +195,12 @@
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             await _httpClient.PostAsJsonAsync("api/groupTraining", groupTrainingDto);
-            NavigationManager.NavigateTo("groupTrainingList");
+            NavigationManager.NavigateTo("groupTrainingList/list");
         }
         else
+        {
             NavigationManager.NavigateTo("/login");
+        };
 
     }
 
@@ -208,10 +212,12 @@
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             await _httpClient.PutAsJsonAsync($"api/groupTraining/{CurrentID}", groupTrainingDto);
-            NavigationManager.NavigateTo("groupTrainingList");
+            NavigationManager.NavigateTo("groupTrainingList/list");
         }
         else
+        {
             NavigationManager.NavigateTo("/login");
+        }
     }
 
     void Cancel()

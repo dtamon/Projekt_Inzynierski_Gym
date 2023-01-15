@@ -37,6 +37,7 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
                 .Where(x => query.SearchPhrase == null || (x.Client.FirstName.ToLower().Contains(query.SearchPhrase.ToLower())
                                                         || x.Client.LastName.ToLower().Contains(query.SearchPhrase.ToLower())
                                                         || x.Client.Pesel.ToLower().Contains(query.SearchPhrase.ToLower())))
+                .OrderByDescending(x => x.VisitDate)
                 .ToListAsync();
         }
 

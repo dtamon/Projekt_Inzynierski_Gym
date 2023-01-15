@@ -79,7 +79,9 @@ else
             groupTrainings = await _httpClient.GetFromJsonAsync<ICollection<GroupTrainingDto>>($"api/groupTraining/yourGroupTrainings?searchPhrase={searchPhrase}");
         }
         else
+        {
             NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void SignOutOfTraining(int id)
@@ -93,7 +95,9 @@ else
             NavigationManager.NavigateTo("groupTrainingList/clientTrainings");
         }
         else
+        {
             NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void Search()

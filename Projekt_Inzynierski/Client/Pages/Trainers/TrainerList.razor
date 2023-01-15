@@ -1,5 +1,7 @@
 ﻿@page "/trainerList"
 @using Projekt_Inzynierski.Core.DTOs;
+@attribute [Authorize(Roles = "Admin")]
+@inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
 
@@ -76,14 +78,33 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        trainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerViewDto>>($"api/trainer?searchPhrase={searchPhrase}");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            trainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerViewDto>>($"api/trainer?searchPhrase={searchPhrase}");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void DeleteTrainer(int id)
     {
-
-        await _httpClient.DeleteAsync($"api/trainer/{id}");
-        NavigationManager.NavigateTo("trainerList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await _httpClient.DeleteAsync($"api/trainer/{id}");
+            NavigationManager.NavigateTo("trainerList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void Search()

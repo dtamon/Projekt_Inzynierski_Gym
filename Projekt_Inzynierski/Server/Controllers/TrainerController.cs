@@ -19,6 +19,7 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllTrainers([FromQuery] SearchQuery query)
         {
             return Ok(await _trainerService.GetAllTrainersAsync(query));
@@ -33,12 +34,14 @@ namespace Projekt_Inzynierski.Server.Controllers
 
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetTrainerById(int id)
         {
             return Ok(await _trainerService.GetTrainerByIdAsync(id));
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateTrainer(TrainerAccountDto trainerDto)
         {
             await _trainerService.CreateTrainerAsync(trainerDto);
@@ -46,6 +49,7 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateTrainer(int id, TrainerViewDto trainerDto)
         {
             await _trainerService.UpdateTrainerAsync(trainerDto, id);
@@ -53,6 +57,7 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteTrainer(int id)
         {
             await _trainerService.DeleteTrainerAsync(id);

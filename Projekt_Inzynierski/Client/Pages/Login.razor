@@ -42,7 +42,7 @@
             await customAuthStateProvider.UpdateAuthenticationState(userSession);
             navigationManager.NavigateTo("/", true);
         }
-        else if (loginResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        else if (loginResponse.StatusCode == System.Net.HttpStatusCode.InternalServerError)
         {
             await js.InvokeVoidAsync("alert", "Invalid Email or Password");
             return;

@@ -1,6 +1,8 @@
 ﻿@page "/contractAdd"
 @page "/contractForm/{FormMode}/{CurrentID}"
 @using Projekt_Inzynierski.Core.DTOs;
+@attribute [Authorize(Roles = "Admin")]
+@inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
 
@@ -87,17 +89,27 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (FormMode == "details")
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
         {
-            isDisabled = true;
-        }
-        @if (FormMode == "edit" || FormMode == "details")
-        {
-            var fetchedContract = await _httpClient.GetFromJsonAsync<ContractDto>($"api/contract/{CurrentID}");
-            if (fetchedContract != null)
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            if (FormMode == "details")
             {
-                contractDto = fetchedContract;
+                isDisabled = true;
             }
+            @if (FormMode == "edit" || FormMode == "details")
+            {
+                var fetchedContract = await _httpClient.GetFromJsonAsync<ContractDto>($"api/contract/{CurrentID}");
+                if (fetchedContract != null)
+                {
+                    contractDto = fetchedContract;
+                }
+            }
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
         }
     }
 
@@ -115,14 +127,34 @@
 
     protected async void CreateContract()
     {
-        await _httpClient.PostAsJsonAsync("api/contract", contractDto);
-        NavigationManager.NavigateTo("contractList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await _httpClient.PostAsJsonAsync("api/contract", contractDto);
+            NavigationManager.NavigateTo("contractList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void UpdateContract()
     {
-        await _httpClient.PutAsJsonAsync($"api/contract/{CurrentID}", contractDto);
-        NavigationManager.NavigateTo("contractList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await _httpClient.PutAsJsonAsync($"api/contract/{CurrentID}", contractDto);
+            NavigationManager.NavigateTo("contractList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
     void Cancel()
     {

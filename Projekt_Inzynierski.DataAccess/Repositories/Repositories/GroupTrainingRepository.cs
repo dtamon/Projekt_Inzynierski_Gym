@@ -35,6 +35,7 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
         {
             return await _context.GroupTraining.Include(x => x.Trainers).ThenInclude(x => x.Specializations).Include(x => x.Trainer).Include(x => x.Clients).Where(x => x.StartDate > DateTime.Now)
                 .Where(x => query.SearchPhrase == null || (x.TrainingType.ToLower().Contains(query.SearchPhrase.ToLower())))
+                .OrderBy(x => x.StartDate)
                 .ToListAsync();
         }
 
@@ -54,6 +55,7 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
             var trainer = await _context.Trainer.FirstOrDefaultAsync(x => x.Id == id);
             return await _context.GroupTraining.Include(x => x.Trainers).ThenInclude(x => x.Specializations).Include(x => x.Trainer).Include(x => x.Clients)
                 .Where(x => (x.TrainerId == id || x.Trainers.Contains(trainer)) && (query.SearchPhrase == null || (x.TrainingType.ToLower().Contains(query.SearchPhrase.ToLower()))))
+                .OrderBy(x => x.StartDate)
                 .ToListAsync();
         }
         public async Task<ICollection<GroupTraining>> GetTrainingsByClientId(int id, SearchQuery query)
@@ -61,6 +63,7 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
             var client = await _context.Client.FirstOrDefaultAsync(x => x.Id == id);
             return await _context.GroupTraining.Include(x => x.Trainers).ThenInclude(x => x.Specializations).Include(x => x.Trainer).Include(x => x.Clients)
                 .Where(x => x.Clients.Contains(client) && (query.SearchPhrase == null || (x.TrainingType.ToLower().Contains(query.SearchPhrase.ToLower()))))
+                .OrderBy(x => x.StartDate)
                 .ToListAsync();
         }
 
@@ -70,6 +73,7 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
             var client = await _context.Client.FirstOrDefaultAsync(x => x.Id == clientId);
             return await _context.GroupTraining.Include(x => x.Trainers).ThenInclude(x => x.Specializations).Include(x => x.Trainer).Include(x => x.Clients)
                 .Where(x => !x.Clients.Contains(client) && (query.SearchPhrase == null || (x.TrainingType.ToLower().Contains(query.SearchPhrase.ToLower()))))
+                .OrderBy(x => x.StartDate)
                 .ToListAsync();
         }
     }

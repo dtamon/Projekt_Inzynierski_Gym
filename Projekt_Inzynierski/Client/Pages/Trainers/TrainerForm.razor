@@ -1,6 +1,8 @@
 ﻿@page "/trainerAdd"
 @page "/trainerForm/{FormMode}/{CurrentID}"
 @using Projekt_Inzynierski.Core.DTOs;
+@attribute [Authorize(Roles = "Admin")]
+@inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
 
@@ -270,24 +272,34 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (FormMode == "details")
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
         {
-            isDisabled = true;
-        }
-        specializations = await _httpClient.GetFromJsonAsync<ICollection<SpecializationDto>>("api/specialization");
-        if (FormMode == "edit" || FormMode == "details")
-        {
-            var fetchedTrainer = await _httpClient.GetFromJsonAsync<TrainerViewDto>($"api/trainer/{CurrentID}");
-            if (fetchedTrainer != null)
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            if (FormMode == "details")
             {
-                trainerViewDto = fetchedTrainer;
-                specializationIds = trainerViewDto.SpecializationIds;
+                isDisabled = true;
             }
-            //if (FormMode == "details")
-            //{
-            //    allTrainings.AddRange(trainerViewDto.CreatedGroupTrainings);
-            //    allTrainings.AddRange(trainerViewDto.GroupTrainings);
-            //}
+            specializations = await _httpClient.GetFromJsonAsync<ICollection<SpecializationDto>>("api/specialization");
+            if (FormMode == "edit" || FormMode == "details")
+            {
+                var fetchedTrainer = await _httpClient.GetFromJsonAsync<TrainerViewDto>($"api/trainer/{CurrentID}");
+                if (fetchedTrainer != null)
+                {
+                    trainerViewDto = fetchedTrainer;
+                    specializationIds = trainerViewDto.SpecializationIds;
+                }
+                //if (FormMode == "details")
+                //{
+                //    allTrainings.AddRange(trainerViewDto.CreatedGroupTrainings);
+                //    allTrainings.AddRange(trainerViewDto.GroupTrainings);
+                //}
+            }
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
         }
     }
 
@@ -305,16 +317,36 @@
 
     protected async void CreateTrainer()
     {
-        trainerAccountDto.SpecializationIds = specializationIds;
-        await _httpClient.PostAsJsonAsync("api/trainer", trainerAccountDto);
-        NavigationManager.NavigateTo("trainerList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            trainerAccountDto.SpecializationIds = specializationIds;
+            await _httpClient.PostAsJsonAsync("api/trainer", trainerAccountDto);
+            NavigationManager.NavigateTo("trainerList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void UpdateTrainer()
     {
-        trainerViewDto.SpecializationIds = specializationIds;
-        await _httpClient.PutAsJsonAsync($"api/trainer/{CurrentID}", trainerViewDto);
-        NavigationManager.NavigateTo("trainerList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            trainerViewDto.SpecializationIds = specializationIds;
+            await _httpClient.PutAsJsonAsync($"api/trainer/{CurrentID}", trainerViewDto);
+            NavigationManager.NavigateTo("trainerList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected void EndEmployment()

@@ -1,5 +1,7 @@
 ﻿@page "/specializationList"
 @using Projekt_Inzynierski.Core.DTOs;
+@attribute [Authorize(Roles = "Admin")]
+@inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
 
@@ -57,13 +59,33 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        specializations = await _httpClient.GetFromJsonAsync<ICollection<SpecializationDto>>($"api/specialization?searchPhrase={searchPhrase}");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            specializations = await _httpClient.GetFromJsonAsync<ICollection<SpecializationDto>>($"api/specialization?searchPhrase={searchPhrase}");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void DeleteSpecialization(int id)
     {
-        await _httpClient.DeleteAsync($"api/specialization/{id}");
-        NavigationManager.NavigateTo("specializationList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await _httpClient.DeleteAsync($"api/specialization/{id}");
+            NavigationManager.NavigateTo("specializationList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void Search()

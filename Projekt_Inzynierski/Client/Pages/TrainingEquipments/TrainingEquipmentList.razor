@@ -1,5 +1,7 @@
 ﻿@page "/equipmentList"
 @using Projekt_Inzynierski.Core.DTOs;
+@attribute [Authorize(Roles = "Employee")]
+@inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
 
@@ -67,13 +69,32 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        equipments = await _httpClient.GetFromJsonAsync<ICollection<TrainingEquipmentDto>>($"api/trainingEquipment?searchPhrase={searchPhrase}");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            equipments = await _httpClient.GetFromJsonAsync<ICollection<TrainingEquipmentDto>>($"api/trainingEquipment?searchPhrase={searchPhrase}");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void DeleteContract(int id)
     {
-        await _httpClient.DeleteAsync($"api/trainingEquipment{id}");
-        NavigationManager.NavigateTo("equipmentList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            await _httpClient.DeleteAsync($"api/trainingEquipment{id}");
+            NavigationManager.NavigateTo("equipmentList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
     protected async void Search()
     {

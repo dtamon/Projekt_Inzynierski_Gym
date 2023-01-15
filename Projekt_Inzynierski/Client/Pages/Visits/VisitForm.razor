@@ -1,6 +1,8 @@
 ﻿@page "/visitAdd"
 @page "/visitForm/{FormMode}/{CurrentID}"
 @using Projekt_Inzynierski.Core.DTOs;
+@attribute [Authorize(Roles = "Employee")]
+@inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
 
@@ -13,19 +15,10 @@
             <div class="form-group" hidden>
                 <input for="Id" class="form-control" @bind="@visitDto.Id" />
             </div>
-            @if (FormMode != null)
-            {
-                <div class="form-group">
-                    <div class="input-group">
-                        <label for="StartDate" class="input-group-text col-md-3">Data wizyty:</label>
-                        <input type="datetime" @bind="@visitDto.VisitDate" class="form-control" disabled="@isDisabled" />
-                    </div>
-                </div>
-            }
             <div class="form-group">
                 <div class="input-group">
                     <label for="Client" class="input-group-text col-md-3">Klient:</label>
-                    <InputSelect @bind-Value="@visitDto.ClientId" class="form-control" disabled="@isDisabled">
+                    <InputSelect @bind-Value="@visitDto.ClientId" class="form-control" disabled=@(FormMode == "edit" || isDisabled)>
                         <option selected style="display:none"> -- wybierz klienta -- </option>
                         @if (clients != null)
                         {
@@ -38,6 +31,15 @@
                 </div>
                 <ValidationMessage For="@(() => visitDto.ClientId)" />
             </div>
+            @if (FormMode != null)
+            {
+                <div class="form-group">
+                    <div class="input-group">
+                        <label for="StartDate" class="input-group-text col-md-3">Data wizyty:</label>
+                        <input type="datetime" @bind="@visitDto.VisitDate" class="form-control" disabled="@isDisabled" />
+                    </div>
+                </div>
+            }
             <br />
             @if (!isDisabled)
             {
@@ -89,18 +91,28 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (FormMode == "details")
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
         {
-            isDisabled = true;
-        }
-        clients = await _httpClient.GetFromJsonAsync<ICollection<ClientAccountDto>>("api/client");
-        if (FormMode == "edit" || FormMode == "details")
-        {
-            var fetchedVisit = await _httpClient.GetFromJsonAsync<VisitDto>($"api/visit/{CurrentID}");
-            if (fetchedVisit != null)
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            if (FormMode == "details")
             {
-                visitDto = fetchedVisit;
+                isDisabled = true;
             }
+            clients = await _httpClient.GetFromJsonAsync<ICollection<ClientAccountDto>>("api/client");
+            if (FormMode == "edit" || FormMode == "details")
+            {
+                var fetchedVisit = await _httpClient.GetFromJsonAsync<VisitDto>($"api/visit/{CurrentID}");
+                if (fetchedVisit != null)
+                {
+                    visitDto = fetchedVisit;
+                }
+            }
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
         }
 
     }
@@ -119,14 +131,32 @@
 
     protected async void CreateVisit()
     {
-        await _httpClient.PostAsJsonAsync("api/visit", visitDto);
-        NavigationManager.NavigateTo("visitList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            await _httpClient.PostAsJsonAsync("api/visit", visitDto);
+            NavigationManager.NavigateTo("visitList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void UpdateVisit()
     {
-        await _httpClient.PutAsJsonAsync($"api/visit/{CurrentID}", visitDto);
-        NavigationManager.NavigateTo("visitList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            await _httpClient.PutAsJsonAsync($"api/visit/{CurrentID}", visitDto);
+            NavigationManager.NavigateTo("visitList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
     void Cancel()
     {

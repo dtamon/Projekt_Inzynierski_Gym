@@ -1,5 +1,7 @@
 ﻿@page "/clientList"
-@using Projekt_Inzynierski.Core.DTOs;
+@using Projekt_Inzynierski.Core.DTOs;\
+@attribute [Authorize(Roles = "Employee")]
+@inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
 
@@ -68,13 +70,33 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        clients = await _httpClient.GetFromJsonAsync<ICollection<ClientViewDto>>($"api/client?searchPhrase={searchPhrase}");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            clients = await _httpClient.GetFromJsonAsync<ICollection<ClientViewDto>>($"api/client?searchPhrase={searchPhrase}");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void DeleteClient(int id)
     {
-        await _httpClient.DeleteAsync($"api/client/{id}");
-        NavigationManager.NavigateTo("/clientList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await _httpClient.DeleteAsync($"api/client/{id}");
+            NavigationManager.NavigateTo("/clientList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void Search()

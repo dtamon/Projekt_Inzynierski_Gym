@@ -1,6 +1,8 @@
 ﻿@page "/equipmentAdd"
 @page "/equipmentForm/{FormMode}/{CurrentID}"
 @using Projekt_Inzynierski.Core.DTOs;
+@attribute [Authorize(Roles = "Employee")]
+@inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
 
@@ -25,7 +27,7 @@
                 <div class="input-group">
                     <label for="TechnicalState" class="input-group-text col-md-3">Czy jest sprawny?</label>
                     <div class="form-control">
-                        <InputCheckbox @bind-Value="@equipmentDto.TechnicalState" class="form-check-input" disabled="@isDisabled"/>
+                        <InputCheckbox @bind-Value="@equipmentDto.TechnicalState" class="form-check-input" disabled="@isDisabled" />
                     </div>
                 </div>
             </div>
@@ -51,17 +53,27 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (FormMode == "details")
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
         {
-            isDisabled = true;
-        }
-        if (FormMode == "edit" || FormMode == "details")
-        {
-            var fetchedEquipment = await _httpClient.GetFromJsonAsync<TrainingEquipmentDto>($"api/trainingEquipment/{CurrentID}");
-            if (fetchedEquipment != null)
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            if (FormMode == "details")
             {
-                equipmentDto = fetchedEquipment;
+                isDisabled = true;
             }
+            if (FormMode == "edit" || FormMode == "details")
+            {
+                var fetchedEquipment = await _httpClient.GetFromJsonAsync<TrainingEquipmentDto>($"api/trainingEquipment/{CurrentID}");
+                if (fetchedEquipment != null)
+                {
+                    equipmentDto = fetchedEquipment;
+                }
+            }
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
         }
     }
 
@@ -80,14 +92,34 @@
 
     protected async void CreateTrainingEquipment()
     {
-        await _httpClient.PostAsJsonAsync("api/trainingEquipment", equipmentDto);
-        NavigationManager.NavigateTo("equipmentList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await _httpClient.PostAsJsonAsync("api/trainingEquipment", equipmentDto);
+            NavigationManager.NavigateTo("equipmentList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void UpdateTrainingEquipment()
     {
-        await _httpClient.PutAsJsonAsync($"api/trainingEquipment/{CurrentID}", equipmentDto);
-        NavigationManager.NavigateTo("equipmentList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await _httpClient.PutAsJsonAsync($"api/trainingEquipment/{CurrentID}", equipmentDto);
+            NavigationManager.NavigateTo("equipmentList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
     void Cancel()
     {

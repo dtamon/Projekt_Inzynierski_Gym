@@ -1,6 +1,8 @@
 ﻿@page "/clientAdd"
 @page "/clientForm/{FormMode}/{CurrentID}"
 @using Projekt_Inzynierski.Core.DTOs;
+@attribute [Authorize(Roles = "Employee")]
+@inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
 
@@ -168,23 +170,23 @@
                 }
                 else
                 {
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Dzień wizyty</th>
-                                <th>Godzina</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var visit in clientViewDto.Visits)
-                        {
+                    <table class="table table-striped">
+                        <thead>
                             <tr>
-                                <td>@visit.VisitDate.ToShortDateString()</td>
-                                <td>@visit.VisitDate.ToShortTimeString()</td>
+                                <th>Dzień wizyty</th>
+                                <th>Godzina</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var visit in clientViewDto.Visits)
+                            {
+                                <tr>
+                                    <td>@visit.VisitDate.ToShortDateString()</td>
+                                    <td>@visit.VisitDate.ToShortTimeString()</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 }
             </div>
         }
@@ -203,19 +205,30 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (FormMode == "details")
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
         {
-            isDisabled = true;
-        }
-        contracts = await _httpClient.GetFromJsonAsync<ICollection<ContractDto>>("api/contract");
-        if (FormMode == "edit" || FormMode == "details")
-        {
-            var fetchedClient = await _httpClient.GetFromJsonAsync<ClientViewDto>($"api/client/{CurrentID}");
-            if (fetchedClient != null)
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            if (FormMode == "details")
             {
-                clientViewDto = fetchedClient;
+                isDisabled = true;
+            }
+            contracts = await _httpClient.GetFromJsonAsync<ICollection<ContractDto>>("api/contract");
+            if (FormMode == "edit" || FormMode == "details")
+            {
+                var fetchedClient = await _httpClient.GetFromJsonAsync<ClientViewDto>($"api/client/{CurrentID}");
+                if (fetchedClient != null)
+                {
+                    clientViewDto = fetchedClient;
+                }
             }
         }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+
 
     }
 
@@ -233,14 +246,34 @@
 
     protected async void CreateClient()
     {
-        await _httpClient.PostAsJsonAsync("api/client", clientRegisterDto);
-        NavigationManager.NavigateTo("clientList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await _httpClient.PostAsJsonAsync("api/client", clientRegisterDto);
+            NavigationManager.NavigateTo("clientList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void UpdateClient()
     {
-        await _httpClient.PutAsJsonAsync($"api/client/{CurrentID}", clientViewDto);
-        NavigationManager.NavigateTo("clientList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await _httpClient.PutAsJsonAsync($"api/client/{CurrentID}", clientViewDto);
+            NavigationManager.NavigateTo("clientList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
     void Cancel()
     {

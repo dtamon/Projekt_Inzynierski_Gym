@@ -1,5 +1,7 @@
 ﻿@page "/visitList"
 @using Projekt_Inzynierski.Core.DTOs;
+@attribute [Authorize(Roles = "Employee")]
+@inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
 
@@ -65,13 +67,34 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        visits = await _httpClient.GetFromJsonAsync<ICollection<VisitDto>>($"api/visit?searchPhrase={searchPhrase}");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            visits = await _httpClient.GetFromJsonAsync<ICollection<VisitDto>>($"api/visit?searchPhrase={searchPhrase}");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+
     }
 
     protected async void DeleteVisit(int id)
     {
-        await _httpClient.DeleteAsync($"api/visit/{id}");
-        NavigationManager.NavigateTo("visitList");
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var token = await customAuthStateProvider.GetToken();
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await _httpClient.DeleteAsync($"api/visit/{id}");
+            NavigationManager.NavigateTo("visitList");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     protected async void Search()

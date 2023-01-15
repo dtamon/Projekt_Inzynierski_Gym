@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Projekt_Inzynierski.Core.DTOs;
+using Projekt_Inzynierski.Core.Exceptions;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
 using Projekt_Inzynierski.DataAccess.Queries;
@@ -36,15 +37,14 @@ namespace Projekt_Inzynierski.Core.Services.Services
 
             //get singed in user id
             var createdById = (int)_userContextService.GetUserId;
-            var createdByTrainer = await _trainerRepository.GetTrainerByIdAsync(createdById);
 
             foreach (var trainerId in groupTrainingDto.TrainerIds)
             {
                 var trainer = await _trainerRepository.GetTrainerByIdAsync(trainerId);
-                if (trainer != null)
-                {
-                    trainers.Add(trainer);
-                }
+                if (trainer == null)
+                    throw new NotFoundException("Trainer not found");
+
+                trainers.Add(trainer);
             }
 
             var newGroupTraining = new GroupTraining()
@@ -55,22 +55,21 @@ namespace Projekt_Inzynierski.Core.Services.Services
                 TrainerId = createdById,
                 Trainers = trainers,
             };
-            
+
             await _groupTrainingRepository.CreateGroupTrainingAsync(newGroupTraining);
         }
 
         public async Task DeleteGroupTrainingAsync(int id)
         {
             var groupTraining = await _groupTrainingRepository.GetGroupTrainingByIdAsync(id);
-            if (groupTraining != null)
-            {
-                await _groupTrainingRepository.DeleteGroupTrainingAsync(groupTraining);
-            }
+            if (groupTraining == null)
+                throw new NotFoundException("Group training not found");
+
+            await _groupTrainingRepository.DeleteGroupTrainingAsync(groupTraining);
         }
 
         public async Task<ICollection<GroupTrainingDto>> GetAllGroupTrainingsAsync(SearchQuery query)
         {
-            var clientId = (int)_userContextService.GetUserId;
             return _mapper.Map<ICollection<GroupTrainingDto>>(await _groupTrainingRepository.GetAllGroupTrainingsAsync(query));
         }
 
@@ -87,33 +86,33 @@ namespace Projekt_Inzynierski.Core.Services.Services
             foreach (var trainerId in groupTrainingDto.TrainerIds)
             {
                 var trainer = await _trainerRepository.GetTrainerByIdAsync(trainerId);
-                if (trainer != null)
-                {
-                    trainers.Add(trainer);
-                }
+                if (trainer == null)
+                    throw new NotFoundException("Trainer not found");
+
+                trainers.Add(trainer);
             }
 
             foreach (var clientId in groupTrainingDto.ClientIds)
             {
                 var client = await _clientRepository.GetClientByIdAsync(clientId);
-                if (client != null)
-                {
-                    clients.Add(client);
-                }
+                if (client == null)
+                    throw new NotFoundException("Client not found");
+
+                clients.Add(client);
             }
 
             var groupTraining = await _groupTrainingRepository.GetGroupTrainingByIdAsync(id);
 
-            if (groupTraining != null)
-            {
-                groupTraining.TrainingType = groupTrainingDto.TrainingType;
-                groupTraining.MaxCLients = groupTrainingDto.MaxClients;
-                groupTraining.StartDate = groupTrainingDto.StartDate;
-                groupTraining.Clients = clients;
-                groupTraining.Trainers = trainers;
+            if (groupTraining == null)
+                throw new NotFoundException("Group training not found");
 
-                await _groupTrainingRepository.UpdateGroupTrainingAsync(groupTraining);
-            }
+            groupTraining.TrainingType = groupTrainingDto.TrainingType;
+            groupTraining.MaxCLients = groupTrainingDto.MaxClients;
+            groupTraining.StartDate = groupTrainingDto.StartDate;
+            groupTraining.Clients = clients;
+            groupTraining.Trainers = trainers;
+
+            await _groupTrainingRepository.UpdateGroupTrainingAsync(groupTraining);
 
 
         }
@@ -122,14 +121,16 @@ namespace Projekt_Inzynierski.Core.Services.Services
             var groupTraining = await _groupTrainingRepository.GetGroupTrainingByIdAsync(id);
 
             var userId = (int)_userContextService.GetUserId;
-            var user = await _clientRepository.GetClientByIdAsync(1);
+            var user = await _clientRepository.GetClientByIdAsync(userId);
 
-            if (groupTraining != null && user != null)
-            {
-                groupTraining.Clients.Add(user);
+            if (groupTraining == null)
+                throw new NotFoundException("Group training not found");
+            if (user == null)
+                throw new NotFoundException("User not found");
 
-                await _groupTrainingRepository.UpdateGroupTrainingAsync(groupTraining);
-            }
+            groupTraining.Clients.Add(user);
+
+            await _groupTrainingRepository.UpdateGroupTrainingAsync(groupTraining);
         }
 
         public async Task SignOutOfTraining(int id)
@@ -137,14 +138,16 @@ namespace Projekt_Inzynierski.Core.Services.Services
             var groupTraining = await _groupTrainingRepository.GetGroupTrainingByIdAsync(id);
 
             var userId = (int)_userContextService.GetUserId;
-            var user = await _clientRepository.GetClientByIdAsync(1);
+            var user = await _clientRepository.GetClientByIdAsync(userId);
 
-            if (groupTraining != null && user != null)
-            {
-                groupTraining.Clients.Remove(user);
+            if (groupTraining == null)
+                throw new NotFoundException("Group training not found");
+            if (user == null)
+                throw new NotFoundException("User not found");
 
-                await _groupTrainingRepository.UpdateGroupTrainingAsync(groupTraining);
-            }
+            groupTraining.Clients.Remove(user);
+
+            await _groupTrainingRepository.UpdateGroupTrainingAsync(groupTraining);
         }
 
         public async Task<ICollection<GroupTrainingDto>> GetGroupTrainingsByUserId(SearchQuery query)
@@ -155,12 +158,12 @@ namespace Projekt_Inzynierski.Core.Services.Services
             if (userRole == "Trainer")
             {
                 var trainerId = (int)_userContextService.GetUserId;
-                trainings = _mapper.Map<List<GroupTrainingDto>>(await _groupTrainingRepository.GetTrainingsByTrainerId(trainerId,  query));
-            } 
+                trainings = _mapper.Map<List<GroupTrainingDto>>(await _groupTrainingRepository.GetTrainingsByTrainerId(trainerId, query));
+            }
             else if (userRole == "Client")
             {
                 var clientId = (int)_userContextService.GetUserId;
-                trainings = _mapper.Map<List<GroupTrainingDto>>(await _groupTrainingRepository.GetTrainingsByClientId(clientId,  query));
+                trainings = _mapper.Map<List<GroupTrainingDto>>(await _groupTrainingRepository.GetTrainingsByClientId(clientId, query));
             }
 
             return trainings;
@@ -169,7 +172,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
         public async Task<ICollection<GroupTrainingDto>> GetTrainingsWhereClientIsAbsent(SearchQuery query)
         {
             var userId = (int)_userContextService.GetUserId;
-            return _mapper.Map<ICollection<GroupTrainingDto>>(await _groupTrainingRepository.GetTrainingsWhereClientIsAbsent(userId,  query));
+            return _mapper.Map<ICollection<GroupTrainingDto>>(await _groupTrainingRepository.GetTrainingsWhereClientIsAbsent(userId, query));
         }
     }
 }

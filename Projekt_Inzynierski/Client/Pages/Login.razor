@@ -18,11 +18,12 @@
             <input @bind="loginDto.Email" class="form-control" placeholder="Email" />
         </div>
         <div class="mb-3">
-            <label>Email</label>
+            <label>Hasło</label>
             <input @bind="loginDto.Password" type="password" class="form-control" placeholder="Password" />
+            <span class="validation-message">@response</span>
         </div>
         <div class="mb-3 d-grid gap-2">
-            <button @onclick="Authenticate" class="btn btn-primary"> Login</button>
+            <button @onclick="Authenticate" class="btn btn-primary">Zaloguj</button>
         </div>
 
     </div>
@@ -30,6 +31,7 @@
 
 @code {
     private LoginDto loginDto = new LoginDto();
+    private string? response;
 
     private async Task Authenticate()
     {
@@ -37,14 +39,16 @@
 
         if (loginResponse.IsSuccessStatusCode)
         {
+            response = null;
             var userSession = await loginResponse.Content.ReadFromJsonAsync<UserSession>();
             var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
             await customAuthStateProvider.UpdateAuthenticationState(userSession);
             navigationManager.NavigateTo("/", true);
         }
-        else if (loginResponse.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+        else if (loginResponse.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
-            await js.InvokeVoidAsync("alert", "Invalid Email or Password");
+            response = "Zły login lub hasło";
+            await js.InvokeVoidAsync("alert", "Zły login lub hasło");
             return;
         }
     }

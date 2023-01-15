@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Projekt_Inzynierski.Core.DTOs;
+using Projekt_Inzynierski.Core.Exceptions;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
 using Projekt_Inzynierski.DataAccess.Queries;
@@ -40,10 +41,10 @@ namespace Projekt_Inzynierski.Core.Services.Services
         public async Task DeleteEmployeeAsync(int id)
         {
             var employee = await _employeeRepository.GetEmployeeByIdAsync(id);
-            if (employee != null)
-            {
-                await _employeeRepository.DeleteEmployeeAsync(employee);
-            }
+            if (employee == null)
+                throw new NotFoundException("Employee not found");
+
+            await _employeeRepository.DeleteEmployeeAsync(employee);
         }
 
         public async Task<ICollection<EmployeeViewDto>> GetAllEmployeesAsync(SearchQuery query)
@@ -59,18 +60,18 @@ namespace Projekt_Inzynierski.Core.Services.Services
         public async Task UpdateEmployeeAsync(EmployeeViewDto employeeDto, int id)
         {
             var employee = await _employeeRepository.GetEmployeeByIdAsync(id);
-            if (employee != null)
-            {
-                employee.FirstName = employeeDto.FirstName;
-                employee.LastName = employeeDto.LastName;
-                employee.PhoneNr = employeeDto.PhoneNr;
-                employee.Email = employeeDto.Email;
-                employee.Pesel = employeeDto.Pesel;
-                employee.EmployedTo = employeeDto.EmployedTo;
-                employee.Salary = employeeDto.Salary;
+            if (employee == null)
+                throw new NotFoundException("Employee not found");
 
-                await _employeeRepository.UpdateEmployeeAsync(employee);
-            }
+            employee.FirstName = employeeDto.FirstName;
+            employee.LastName = employeeDto.LastName;
+            employee.PhoneNr = employeeDto.PhoneNr;
+            employee.Email = employeeDto.Email;
+            employee.Pesel = employeeDto.Pesel;
+            employee.EmployedTo = employeeDto.EmployedTo;
+            employee.Salary = employeeDto.Salary;
+
+            await _employeeRepository.UpdateEmployeeAsync(employee);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Projekt_Inzynierski.Core.DTOs;
+using Projekt_Inzynierski.Core.Exceptions;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
 using Projekt_Inzynierski.DataAccess.Queries;
@@ -31,10 +32,10 @@ namespace Projekt_Inzynierski.Core.Services.Services
         public async Task DeleteContractAsync(int id)
         {
             var contract = await _contractRepository.GetContractByIdAsync(id);
-            if (contract != null)
-            {
-                await _contractRepository.DeleteContractAsync(contract);
-            }
+            if (contract == null)
+                throw new NotFoundException("Contract not found");
+
+            await _contractRepository.DeleteContractAsync(contract);
         }
 
         public async Task<ICollection<ContractDto>> GetAllContractsAsync(SearchQuery query)
@@ -50,13 +51,13 @@ namespace Projekt_Inzynierski.Core.Services.Services
         public async Task UpdateContractAsync(ContractDto contractDto, int id)
         {
             var contract = await _contractRepository.GetContractByIdAsync(id);
-            if (contract != null)
-            {
-                contract.Months = contractDto.Months;
-                contract.MonthlyCost = contractDto.MonthlyCost;
+            if (contract == null)
+                throw new NotFoundException("Contract not found");
 
-                await _contractRepository.UpdateContractAsync(contract);
-            }
+            contract.Months = contractDto.Months;
+            contract.MonthlyCost = contractDto.MonthlyCost;
+
+            await _contractRepository.UpdateContractAsync(contract);
         }
     }
 }

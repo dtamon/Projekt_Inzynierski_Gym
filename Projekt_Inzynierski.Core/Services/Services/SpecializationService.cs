@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Projekt_Inzynierski.Core.DTOs;
+using Projekt_Inzynierski.Core.Exceptions;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
 using Projekt_Inzynierski.DataAccess.Queries;
@@ -30,10 +31,10 @@ namespace Projekt_Inzynierski.Core.Services.Services
         public async Task DeleteSpecializationAsync(int id)
         {
             var specialization = await _specializationRepository.GetSpecializationByIdAsync(id);
-            if (specialization != null)
-            {
-                await _specializationRepository.DeleteSpecializationAsync(specialization);
-            }
+            if (specialization == null)
+                throw new NotFoundException("Specialization not found");
+
+            await _specializationRepository.DeleteSpecializationAsync(specialization);
         }
 
         public async Task<ICollection<SpecializationDto>> GetAllSpecializationsAsync(SearchQuery query)
@@ -49,12 +50,12 @@ namespace Projekt_Inzynierski.Core.Services.Services
         public async Task UpdateSpecializationAsync(SpecializationDto specializationDto, int id)
         {
             var specialization = await _specializationRepository.GetSpecializationByIdAsync(id);
-            if (specialization != null)
-            {
-                specialization.SpecName = specializationDto.SpecName;
+            if (specialization == null)
+                throw new NotFoundException("Specialization not found");
 
-                await _specializationRepository.UpdateSpecializationAsync(_mapper.Map<Specialization>(specialization));
-            }
+            specialization.SpecName = specializationDto.SpecName;
+
+            await _specializationRepository.UpdateSpecializationAsync(_mapper.Map<Specialization>(specialization));
         }
     }
 }

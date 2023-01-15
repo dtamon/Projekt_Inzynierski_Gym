@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Projekt_Inzynierski.Core.DTOs;
+using Projekt_Inzynierski.Core.Exceptions;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
@@ -32,11 +33,11 @@ namespace Projekt_Inzynierski.Core.Services.Services
             var user = await _personRepository.GetUserByEmail(dto.Email);
 
             if (user == null)
-                throw new Exception("Invalid username or password");
+                throw new BadRequestException("Invalid username or password");
 
             var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
             if (result == PasswordVerificationResult.Failed)
-                throw new Exception("Invalid username or password");
+                throw new BadRequestException("Invalid username or password");
 
             var claims = new List<Claim>()
             {

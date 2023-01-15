@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Projekt_Inzynierski.Core.DTOs;
+using Projekt_Inzynierski.Core.Exceptions;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
 using Projekt_Inzynierski.DataAccess.Queries;
@@ -35,10 +36,10 @@ namespace Projekt_Inzynierski.Core.Services.Services
             foreach (var specializaitonId in trainerDto.SpecializationIds)
             {
                 var specialization = await _specializationRepository.GetSpecializationByIdAsync(specializaitonId);
-                if (specialization != null)
-                {
-                    specializations.Add(specialization);
-                }
+                if (specialization == null)
+                    throw new NotFoundException("Specialization not found");
+
+                specializations.Add(specialization);
             }
             var newTrainer = new Trainer()
             {
@@ -61,10 +62,10 @@ namespace Projekt_Inzynierski.Core.Services.Services
         public async Task DeleteTrainerAsync(int id)
         {
             var trainer = await _trainerRepository.GetTrainerByIdAsync(id);
-            if (trainer != null)
-            {
-                await _trainerRepository.DeleteTrainerAsync(trainer);
-            }
+            if (trainer == null)
+                throw new NotFoundException("Trainer not found");
+
+            await _trainerRepository.DeleteTrainerAsync(trainer);
         }
 
         public async Task<ICollection<TrainerViewDto>> GetAllTrainersAsync(SearchQuery query)
@@ -90,26 +91,25 @@ namespace Projekt_Inzynierski.Core.Services.Services
             foreach (var specializaitonId in trainerDto.SpecializationIds)
             {
                 var specialization = await _specializationRepository.GetSpecializationByIdAsync(specializaitonId);
-                if (specialization != null)
-                {
-                    specializations.Add(specialization);
-                }
+                if (specialization == null)
+                    throw new NotFoundException("Specialization not found");
+
+                specializations.Add(specialization);
             }
             var trainer = await _trainerRepository.GetTrainerByIdAsync(id);
-            if (trainer != null)
-            {
-                trainer.FirstName = trainerDto.FirstName;
-                trainer.LastName = trainerDto.LastName;
-                trainer.PhoneNr = trainerDto.PhoneNr;
-                trainer.Email = trainerDto.Email;
-                trainer.Pesel = trainerDto.Pesel;
-                trainer.Salary = trainerDto.Salary;
-                trainer.Specializations = specializations;
-                trainer.EmployedTo = trainerDto.EmployedTo;
+            if (trainer == null)
+                throw new NotFoundException("Trainer not found");
 
-                await _trainerRepository.UpdateTrainerAsync(trainer);
+            trainer.FirstName = trainerDto.FirstName;
+            trainer.LastName = trainerDto.LastName;
+            trainer.PhoneNr = trainerDto.PhoneNr;
+            trainer.Email = trainerDto.Email;
+            trainer.Pesel = trainerDto.Pesel;
+            trainer.Salary = trainerDto.Salary;
+            trainer.Specializations = specializations;
+            trainer.EmployedTo = trainerDto.EmployedTo;
 
-            }
+            await _trainerRepository.UpdateTrainerAsync(trainer);
         }
     }
 }

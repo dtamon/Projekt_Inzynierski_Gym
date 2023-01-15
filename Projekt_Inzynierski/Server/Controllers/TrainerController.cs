@@ -19,7 +19,7 @@ namespace Projekt_Inzynierski.Server.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Trainer")]
         public async Task<IActionResult> GetAllTrainers([FromQuery] SearchQuery query)
         {
             return Ok(await _trainerService.GetAllTrainersAsync(query));

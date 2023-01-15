@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Projekt_Inzynierski.Core.DTOs;
+using Projekt_Inzynierski.Core.Exceptions;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
 using Projekt_Inzynierski.DataAccess.Queries;
@@ -32,10 +33,10 @@ namespace Projekt_Inzynierski.Core.Services.Services
         public async Task DeleteVisitAsync(int id)
         {
             var visit = await _visitRepository.GetVisitByIdAsync(id);
-            if (visit != null)
-            {
-                await _visitRepository.DeleteVisitAsync(visit);
-            }
+            if (visit == null)
+                throw new NotFoundException("Visit not found");
+
+            await _visitRepository.DeleteVisitAsync(visit);
         }
 
         public async Task<ICollection<VisitDto>> GetAllVisitsAsync(SearchQuery query)
@@ -51,12 +52,12 @@ namespace Projekt_Inzynierski.Core.Services.Services
         public async Task UpdateVisitAsync(VisitDto visitDto, int id)
         {
             var visit = await _visitRepository.GetVisitByIdAsync(id);
-            if (visit != null)
-            {
-                visit.VisitDate = visitDto.VisitDate;
+            if (visit == null)
+                throw new NotFoundException("Visit not found");
 
-                await _visitRepository.UpdateVisitAsync(visit);
-            }
+            visit.VisitDate = visitDto.VisitDate;
+
+            await _visitRepository.UpdateVisitAsync(visit);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Projekt_Inzynierski.Core.DTOs;
+using Projekt_Inzynierski.Core.Exceptions;
 using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
 using Projekt_Inzynierski.DataAccess.Queries;
@@ -31,10 +32,10 @@ namespace Projekt_Inzynierski.Core.Services.Services
         public async Task DeleteTrainingEquipmentAsync(int id)
         {
             var trainingEquipment = await _trainingEquipmentRepository.GetTrainingEquipmentByIdAsync(id);
-            if (trainingEquipment != null)
-            {
-                await _trainingEquipmentRepository.DeleteTrainingEquipmentAsync(trainingEquipment);
-            }
+            if (trainingEquipment == null)
+                throw new NotFoundException("Training equipment not found");
+
+            await _trainingEquipmentRepository.DeleteTrainingEquipmentAsync(trainingEquipment);
         }
 
         public async Task<ICollection<TrainingEquipmentDto>> GetAllTrainingEquipmentsAsync(SearchQuery query)
@@ -50,13 +51,13 @@ namespace Projekt_Inzynierski.Core.Services.Services
         public async Task UpdateTrainingEquipmentAsync(TrainingEquipmentDto trainingEquipmentDto, int id)
         {
             var trainingEquipment = await _trainingEquipmentRepository.GetTrainingEquipmentByIdAsync(id);
-            if (trainingEquipment != null)
-            {
-                trainingEquipment.SerialNr = trainingEquipmentDto.SerialNr;
-                trainingEquipment.TechnicalState = trainingEquipmentDto.TechnicalState;
+            if (trainingEquipment == null)
+                throw new NotFoundException("Training equipment not found");
 
-                await _trainingEquipmentRepository.UpdateTrainingEquipmentAsync(trainingEquipment);
-            }
+            trainingEquipment.SerialNr = trainingEquipmentDto.SerialNr;
+            trainingEquipment.TechnicalState = trainingEquipmentDto.TechnicalState;
+
+            await _trainingEquipmentRepository.UpdateTrainingEquipmentAsync(trainingEquipment);
         }
     }
 }

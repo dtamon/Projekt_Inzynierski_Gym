@@ -138,7 +138,7 @@
     [Parameter]
     public string FormMode { get; set; }
 
-    ICollection<TrainerViewDto> otherTrainers = new List<TrainerViewDto>();
+    ICollection<TrainerSimpleDto> otherTrainers = new List<TrainerSimpleDto>();
     GroupTrainingDto groupTrainingDto = new GroupTrainingDto();
     bool isDisabled;
 
@@ -156,16 +156,17 @@
             }
             if (FormMode == "edit" || FormMode == "details")
             {
-                otherTrainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerViewDto>>("api/trainer");
+                otherTrainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerSimpleDto>>("api/trainer");
                 var groupTraining = await _httpClient.GetFromJsonAsync<GroupTrainingDto>($"api/groupTraining/{CurrentID}");
                 if (groupTraining != null)
                 {
                     groupTrainingDto = groupTraining;
+                    //otherTrainers.Remove(groupTraining.CreatedByTrainer);
                 }
             }
             else
             {
-                otherTrainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerViewDto>>("api/trainer/others");
+                otherTrainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerSimpleDto>>("api/trainer/others");
                 groupTrainingDto.StartDate = DateTime.Now;
             }
         }
@@ -222,7 +223,7 @@
 
     void Cancel()
     {
-        NavigationManager.NavigateTo("groupTrainingList");
+        NavigationManager.NavigateTo("groupTrainingList/list");
     }
 
     private void AddValue() => groupTrainingDto.TrainerIds.Add(0);

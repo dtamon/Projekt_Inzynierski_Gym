@@ -74,6 +74,10 @@
                     <ValidationMessage For="@(() => employeeRegisterDto.Salary)" />
                 </div>
                 <br />
+                <div class="form-group ms-auto hstack gap-1">
+                    <input type="submit" class="btn btn-primary" value="Zapisz") />
+                    <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
+                </div>
             </EditForm>
         }
         else
@@ -137,7 +141,7 @@
                         {
                             <input type="button" class="btn btn-success" @onclick=@ContinueEmployment value="Wznów zatrudnienie" />
                         }
-                        <input type="submit" class="btn btn-primary" value=@(FormMode != "edit" ? "Zapisz" : "Aktualizuj") />
+                        <input type="submit" class="btn btn-primary" value="Aktualizuj" />
                         <input type="button" class="btn btn-primary" @onclick=@Cancel value="Anuluj" />
                     </div>
                 }

@@ -5,23 +5,13 @@
 
 <AuthorizeView>
     <Authorized>
-        <h1>Hello, @context.User.Identity.Name!</h1>
+        <h1>Witaj, @context.User.Identity.Name!</h1>
+        <SurveyPrompt Title="Możesz teraz korzystac z funkcji przeznacznych dla twojej roli" />
     </Authorized>
     <NotAuthorized>
-        <h1>Hello Guest!</h1>
+        <h1>Witaj, Gosciu!</h1>
+        <SurveyPrompt Title="Aby uzyskać dostęp do wszystkich funkcji, zaloguj się na swoje konto" />
     </NotAuthorized>
-</AuthorizeView>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
-
-
-<AuthorizeView>
-    <Authorized>
-        <br /><br />
-        <button class="btn btn-outline-primary" @onclick="DisplayGreetingAlert">Display Greeting Alert</button>
-    </Authorized>
 </AuthorizeView>
 
 @code {

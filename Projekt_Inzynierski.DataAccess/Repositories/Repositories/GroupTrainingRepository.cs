@@ -72,7 +72,7 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
         {
             var client = await _context.Client.FirstOrDefaultAsync(x => x.Id == clientId);
             return await _context.GroupTraining.Include(x => x.Trainers).ThenInclude(x => x.Specializations).Include(x => x.Trainer).Include(x => x.Clients)
-                .Where(x => !x.Clients.Contains(client) && (query.SearchPhrase == null || (x.TrainingType.ToLower().Contains(query.SearchPhrase.ToLower()))))
+                .Where(x => !x.Clients.Contains(client) && (x.MaxCLients - x.Clients.Count() > 0) && (query.SearchPhrase == null || (x.TrainingType.ToLower().Contains(query.SearchPhrase.ToLower()))))
                 .OrderBy(x => x.StartDate)
                 .ToListAsync();
         }

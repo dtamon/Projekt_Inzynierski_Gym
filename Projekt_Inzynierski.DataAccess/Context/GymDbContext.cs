@@ -44,7 +44,7 @@ namespace Projekt_Inzynierski.DataAccess.Context
 
             modelBuilder.Entity<Trainer>(eb =>
             {
-                eb.HasMany(x => x.CreatedGroupTrainings).WithOne(x => x.Trainer).HasForeignKey(x => x.TrainerId).OnDelete(DeleteBehavior.Restrict);
+                eb.HasMany(x => x.CreatedGroupTrainings).WithOne(x => x.Trainer).HasForeignKey(x => x.TrainerId).OnDelete(DeleteBehavior.ClientCascade);
                 eb.HasMany(x => x.GroupTrainings).WithMany(x => x.Trainers);
             });
         }

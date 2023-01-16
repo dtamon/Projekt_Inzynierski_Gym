@@ -28,7 +28,7 @@ namespace Projekt_Inzynierski.Core.Seeder
             _trainerService = trainerService;
         }
 
-        public void Seed()
+        public async Task SeedAsync()
         {
             if (!_context.Database.CanConnect())
                 return;
@@ -46,14 +46,14 @@ namespace Projekt_Inzynierski.Core.Seeder
             {
                 foreach (var client in GetClients())
                 {
-                    _clientService.CreateClientAsync(client);
+                    await _clientService.CreateClientAsync(client);
                 }
             }
             if (!_context.Employee.Any())
             {
                 foreach (var employee in GetEmployees())
                 {
-                    _employeeService.CreateEmployeeAsync(employee);
+                    await _employeeService.CreateEmployeeAsync(employee);
                 }
             }
             if (!_context.Specialization.Any())
@@ -65,7 +65,7 @@ namespace Projekt_Inzynierski.Core.Seeder
             {
                 foreach (var trainer in GetTrainers())
                 {
-                    _trainerService.CreateTrainerAsync(trainer);
+                    await _trainerService.CreateTrainerAsync(trainer);
                 }
             }
         }

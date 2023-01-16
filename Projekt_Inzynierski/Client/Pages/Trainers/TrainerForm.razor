@@ -86,13 +86,13 @@
                 <div class="vstack gap-3">
                     <div class="hstack gap-2">
                         <label for="Spec" class="control-label fs-5">Specjalizacje</label>
-                        <button @onclick="AddValue" class="btn btn-success">+</button>
+                        <button @onclick="() => AddValue(trainerAccountDto.SpecializationIds)" class="btn btn-success">+</button>
                     </div>
-                    @for (int i = 0; i < specializationIds.Count; i++)
+                    @for (int i = 0; i < trainerAccountDto.SpecializationIds.Count; i++)
                     {
                         int index = i;
                         <div class="d-flex justify-content-between align-items-baseline hstack gap-2">
-                            <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(index, Convert.ToInt32(e.Value))" value="@specializationIds[i]">
+                            <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(trainerAccountDto.SpecializationIds, index, Convert.ToInt32(e.Value))" value="@trainerAccountDto.SpecializationIds[i]">
                                 <option selected style="display:none"> -- wybierz specjalizację -- </option>
                                 @if (specializations != null)
                                 {
@@ -102,7 +102,7 @@
                                     }
                                 }
                             </select>
-                            <button @onclick="() => RemoveValue(index)" class="btn btn-outline-danger">X</button>
+                            <button @onclick="() => RemoveValue(trainerAccountDto.SpecializationIds, index)" class="btn btn-outline-danger">X</button>
                         </div>
                     }
                 </div>
@@ -183,14 +183,14 @@
                         <label for="Spec" class="control-label fs-5">Specjalizacje</label>
                         @if (!isDisabled)
                         {
-                            <button @onclick="AddValue" class="btn btn-success">+</button>
+                            <button @onclick="() => AddValue(trainerViewDto.SpecializationIds)" class="btn btn-success">+</button>
                         }
                     </div>
                     @for (int i = 0; i < trainerViewDto.SpecializationIds.Count; i++)
                     {
                         int index = i;
                         <div class="d-flex justify-content-between align-items-baseline hstack gap-2">
-                            <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(index, Convert.ToInt32(e.Value))" value="@specializationIds[i]" disabled="@isDisabled">
+                            <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(trainerViewDto.SpecializationIds, index, Convert.ToInt32(e.Value))" value="@trainerViewDto.SpecializationIds[i]" disabled="@isDisabled">
                                 <option selected style="display:none"> -- wybierz specjalizację -- </option>
                                 @if (specializations != null)
                                 {
@@ -202,7 +202,7 @@
                             </select>
                             @if (!isDisabled)
                             {
-                                <button @onclick="() => RemoveValue(index)" class="btn btn-outline-danger">X</button>
+                                <button @onclick="() => RemoveValue(trainerViewDto.SpecializationIds, index)" class="btn btn-outline-danger">X</button>
                             }
                         </div>
                     }
@@ -266,8 +266,7 @@
     ICollection<SpecializationDto> specializations = new List<SpecializationDto>();
     TrainerAccountDto trainerAccountDto = new TrainerAccountDto();
     TrainerViewDto trainerViewDto = new TrainerViewDto();
-    List<int> specializationIds = new List<int>();
-    //List<GroupTrainingDto> allTrainings = new List<GroupTrainingDto>();
+    //List<int> specializationIds = new List<int>();
     bool isDisabled;
 
     protected override async Task OnInitializedAsync()
@@ -288,13 +287,8 @@
                 if (fetchedTrainer != null)
                 {
                     trainerViewDto = fetchedTrainer;
-                    specializationIds = trainerViewDto.SpecializationIds;
+                    //specializationIds = trainerViewDto.SpecializationIds;
                 }
-                //if (FormMode == "details")
-                //{
-                //    allTrainings.AddRange(trainerViewDto.CreatedGroupTrainings);
-                //    allTrainings.AddRange(trainerViewDto.GroupTrainings);
-                //}
             }
         }
         else
@@ -322,7 +316,7 @@
         if (!string.IsNullOrEmpty(token))
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            trainerAccountDto.SpecializationIds = specializationIds;
+            //trainerAccountDto.SpecializationIds = specializationIds;
             await _httpClient.PostAsJsonAsync("api/trainer", trainerAccountDto);
             NavigationManager.NavigateTo("trainerList");
         }
@@ -339,7 +333,7 @@
         if (!string.IsNullOrEmpty(token))
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            trainerViewDto.SpecializationIds = specializationIds;
+            //trainerViewDto.SpecializationIds = specializationIds;
             await _httpClient.PutAsJsonAsync($"api/trainer/{CurrentID}", trainerViewDto);
             NavigationManager.NavigateTo("trainerList");
         }
@@ -366,7 +360,7 @@
         NavigationManager.NavigateTo("trainerList");
     }
 
-    private void AddValue() => specializationIds.Add(0);
-    private void UpdateValue(int i, int value) => specializationIds[i] = value;
-    private void RemoveValue(int i) => specializationIds.RemoveAt(i);
+    private void AddValue(List<int> Ids) => Ids.Add(0);
+    private void UpdateValue(List<int> Ids, int i, int value) => Ids[i] = value;
+    private void RemoveValue(List<int> Ids, int i) => Ids.RemoveAt(i);
 }

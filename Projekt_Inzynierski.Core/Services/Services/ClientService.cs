@@ -29,7 +29,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
             _passwordHasher = passwordHasher;
         }
 
-        public async Task CreateClientAsync(ClientAccountDto clientDto)
+        public async Task<DataToGeneratePdfDto> CreateClientAsync(ClientAccountDto clientDto)
         {
             clientDto.ContractStart = DateTime.Today;
             var contract = await _contractRepository.GetContractByIdAsync(clientDto.ContractId);
@@ -43,6 +43,14 @@ namespace Projekt_Inzynierski.Core.Services.Services
             newClient.PasswordHash = hashedPassword;
 
             await _clientRepository.CreateClientAsync(newClient);
+
+            var dataToPdf = new DataToGeneratePdfDto()
+            {
+                Client = clientDto,
+                Contract = _mapper.Map<ContractDto>(contract)
+            };
+
+            return dataToPdf;
         }
 
         public async Task DeleteClientAsync(int id)

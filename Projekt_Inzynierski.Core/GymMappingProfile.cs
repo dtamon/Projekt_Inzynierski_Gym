@@ -89,7 +89,7 @@ namespace Projekt_Inzynierski.Core
 
             CreateMap<Trainer, string>().ConvertUsing(source => $"{source.FirstName} {source.LastName}");
 
-            CreateMap<Specialization, string>().ConstructUsing(source => $"{source.SpecName}");
+            CreateMap<Specialization, string>().ConvertUsing(source => $"{source.SpecName}");
         }
     }
 }

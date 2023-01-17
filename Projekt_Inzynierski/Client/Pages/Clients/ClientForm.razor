@@ -5,6 +5,7 @@
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager NavigationManager
 @inject HttpClient _httpClient
+@inject IBlazorDownloadFileService BlazorDownloadFileService
 
 <h3>Dane Klienta</h3>
 <hr />
@@ -251,8 +252,13 @@
         if (!string.IsNullOrEmpty(token))
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            await _httpClient.PostAsJsonAsync("api/client", clientRegisterDto);
-            NavigationManager.NavigateTo("clientList");
+            var response = await _httpClient.PostAsJsonAsync("api/client", clientRegisterDto);
+            if (response.IsSuccessStatusCode)
+            {
+                byte[] bytes = await response.Content.ReadAsByteArrayAsync();
+                await BlazorDownloadFileService.DownloadFile($"Umowa_{clientRegisterDto.FirstName}-{clientRegisterDto.LastName}.pdf", bytes, contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                NavigationManager.NavigateTo("clientList");  
+            }
         }
         else
         {

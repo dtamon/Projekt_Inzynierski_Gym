@@ -18,8 +18,6 @@ namespace Projekt_Inzynierski.Core.DTOs
         public string ConfirmPassword { get; set; }
         public string Role { get; set; } = "Client";
         public int ContractId { get; set; }
-        public int? ContractMonths { get; set; }
-        public int? ContractMonthlyCost { get; set; }
         public DateTime ContractStart { get; set; }
         public DateTime ContractEnd { get; set; }
 

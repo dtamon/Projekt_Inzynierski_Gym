@@ -54,7 +54,7 @@ namespace Projekt_Inzynierski.Server.Controllers
         public async Task<IActionResult> DeleteGroupTraining(int id)
         {
             await _groupTrainingService.DeleteGroupTrainingAsync(id);
-            return Ok("Zajęcia grupowe usunięte pomyślnie");
+            return Ok("Usunięto pomyślnie");
         }
 
         [HttpPost("signUp/{id}")]

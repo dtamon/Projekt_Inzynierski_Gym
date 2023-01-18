@@ -39,21 +39,23 @@ else
             @foreach (var visit in visits)
             {
                 <tr>
-                    <td>@visit.FirstName</td>
-                    <td>@visit.LastName</td>
-                    <td>@visit.Email</td>
-                    <td>@visit.Pesel</td>
-                    <td>@visit.VisitDate.ToShortDateString() @visit.VisitDate.ToShortTimeString()</td>
-                    <td class="hstack">
-                        <a class="nav-link" href="visitForm/details/@visit.Id">
-                            <span class="oi oi-magnifying-glass" aria-client="true"></span>
-                        </a>
-                        <a class="nav-link" href="visitForm/edit/@visit.Id">
-                            <span class="oi oi-pencil" aria-hidden="true"></span>
-                        </a>
-                        <a class="nav-link" href="" @onclick="@(() => {DeleteVisit(visit.Id); })">
-                            <span class="oi oi-trash" aria-hidden="true"></span>
-                        </a>
+                    <td class="align-middle">@visit.FirstName</td>
+                    <td class="align-middle">@visit.LastName</td>
+                    <td class="align-middle">@visit.Email</td>
+                    <td class="align-middle">@visit.Pesel</td>
+                    <td class="align-middle">@visit.VisitDate.ToShortDateString() @visit.VisitDate.ToShortTimeString()</td>
+                    <td class="align-middle">
+                        <div class="hstack">
+                            <a class="nav-link" href="visitForm/details/@visit.Id">
+                                <span class="oi oi-magnifying-glass" aria-client="true"></span>
+                            </a>
+                            <a class="nav-link" href="visitForm/edit/@visit.Id">
+                                <span class="oi oi-pencil" aria-hidden="true"></span>
+                            </a>
+                            <a class="nav-link" href="" @onclick="@(() => {DeleteVisit(visit.Id); })">
+                                <span class="oi oi-trash" aria-hidden="true"></span>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             }

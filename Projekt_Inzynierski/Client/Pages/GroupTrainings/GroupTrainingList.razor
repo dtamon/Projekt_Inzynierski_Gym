@@ -19,7 +19,7 @@
             </NavLink>
         }
     </div>
-    
+
 </div>
 
 @if (groupTrainings == null)
@@ -44,36 +44,38 @@ else
             @foreach (var groupTraining in groupTrainings)
             {
                 <tr>
-                    <td>@groupTraining.TrainingType</td>
-                    <td>@groupTraining.CreatedByTrainer.FirstName @groupTraining.CreatedByTrainer.LastName</td>
-                    <td>@groupTraining.MaxClients</td>
-                    <td>@groupTraining.FreeSpots</td>
-                    <td>@groupTraining.StartDate.ToShortDateString() @groupTraining.StartDate.ToShortTimeString()</td>
-                    <td>
+                    <td class="align-middle">@groupTraining.TrainingType</td>
+                    <td class="align-middle">@groupTraining.CreatedByTrainer.FirstName @groupTraining.CreatedByTrainer.LastName</td>
+                    <td class="align-middle">@groupTraining.MaxClients</td>
+                    <td class="align-middle">@groupTraining.FreeSpots</td>
+                    <td class="align-middle">@groupTraining.StartDate.ToShortDateString() @groupTraining.StartDate.ToShortTimeString()</td>
+                    <td class="align-middle">
                         @foreach (var trainer in groupTraining.Trainers)
                         {
                             <p>@trainer.FirstName @trainer.LastName</p>
                         }
                     </td>
-                    <td class="hstack">
-                        @if (Role == "Trainer")
-                        {
-                            <a class="nav-link" href="groupTrainingForm/details/@groupTraining.Id">
-                                <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
-                            </a>
-                            <a class="nav-link" href="groupTrainingForm/edit/@groupTraining.Id">
-                                <span class="oi oi-pencil" aria-hidden="true"></span>
-                            </a>
-                            <a class="nav-link" href="" @onclick="@(() => {DeleteGroupTraining(groupTraining.Id); })">
-                                <span class="oi oi-trash" aria-hidden="true"></span>
-                            </a>
-                        }
-                        else if (Role == "Client")
-                        {
-                            <a class="nav-link" href="" @onclick="@(() => {SignUpForTraining(groupTraining.Id); })">
-                                <span class="btn btn-success" aria-hidden="true">Zapisz się</span>
-                            </a>
-                        }
+                    <td class="align-middle">
+                        <div class="hstack">
+                            @if (Role == "Trainer")
+                            {
+                                <a class="nav-link" href="groupTrainingForm/details/@groupTraining.Id">
+                                    <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
+                                </a>
+                                <a class="nav-link" href="groupTrainingForm/edit/@groupTraining.Id">
+                                    <span class="oi oi-pencil" aria-hidden="true"></span>
+                                </a>
+                                <a class="nav-link" href="" @onclick="@(() => {DeleteGroupTraining(groupTraining.Id); })">
+                                    <span class="oi oi-trash" aria-hidden="true"></span>
+                                </a>
+                            }
+                            else if (Role == "Client")
+                            {
+                                <a class="nav-link" href="" @onclick="@(() => {SignUpForTraining(groupTraining.Id); })">
+                                    <span class="btn btn-success" aria-hidden="true">Zapisz się</span>
+                                </a>
+                            }
+                        </div>
                     </td>
                 </tr>
             }
@@ -99,7 +101,7 @@ else
             if (Role == "Trainer")
             {
                 groupTrainings = await _httpClient.GetFromJsonAsync<ICollection<GroupTrainingDto>>($"api/groupTraining/yourGroupTrainings?searchPhrase={searchPhrase}");
-            } 
+            }
             else if (Role == "Client")
             {
                 groupTrainings = await _httpClient.GetFromJsonAsync<ICollection<GroupTrainingDto>>($"api/groupTraining/trainingsNotSignedUp?searchPhrase={searchPhrase}");
@@ -120,7 +122,7 @@ else
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             await _httpClient.DeleteAsync($"api/groupTraining/{id}");
-            NavigationManager.NavigateTo("groupTrainingList/yours");
+            NavigationManager.NavigateTo("groupTrainingList/list");
         }
         else
         {

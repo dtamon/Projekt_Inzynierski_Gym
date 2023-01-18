@@ -62,7 +62,7 @@
             <div class="vstack gap-3">
                 <div class="hstack gap-2">
                     <label for="Spec" class="control-label fs-5">Dodatkowi trenerzy</label>
-                    @if (!isDisabled)
+                    @if ((!isDisabled && isTrainingCreatorLogged) || FormMode is null)
                     {
                         <button @onclick="AddValue" class="btn btn-success">+</button>
                     }
@@ -71,17 +71,17 @@
                 {
                     int index = i;
                     <div class="d-flex justify-content-between align-items-baseline hstack gap-2">
-                        <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(index, Convert.ToInt32(e.Value))" value="@groupTrainingDto.TrainerIds[i]" disabled="@isDisabled">
+                        <select form="Spec" class="form-control" @onchange="(e) => UpdateValue(index, Convert.ToInt32(e.Value))" value="@groupTrainingDto.TrainerIds[i]" disabled="@(isDisabled || !isTrainingCreatorLogged)">
                             <option selected style="display:none"> -- wybierz trenera -- </option>
-                            @if (otherTrainers != null)
+                            @if (trainers != null)
                             {
-                                @foreach (var trainer in otherTrainers)
+                                @foreach (var trainer in trainers)
                                 {
                                     <option value="@trainer.Id">@trainer.FirstName @trainer.LastName, @trainer.Pesel</option>
                                 }
                             }
                         </select>
-                        @if (!isDisabled)
+                        @if ((!isDisabled && isTrainingCreatorLogged) || FormMode is null)
                         {
                             <button @onclick="() => RemoveValue(index)" class="btn btn-outline-danger">X</button>
                         }
@@ -138,9 +138,10 @@
     [Parameter]
     public string FormMode { get; set; }
 
-    ICollection<TrainerSimpleDto> otherTrainers = new List<TrainerSimpleDto>();
+    ICollection<TrainerSimpleDto> trainers = new List<TrainerSimpleDto>();
     GroupTrainingDto groupTrainingDto = new GroupTrainingDto();
     bool isDisabled;
+    bool isTrainingCreatorLogged;
 
     protected override async Task OnInitializedAsync()
     {
@@ -156,17 +157,23 @@
             }
             if (FormMode == "edit" || FormMode == "details")
             {
-                otherTrainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerSimpleDto>>("api/trainer");
+                trainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerSimpleDto>>("api/trainer");
                 var groupTraining = await _httpClient.GetFromJsonAsync<GroupTrainingDto>($"api/groupTraining/{CurrentID}");
                 if (groupTraining != null)
                 {
                     groupTrainingDto = groupTraining;
-                    //otherTrainers.Remove(groupTraining.CreatedByTrainer);
+                    //isTrainingCreatorLogged = await customAuthStateProvider.GetId() == groupTraining.CreatedByTrainer.Id ? true : false;
+                }
+                if (await customAuthStateProvider.GetId() == groupTraining.CreatedByTrainer.Id ? true : false)
+                {
+                    isTrainingCreatorLogged = true;
+                    trainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerSimpleDto>>("api/trainer/others");
                 }
             }
             else
             {
-                otherTrainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerSimpleDto>>("api/trainer/others");
+                isTrainingCreatorLogged = true;
+                trainers = await _httpClient.GetFromJsonAsync<ICollection<TrainerSimpleDto>>("api/trainer/others");
                 groupTrainingDto.StartDate = DateTime.Now;
             }
         }

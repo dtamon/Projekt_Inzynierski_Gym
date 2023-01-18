@@ -42,29 +42,31 @@ else
             @foreach (var trainer in trainers)
             {
                 <tr>
-                    <td>@trainer.FirstName</td>
-                    <td>@trainer.LastName</td>
-                    <td>@trainer.PhoneNr</td>
-                    <td>@trainer.Email</td>
-                    <td>@trainer.Pesel</td>
-                    <td>@trainer.Salary</td>
-                    <td>@(trainer.EmployedTo is null ? null : ((DateTime)trainer.EmployedTo).ToShortDateString())</td>
-                    <td>
+                    <td class="align-middle">@trainer.FirstName</td>
+                    <td class="align-middle">@trainer.LastName</td>
+                    <td class="align-middle">@trainer.PhoneNr</td>
+                    <td class="align-middle">@trainer.Email</td>
+                    <td class="align-middle">@trainer.Pesel</td>
+                    <td class="align-middle">@trainer.Salary</td>
+                    <td class="align-middle">@(trainer.EmployedTo is null ? null : ((DateTime)trainer.EmployedTo).ToShortDateString())</td>
+                    <td class="align-middle">
                         @foreach (var specialization in trainer.SpecializationNames)
                         {
                             <p>@specialization</p>
                         }
                     </td>
-                    <td class="hstack">
-                        <a class="nav-link" href="trainerForm/details/@trainer.Id">
-                            <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
-                        </a>
-                        <a class="nav-link" href="trainerForm/edit/@trainer.Id">
-                            <span class="oi oi-pencil" aria-hidden="true"></span>
-                        </a>
-                        <a class="nav-link" href="" @onclick="@(() => {DeleteTrainer(trainer.Id); })">
-                            <span class="oi oi-trash" aria-hidden="true"></span>
-                        </a>
+                    <td class="align-middle">
+                        <div class="hstack">
+                            <a class="nav-link" href="trainerForm/details/@trainer.Id">
+                                <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
+                            </a>
+                            <a class="nav-link" href="trainerForm/edit/@trainer.Id">
+                                <span class="oi oi-pencil" aria-hidden="true"></span>
+                            </a>
+                            <a class="nav-link" href="" @onclick="@(() => {DeleteTrainer(trainer.Id); })">
+                                <span class="oi oi-trash" aria-hidden="true"></span>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             }

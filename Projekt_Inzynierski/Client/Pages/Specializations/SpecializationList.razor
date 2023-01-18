@@ -35,17 +35,19 @@ else
             @foreach (var specialization in specializations)
             {
                 <tr>
-                    <td>@specialization.SpecName</td>
-                    <td class="hstack">
-                        <a class="nav-link" href="specializationForm/details/@specialization.Id">
-                            <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
-                        </a>
-                        <a class="nav-link" href="specializationForm/edit/@specialization.Id">
-                            <span class="oi oi-pencil" aria-hidden="true"></span>
-                        </a>
-                        <a class="nav-link" href="" @onclick="@(() => {DeleteSpecialization(specialization.Id); })">
-                            <span class="oi oi-trash" aria-hidden="true"></span>
-                        </a>
+                    <td class="align-middle">@specialization.SpecName</td>
+                    <td class="align-middle">
+                        <div class="hstack">
+                            <a class="nav-link" href="specializationForm/details/@specialization.Id">
+                                <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
+                            </a>
+                            <a class="nav-link" href="specializationForm/edit/@specialization.Id">
+                                <span class="oi oi-pencil" aria-hidden="true"></span>
+                            </a>
+                            <a class="nav-link" href="" @onclick="@(() => {DeleteSpecialization(specialization.Id); })">
+                                <span class="oi oi-trash" aria-hidden="true"></span>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             }

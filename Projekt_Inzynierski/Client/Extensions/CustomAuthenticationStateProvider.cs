@@ -86,5 +86,19 @@ namespace Projekt_Inzynierski.Client.Extensions
             catch { }
             return result;
         }
+
+        public async Task<int> GetId()
+        {
+            var result = 0;
+            try
+            {
+                var userSession = await _sessionStorageService.ReadEncryptedItemAsync<UserSession>("UserSession");
+                if (userSession != null & DateTime.Now < userSession.ExpiryTimeStamp)
+                    result = userSession.UserId;
+
+            }
+            catch { }
+            return result;
+        }
     }
 }

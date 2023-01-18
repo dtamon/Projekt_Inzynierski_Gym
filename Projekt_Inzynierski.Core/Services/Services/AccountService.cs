@@ -63,6 +63,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
 
             var userSession = new UserSession
             {
+                UserId = user.Id,
                 UserName = $"{user.FirstName} {user.LastName}",
                 Role = user.Role,
                 Token = tokenHandler.WriteToken(token),

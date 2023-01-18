@@ -37,18 +37,20 @@ else
             @foreach (var contract in contracts)
             {
                 <tr>
-                    <td>@contract.Months</td>
-                    <td>@contract.MonthlyCost</td>
-                    <td class="hstack">
-                        <a class="nav-link" href="contractForm/details/@contract.Id">
-                            <span class="oi oi-magnifying-glass" aria-client="true"></span>
-                        </a>
-                        <a class="nav-link" href="contractForm/edit/@contract.Id">
-                            <span class="oi oi-pencil" aria-hidden="true"></span>
-                        </a>
-                        <a class="nav-link" href="" @onclick="@(() => {DeleteContract(contract.Id); })">
-                            <span class="oi oi-trash" aria-hidden="true"></span>
-                        </a>
+                    <td class="align-middle">@contract.Months</td>
+                    <td class="align-middle">@contract.MonthlyCost</td>
+                    <td class="align-middle">
+                        <div class="hstack">
+                            <a class="nav-link" href="contractForm/details/@contract.Id">
+                                <span class="oi oi-magnifying-glass" aria-client="true"></span>
+                            </a>
+                            <a class="nav-link" href="contractForm/edit/@contract.Id">
+                                <span class="oi oi-pencil" aria-hidden="true"></span>
+                            </a>
+                            <a class="nav-link" href="" @onclick="@(() => {DeleteContract(contract.Id); })">
+                                <span class="oi oi-trash" aria-hidden="true"></span>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             }

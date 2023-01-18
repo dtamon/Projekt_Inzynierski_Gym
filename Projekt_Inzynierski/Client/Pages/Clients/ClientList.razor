@@ -41,23 +41,25 @@ else
             @foreach (var client in clients)
             {
                 <tr>
-                    <td>@client.FirstName</td>
-                    <td>@client.LastName</td>
-                    <td>@client.PhoneNr</td>
-                    <td>@client.Email</td>
-                    <td>@client.Pesel</td>
-                    <td>@client.ContractMonths miesięcy, @client.ContractMonthlyCost zł miesięcznie</td>
-                    <td>@client.ContractStart.ToShortDateString() - @client.ContractEnd.ToShortDateString()</td>
-                    <td class="hstack">
-                        <a class="nav-link" href="clientForm/details/@client.Id">
-                            <span class="oi oi-magnifying-glass" aria-client="true"></span>
-                        </a>
-                        <a class="nav-link" href="clientForm/edit/@client.Id">
-                            <span class="oi oi-pencil" aria-hidden="true"></span>
-                        </a>
-                        <a class="nav-link" href="" @onclick="@(() => {DeleteClient(client.Id); })">
-                            <span class="oi oi-trash" aria-hidden="true"></span>
-                        </a>
+                    <td class="align-middle">@client.FirstName</td>
+                    <td class="align-middle">@client.LastName</td>
+                    <td class="align-middle">@client.PhoneNr</td>
+                    <td class="align-middle">@client.Email</td>
+                    <td class="align-middle">@client.Pesel</td>
+                    <td class="align-middle">@client.ContractMonths miesięcy, @client.ContractMonthlyCost zł miesięcznie</td>
+                    <td class="align-middle">@client.ContractStart.ToShortDateString() - @client.ContractEnd.ToShortDateString()</td>
+                    <td class="align-middle">
+                        <div class="hstack">
+                            <a class="nav-link" href="clientForm/details/@client.Id">
+                                <span class="oi oi-magnifying-glass" aria-client="true"></span>
+                            </a>
+                            <a class="nav-link" href="clientForm/edit/@client.Id">
+                                <span class="oi oi-pencil" aria-hidden="true"></span>
+                            </a>
+                            <a class="nav-link" href="" @onclick="@(() => {DeleteClient(client.Id); })">
+                                <span class="oi oi-trash" aria-hidden="true"></span>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             }

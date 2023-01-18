@@ -36,26 +36,28 @@ else
             @foreach (var equipment in equipments)
             {
                 <tr>
-                    <td>@equipment.SerialNr</td>
+                    <td class="align-middle">@equipment.SerialNr</td>
                     @if (@equipment.TechnicalState)
                     {
-                        <td>Sprawny</td>
+                        <td class="align-middle">Sprawny</td>
                     }
                     else
                     {
-                        <td>Niesprawny</td>
+                        <td class="align-middle">Niesprawny</td>
                     }
 
-                    <td class="hstack">
-                        <a class="nav-link" href="equipmentForm/details/@equipment.Id">
-                            <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
-                        </a>
-                        <a class="nav-link" href="equipmentForm/edit/@equipment.Id">
-                            <span class="oi oi-pencil" aria-hidden="true"></span>
-                        </a>
-                        <a class="nav-link" href="" @onclick="@(() => {DeleteContract(equipment.Id); })">
-                            <span class="oi oi-trash" aria-hidden="true"></span>
-                        </a>
+                    <td class="align-middle">
+                        <div class="hstack">
+                            <a class="nav-link" href="equipmentForm/details/@equipment.Id">
+                                <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
+                            </a>
+                            <a class="nav-link" href="equipmentForm/edit/@equipment.Id">
+                                <span class="oi oi-pencil" aria-hidden="true"></span>
+                            </a>
+                            <a class="nav-link" href="" @onclick="@(() => {DeleteContract(equipment.Id); })">
+                                <span class="oi oi-trash" aria-hidden="true"></span>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             }

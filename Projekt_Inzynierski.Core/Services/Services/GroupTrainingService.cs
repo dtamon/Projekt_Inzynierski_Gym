@@ -61,11 +61,24 @@ namespace Projekt_Inzynierski.Core.Services.Services
 
         public async Task DeleteGroupTrainingAsync(int id)
         {
+            var userId = (int)_userContextService.GetUserId;
             var groupTraining = await _groupTrainingRepository.GetGroupTrainingByIdAsync(id);
             if (groupTraining == null)
                 throw new NotFoundException("Group training not found");
 
-            await _groupTrainingRepository.DeleteGroupTrainingAsync(groupTraining);
+            if (groupTraining.TrainerId == userId)
+            {
+                await _groupTrainingRepository.DeleteGroupTrainingAsync(groupTraining);
+            }
+            else
+            {
+                var trainer = await _trainerRepository.GetTrainerByIdAsync(userId);
+                if (trainer == null)
+                    throw new NotFoundException("Trainer not found");
+
+                groupTraining.Trainers.Remove(trainer);
+                await _groupTrainingRepository.UpdateGroupTrainingAsync(groupTraining);
+            }
         }
 
         public async Task<ICollection<GroupTrainingDto>> GetAllGroupTrainingsAsync(SearchQuery query)

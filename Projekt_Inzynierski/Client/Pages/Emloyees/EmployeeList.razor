@@ -41,23 +41,25 @@ else
             @foreach (var employee in employees)
             {
                 <tr>
-                    <td>@employee.FirstName</td>
-                    <td>@employee.LastName</td>
-                    <td>@employee.PhoneNr</td>
-                    <td>@employee.Email</td>
-                    <td>@employee.Pesel</td>
-                    <td>@employee.Salary</td>
-                    <td>@(employee.EmployedTo is null ? null : ((DateTime)employee.EmployedTo).ToShortDateString())</td>
-                    <td class="hstack">
-                        <a class="nav-link" href="employeeForm/details/@employee.Id">
-                            <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
-                        </a>
-                        <a class="nav-link" href="employeeForm/edit/@employee.Id">
-                            <span class="oi oi-pencil" aria-hidden="true"></span>
-                        </a>
-                        <a class="nav-link" href="" @onclick="@(() => {DeleteEmployee(employee.Id); })">
-                            <span class="oi oi-trash" aria-hidden="true"></span>
-                        </a>
+                    <td class="align-middle">@employee.FirstName</td>
+                    <td class="align-middle">@employee.LastName</td>
+                    <td class="align-middle">@employee.PhoneNr</td>
+                    <td class="align-middle">@employee.Email</td>
+                    <td class="align-middle">@employee.Pesel</td>
+                    <td class="align-middle">@employee.Salary</td>
+                    <td class="align-middle">@(employee.EmployedTo is null ? null : ((DateTime)employee.EmployedTo).ToShortDateString())</td>
+                    <td class="align-middle">
+                        <div class="hstack">
+                            <a class="nav-link" href="employeeForm/details/@employee.Id">
+                                <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
+                            </a>
+                            <a class="nav-link" href="employeeForm/edit/@employee.Id">
+                                <span class="oi oi-pencil" aria-hidden="true"></span>
+                            </a>
+                            <a class="nav-link" href="" @onclick="@(() => {DeleteEmployee(employee.Id); })">
+                                <span class="oi oi-trash" aria-hidden="true"></span>
+                            </a>
+                        </div>
                     </td>
                 </tr>
             }

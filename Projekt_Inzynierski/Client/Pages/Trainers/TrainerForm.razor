@@ -266,7 +266,6 @@
     ICollection<SpecializationDto> specializations = new List<SpecializationDto>();
     TrainerAccountDto trainerAccountDto = new TrainerAccountDto();
     TrainerViewDto trainerViewDto = new TrainerViewDto();
-    //List<int> specializationIds = new List<int>();
     bool isDisabled;
 
     protected override async Task OnInitializedAsync()
@@ -287,7 +286,6 @@
                 if (fetchedTrainer != null)
                 {
                     trainerViewDto = fetchedTrainer;
-                    //specializationIds = trainerViewDto.SpecializationIds;
                 }
             }
         }
@@ -316,7 +314,6 @@
         if (!string.IsNullOrEmpty(token))
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            //trainerAccountDto.SpecializationIds = specializationIds;
             await _httpClient.PostAsJsonAsync("api/trainer", trainerAccountDto);
             NavigationManager.NavigateTo("trainerList");
         }
@@ -333,7 +330,6 @@
         if (!string.IsNullOrEmpty(token))
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            //trainerViewDto.SpecializationIds = specializationIds;
             await _httpClient.PutAsJsonAsync($"api/trainer/{CurrentID}", trainerViewDto);
             NavigationManager.NavigateTo("trainerList");
         }

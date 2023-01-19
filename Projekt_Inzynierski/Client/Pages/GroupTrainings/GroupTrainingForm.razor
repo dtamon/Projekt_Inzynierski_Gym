@@ -43,7 +43,6 @@
                     <div class="input-group">
                         <label for="StartDate" class="input-group-text col-md-3">Data rozpoczęcia:</label>
                         <input type="datetime" @bind="@groupTrainingDto.StartDate" class="form-control" disabled="@isDisabled" />
-                        @*<InputDate @bind-Value="@groupTrainingDto.StartDate" class="form-control" disabled="@isDisabled"></InputDate>*@
                     </div>
                     <ValidationMessage For="@(() => groupTrainingDto.StartDate)" />
                     <ValidationMessage For="@(() => groupTrainingDto.TrainerIds)" />

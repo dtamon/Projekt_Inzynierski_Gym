@@ -1,15 +1,11 @@
 ﻿using FluentValidation;
 using Projekt_Inzynierski.Core.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Projekt_Inzynierski.Core.Validators
 {
     public class EmployeeViewValidator : AbstractValidator<EmployeeViewDto>
     {
+        //Wykomentowany kod powodował błędy podczas walidacji, jednak sprawdzenie unikalności wybranych pól jest konieczne
         public EmployeeViewValidator()
         {
             RuleFor(x => x.FirstName)

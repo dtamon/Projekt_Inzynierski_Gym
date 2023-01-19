@@ -3,11 +3,6 @@ using Projekt_Inzynierski.DataAccess.Context;
 using Projekt_Inzynierski.DataAccess.Entities;
 using Projekt_Inzynierski.DataAccess.Queries;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Projekt_Inzynierski.DataAccess.Repositories
 {
@@ -36,7 +31,6 @@ namespace Projekt_Inzynierski.DataAccess.Repositories
             return await _context.Trainer.Include(t => t.Specializations)
                 .Where(x => query.SearchPhrase == null || (x.FirstName.ToLower().Contains(query.SearchPhrase.ToLower())
                                                         || x.LastName.ToLower().Contains(query.SearchPhrase.ToLower())
-                                                        //|| x.Specializations.ToList().ForEach(x => x.SpecName.ToLower().Contains(query.SearchPhrase.ToLower()))
                                                         || x.Pesel.ToLower().Contains(query.SearchPhrase.ToLower())))
                 .ToListAsync();
         }

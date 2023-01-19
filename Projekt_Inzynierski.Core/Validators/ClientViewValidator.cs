@@ -1,17 +1,11 @@
 ﻿using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 using Projekt_Inzynierski.Core.DTOs;
-using Projekt_Inzynierski.DataAccess.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Projekt_Inzynierski.Core.Validators
 {
     public class ClientViewValidator : AbstractValidator<ClientViewDto>
     {
+        //Wykomentowany kod powodował błędy podczas walidacji, jednak sprawdzenie unikalności wybranych pól jest konieczne
         public ClientViewValidator(/*GymDbContext dbContext*/)
         {
             RuleFor(x => x.FirstName)

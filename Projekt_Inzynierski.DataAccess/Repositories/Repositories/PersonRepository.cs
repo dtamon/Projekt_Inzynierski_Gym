@@ -2,11 +2,6 @@
 using Projekt_Inzynierski.DataAccess.Context;
 using Projekt_Inzynierski.DataAccess.Entities;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
 {

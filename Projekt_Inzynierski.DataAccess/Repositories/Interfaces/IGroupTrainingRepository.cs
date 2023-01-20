@@ -13,5 +13,6 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Interfaces
         public Task<ICollection<GroupTraining>> GetTrainingsByTrainerId(int id, SearchQuery query);
         public Task<ICollection<GroupTraining>> GetTrainingsByClientId(int id, SearchQuery query);
         public Task<ICollection<GroupTraining>> GetTrainingsWhereClientIsAbsent(int clientId, SearchQuery query);
+        public Task<bool> DoesTrainingCollide(int id, DateTime date);
     }
 }

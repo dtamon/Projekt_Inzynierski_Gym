@@ -24,6 +24,7 @@
                             <label for="Email" class="input-group-text col-md-3">Email:</label>
                             <InputText @bind-Value="@clientRegisterDto.Email" class="form-control" disabled="@isDisabled"></InputText>
                         </div>
+                        <span class="text-danger">@emailIsTakenMess</span>
                         <ValidationMessage For="@(() => clientRegisterDto.Email)" />
                     </div>
                     <div class="form-group">
@@ -59,6 +60,7 @@
                             <label for="PhoneNr" class="input-group-text col-md-3">Numer telefonu:</label>
                             <InputText @bind-Value="@clientRegisterDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
                         </div>
+                        <span class="text-danger">@phoneNrIsTakenMess</span>
                         <ValidationMessage For="@(() => clientRegisterDto.PhoneNr)" />
                     </div>
                     <div class="form-group">
@@ -66,6 +68,7 @@
                             <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
                             <InputText @bind-Value="@clientRegisterDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
                         </div>
+                        <span class="text-danger">@peselIsTakenMess</span>
                         <ValidationMessage For="@(() => clientRegisterDto.Pesel)" />
                     </div>
                     <div class="form-group">
@@ -103,6 +106,7 @@
                             <label for="Email" class="input-group-text col-md-3">Email:</label>
                             <InputText @bind-Value="@clientViewDto.Email" class="form-control" disabled="@isDisabled"></InputText>
                         </div>
+                        <span class="text-danger">@emailIsTakenMess</span>
                         <ValidationMessage For="@(() => clientViewDto.Email)" />
                     </div>
                     <div class="form-group">
@@ -124,6 +128,7 @@
                             <label for="PhoneNr" class="input-group-text col-md-3">Numer telefonu:</label>
                             <InputText @bind-Value="@clientViewDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
                         </div>
+                        <span class="text-danger">@phoneNrIsTakenMess</span>
                         <ValidationMessage For="@(() => clientViewDto.PhoneNr)" />
                     </div>
                     <div class="form-group">
@@ -131,6 +136,7 @@
                             <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
                             <InputText @bind-Value="@clientViewDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
                         </div>
+                        <span class="text-danger">@peselIsTakenMess</span>
                         <ValidationMessage For="@(() => clientViewDto.Pesel)" />
                     </div>
                     <div class="form-group">
@@ -204,6 +210,8 @@
     ICollection<ContractDto> contracts = new List<ContractDto>();
     bool isDisabled;
 
+    string? emailIsTakenMess, phoneNrIsTakenMess, peselIsTakenMess;
+
     protected override async Task OnInitializedAsync()
     {
         var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
@@ -235,6 +243,7 @@
 
     protected void OnValidSubmit()
     {
+        emailIsTakenMess = null; phoneNrIsTakenMess = null; peselIsTakenMess = null;
         if (FormMode != "edit")
         {
             CreateClient();
@@ -257,7 +266,22 @@
             {
                 byte[] bytes = await response.Content.ReadAsByteArrayAsync();
                 await BlazorDownloadFileService.DownloadFile($"Umowa_{clientRegisterDto.FirstName}-{clientRegisterDto.LastName}.pdf", bytes, contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                NavigationManager.NavigateTo("clientList");  
+                NavigationManager.NavigateTo("clientList");
+            }
+            else if ((int)response.StatusCode == 422)
+            {
+                emailIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
+            else if ((int)response.StatusCode == 423)
+            {
+                peselIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
+            else if ((int)response.StatusCode == 424)
+            {
+                phoneNrIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
             }
         }
         else
@@ -273,8 +297,26 @@
         if (!string.IsNullOrEmpty(token))
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            await _httpClient.PutAsJsonAsync($"api/client/{CurrentID}", clientViewDto);
-            NavigationManager.NavigateTo("clientList");
+            var response = await _httpClient.PutAsJsonAsync($"api/client/{CurrentID}", clientViewDto);
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("clientList");
+            }
+            else if ((int)response.StatusCode == 422)
+            {
+                emailIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
+            else if ((int)response.StatusCode == 423)
+            {
+                peselIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
+            else if ((int)response.StatusCode == 424)
+            {
+                phoneNrIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
         }
         else
         {

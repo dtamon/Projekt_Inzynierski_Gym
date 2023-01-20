@@ -11,6 +11,26 @@ namespace Projekt_Inzynierski.Core.Middleware
             {
                 await next.Invoke(context);
             }
+            catch (TrainingCollisionException trainingCollisionException)
+            {
+                context.Response.StatusCode = 421;
+                await context.Response.WriteAsync(trainingCollisionException.Message);
+            }
+            catch (EmailIsTakenException emailIsTakenException)
+            {
+                context.Response.StatusCode = 422;
+                await context.Response.WriteAsync(emailIsTakenException.Message);
+            }
+            catch (PeselIsTakenException peselIsTakenException)
+            {
+                context.Response.StatusCode = 423;
+                await context.Response.WriteAsync(peselIsTakenException.Message);
+            }
+            catch (PhoneNrIsTakenException phoneNrIsTakenException)
+            {
+                context.Response.StatusCode = 424;
+                await context.Response.WriteAsync(phoneNrIsTakenException.Message);
+            }
             catch (NotFoundException notFoundException)
             {
                 context.Response.StatusCode = 404;

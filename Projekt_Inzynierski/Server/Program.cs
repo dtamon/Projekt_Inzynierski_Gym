@@ -73,7 +73,7 @@ builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddHttpContextAccessor();
 
 //Automapper
-builder.Services.AddAutoMapper(typeof(Projekt_Inzynierski.Core.GymMappingProfile).Assembly);
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 //Validation
 builder.Services.AddFluentValidationAutoValidation(config =>

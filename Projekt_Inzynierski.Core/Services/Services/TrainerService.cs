@@ -6,6 +6,7 @@ using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
 using Projekt_Inzynierski.DataAccess.Queries;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
+using Projekt_Inzynierski.DataAccess.Repositories.Repositories;
 
 namespace Projekt_Inzynierski.Core.Services.Services
 {
@@ -13,20 +14,29 @@ namespace Projekt_Inzynierski.Core.Services.Services
     {
         private readonly ITrainerRepository _trainerRepository;
         private readonly ISpecializationRepository _specializationRepository;
+        private readonly IPersonRepository _personRepository;
         private readonly IMapper _mapper;
         private readonly IPasswordHasher<Trainer> _passwordHasher;
         private readonly IUserContextService _userContextService;
 
-        public TrainerService(ITrainerRepository trainerRepository, ISpecializationRepository specializationRepository, IMapper mapper, IPasswordHasher<Trainer> passwordHasher, IUserContextService userContextService)
+        public TrainerService(ITrainerRepository trainerRepository, ISpecializationRepository specializationRepository, IMapper mapper, IPasswordHasher<Trainer> passwordHasher, IUserContextService userContextService, IPersonRepository personRepository)
         {
             _trainerRepository = trainerRepository;
             _specializationRepository = specializationRepository;
             _mapper = mapper;
             _passwordHasher = passwordHasher;
             _userContextService = userContextService;
+            _personRepository = personRepository;
         }
         public async Task CreateTrainerAsync(TrainerAccountDto trainerDto)
         {
+            if (await _personRepository.IsEmailTaken(trainerDto.Id, trainerDto.Email))
+                throw new EmailIsTakenException("Email jest zajęty");
+            if (await _personRepository.IsPhoneNrTaken(trainerDto.Id, trainerDto.PhoneNr))
+                throw new PhoneNrIsTakenException("Numer telefonu jest zajęty");
+            if (await _personRepository.IsPeselTaken(trainerDto.Id, trainerDto.Pesel))
+                throw new PeselIsTakenException("Pesel jest zajęty");
+
             var specializations = new List<Specialization>();
             foreach (var specializaitonId in trainerDto.SpecializationIds)
             {
@@ -82,6 +92,13 @@ namespace Projekt_Inzynierski.Core.Services.Services
 
         public async Task UpdateTrainerAsync(TrainerViewDto trainerDto, int id)
         {
+            if (await _personRepository.IsEmailTaken(trainerDto.Id, trainerDto.Email))
+                throw new EmailIsTakenException("Email jest zajęty");
+            if (await _personRepository.IsPhoneNrTaken(trainerDto.Id, trainerDto.PhoneNr))
+                throw new PhoneNrIsTakenException("Numer telefonu jest zajęty");
+            if (await _personRepository.IsPeselTaken(trainerDto.Id, trainerDto.Pesel))
+                throw new PeselIsTakenException("Pesel jest zajęty");
+
             var specializations = new List<Specialization>();
             foreach (var specializaitonId in trainerDto.SpecializationIds)
             {

@@ -13,19 +13,29 @@ namespace Projekt_Inzynierski.Core.Services.Services
     {
         private readonly IClientRepository _clientRepository;
         private readonly IContractRepository _contractRepository;
+        private readonly IPersonRepository _personRepository;
         private readonly IMapper _mapper;
         private readonly IPasswordHasher<Client> _passwordHasher;
 
-        public ClientService(IClientRepository clientRepository, IMapper mapper, IContractRepository contractRepository, IPasswordHasher<Client> passwordHasher)
+        public ClientService(IClientRepository clientRepository, IMapper mapper, IContractRepository contractRepository, IPasswordHasher<Client> passwordHasher, IPersonRepository personRepository)
         {
             _clientRepository = clientRepository;
             _mapper = mapper;
             _contractRepository = contractRepository;
             _passwordHasher = passwordHasher;
+            _personRepository = personRepository;
         }
 
         public async Task<DataToGeneratePdfDto> CreateClientAsync(ClientAccountDto clientDto)
         {
+            if (await _personRepository.IsEmailTaken(clientDto.Id, clientDto.Email))
+                throw new EmailIsTakenException("Email jest zajęty");
+            if (await _personRepository.IsPhoneNrTaken(clientDto.Id, clientDto.PhoneNr))
+                throw new PhoneNrIsTakenException("Numer telefonu jest zajęty");
+            if (await _personRepository.IsPeselTaken(clientDto.Id, clientDto.Pesel))
+                throw new PeselIsTakenException("Pesel jest zajęty");
+            
+
             clientDto.ContractStart = DateTime.Today;
             var contract = await _contractRepository.GetContractByIdAsync(clientDto.ContractId);
             if (contract == null)
@@ -70,6 +80,13 @@ namespace Projekt_Inzynierski.Core.Services.Services
 
         public async Task UpdateClientAsync(ClientViewDto clientDto, int id)
         {
+            if (await _personRepository.IsEmailTaken(clientDto.Id, clientDto.Email))
+                throw new EmailIsTakenException("Email jest zajęty");
+            if (await _personRepository.IsPhoneNrTaken(clientDto.Id, clientDto.PhoneNr))
+                throw new PhoneNrIsTakenException("Numer telefonu jest zajęty");
+            if (await _personRepository.IsPeselTaken(clientDto.Id, clientDto.Pesel))
+                throw new PeselIsTakenException("Pesel jest zajęty");
+
             var client = await _clientRepository.GetClientByIdAsync(id);
             if (client == null)
                 throw new NotFoundException("Client not found");

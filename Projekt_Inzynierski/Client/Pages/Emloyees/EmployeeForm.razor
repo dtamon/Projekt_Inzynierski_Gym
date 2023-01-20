@@ -22,6 +22,7 @@
                         <label for="Email" class="input-group-text col-md-3">Email:</label>
                         <InputText @bind-Value="@employeeRegisterDto.Email" class="form-control" disabled="@isDisabled"></InputText>
                     </div>
+                    <span class="text-danger">@emailIsTakenMess</span>
                     <ValidationMessage For="@(() => employeeRegisterDto.Email)" />
                 </div>
                 <div class="form-group">
@@ -57,6 +58,7 @@
                         <label for="PhoneNr" class="input-group-text col-md-3">Numer tel.:</label>
                         <InputText @bind-Value="@employeeRegisterDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
                     </div>
+                    <span class="text-danger">@phoneNrIsTakenMess</span>
                     <ValidationMessage For="@(() => employeeRegisterDto.PhoneNr)" />
                 </div>
                 <div class="form-group">
@@ -64,6 +66,7 @@
                         <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
                         <InputText @bind-Value="@employeeRegisterDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
                     </div>
+                    <span class="text-danger">@peselIsTakenMess</span>
                     <ValidationMessage For="@(() => employeeRegisterDto.Pesel)" />
                 </div>
                 <div class="form-group">
@@ -92,6 +95,7 @@
                         <label for="Email" class="input-group-text col-md-3">Email:</label>
                         <InputText @bind-Value="@employeeViewDto.Email" class="form-control" disabled="@isDisabled"></InputText>
                     </div>
+                    <span class="text-danger">@emailIsTakenMess</span>
                     <ValidationMessage For="@(() => employeeViewDto.Email)" />
                 </div>
                 <div class="form-group">
@@ -113,6 +117,7 @@
                         <label for="PhoneNr" class="input-group-text col-md-3">Numer tel.:</label>
                         <InputText @bind-Value="@employeeViewDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
                     </div>
+                    <span class="text-danger">@phoneNrIsTakenMess</span>
                     <ValidationMessage For="@(() => employeeViewDto.PhoneNr)" />
                 </div>
                 <div class="form-group">
@@ -120,6 +125,7 @@
                         <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
                         <InputText @bind-Value="@employeeViewDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
                     </div>
+                    <span class="text-danger">@peselIsTakenMess</span>
                     <ValidationMessage For="@(() => employeeViewDto.Pesel)" />
                 </div>
                 <div class="form-group">
@@ -160,6 +166,8 @@
     EmployeeViewDto employeeViewDto = new EmployeeViewDto();
     bool isDisabled;
 
+    string? emailIsTakenMess, phoneNrIsTakenMess, peselIsTakenMess;
+
     protected override async Task OnInitializedAsync()
     {
         var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
@@ -189,6 +197,7 @@
 
     protected void OnValidSubmit()
     {
+        emailIsTakenMess = null; phoneNrIsTakenMess = null; peselIsTakenMess = null;
         if (FormMode != "edit")
         {
             CreateEmployee();
@@ -206,8 +215,26 @@
         if (!string.IsNullOrEmpty(token))
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            await _httpClient.PostAsJsonAsync("api/employee", employeeRegisterDto);
-            NavigationManager.NavigateTo("employeeList");
+            var response = await _httpClient.PostAsJsonAsync("api/employee", employeeRegisterDto);
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("employeeList");
+            }
+            else if ((int)response.StatusCode == 422)
+            {
+                emailIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
+            else if ((int)response.StatusCode == 423)
+            {
+                peselIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
+            else if ((int)response.StatusCode == 424)
+            {
+                phoneNrIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
         }
         else
         {
@@ -222,8 +249,26 @@
         if (!string.IsNullOrEmpty(token))
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            await _httpClient.PutAsJsonAsync($"api/employee/{CurrentID}", employeeViewDto);
-            NavigationManager.NavigateTo("employeeList");
+            var response = await _httpClient.PutAsJsonAsync($"api/employee/{CurrentID}", employeeViewDto); 
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("employeeList");
+            }
+            else if ((int)response.StatusCode == 422)
+            {
+                emailIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
+            else if ((int)response.StatusCode == 423)
+            {
+                peselIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
+            else if ((int)response.StatusCode == 424)
+            {
+                phoneNrIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
         }
         else
         {

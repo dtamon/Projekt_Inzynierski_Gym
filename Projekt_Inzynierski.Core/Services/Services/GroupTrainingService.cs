@@ -27,6 +27,9 @@ namespace Projekt_Inzynierski.Core.Services.Services
 
         public async Task CreateGroupTrainingAsync(GroupTrainingDto groupTrainingDto)
         {
+            if (await _groupTrainingRepository.DoesTrainingCollide(groupTrainingDto.Id, groupTrainingDto.StartDate))
+                throw new TrainingCollisionException("Data koliduje z innym treningiem");
+
             var trainers = new List<Trainer>();
 
             //get singed in user id
@@ -87,6 +90,9 @@ namespace Projekt_Inzynierski.Core.Services.Services
 
         public async Task UpdateGroupTrainingAsync(GroupTrainingDto groupTrainingDto, int id)
         {
+            if (await _groupTrainingRepository.DoesTrainingCollide(groupTrainingDto.Id, groupTrainingDto.StartDate))
+                throw new TrainingCollisionException("Data koliduje z innym treningiem");
+
             var trainers = new List<Trainer>();
             var clients = new List<Client>();
 

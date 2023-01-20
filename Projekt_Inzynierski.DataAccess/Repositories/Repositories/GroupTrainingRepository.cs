@@ -71,5 +71,11 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
                 .OrderBy(x => x.StartDate)
                 .ToListAsync();
         }
+
+        public async Task<bool> DoesTrainingCollide(int id, DateTime date)
+        {
+            return await _context.GroupTraining.AnyAsync(x => x.Id != id && ((x.StartDate < date && date < x.StartDate.AddHours(1)) 
+                                                    || (x.StartDate < date.AddHours(1) && date.AddHours(1) < x.StartDate.AddHours(1))));
+        }
     }
 }

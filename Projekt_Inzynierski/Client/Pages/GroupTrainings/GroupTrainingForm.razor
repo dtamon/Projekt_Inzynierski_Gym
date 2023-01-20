@@ -44,6 +44,7 @@
                         <label for="StartDate" class="input-group-text col-md-3">Data rozpoczęcia:</label>
                         <input type="datetime" @bind="@groupTrainingDto.StartDate" class="form-control" disabled="@isDisabled" />
                     </div>
+                    <span class="text-danger">@startDateCollideMess</span>
                     <ValidationMessage For="@(() => groupTrainingDto.StartDate)" />
                     <ValidationMessage For="@(() => groupTrainingDto.TrainerIds)" />
                 </div>
@@ -139,8 +140,8 @@
 
     ICollection<TrainerSimpleDto> trainers = new List<TrainerSimpleDto>();
     GroupTrainingDto groupTrainingDto = new GroupTrainingDto();
-    bool isDisabled;
-    bool isTrainingCreatorLogged;
+    bool isDisabled, isTrainingCreatorLogged;
+    string? startDateCollideMess;
 
     protected override async Task OnInitializedAsync()
     {
@@ -184,6 +185,7 @@
 
     protected void OnValidSubmit()
     {
+        startDateCollideMess = null;
         if (FormMode != "edit")
         {
             CreateGroupTraining();
@@ -201,8 +203,16 @@
         if (!string.IsNullOrEmpty(token))
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            await _httpClient.PostAsJsonAsync("api/groupTraining", groupTrainingDto);
-            NavigationManager.NavigateTo("groupTrainingList/list");
+            var response = await _httpClient.PostAsJsonAsync("api/groupTraining", groupTrainingDto);
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("groupTrainingList/list");
+            }
+            else if ((int)response.StatusCode == 421)
+            {
+                startDateCollideMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
         }
         else
         {
@@ -218,8 +228,16 @@
         if (!string.IsNullOrEmpty(token))
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            await _httpClient.PutAsJsonAsync($"api/groupTraining/{CurrentID}", groupTrainingDto);
-            NavigationManager.NavigateTo("groupTrainingList/list");
+            var response = await _httpClient.PutAsJsonAsync($"api/groupTraining/{CurrentID}", groupTrainingDto);
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("groupTrainingList/list");
+            }
+            else if ((int)response.StatusCode == 421)
+            {
+                startDateCollideMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
         }
         else
         {

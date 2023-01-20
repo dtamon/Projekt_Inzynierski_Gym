@@ -23,6 +23,7 @@
                             <label for="Email" class="input-group-text col-md-3">Email:</label>
                             <InputText @bind-Value="@trainerAccountDto.Email" class="form-control" disabled="@isDisabled"></InputText>
                         </div>
+                        <span class="text-danger">@emailIsTakenMess</span>
                         <ValidationMessage For="@(() => trainerAccountDto.Email)" />
                     </div>
                     <div class="form-group">
@@ -58,6 +59,7 @@
                             <label for="PhoneNr" class="input-group-text col-md-3">Numer tel.:</label>
                             <InputText @bind-Value="@trainerAccountDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
                         </div>
+                        <span class="text-danger">@phoneNrIsTakenMess</span>
                         <ValidationMessage For="@(() => trainerAccountDto.PhoneNr)" />
                     </div>
                     <div class="form-group">
@@ -65,6 +67,7 @@
                             <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
                             <InputText @bind-Value="@trainerAccountDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
                         </div>
+                        <span class="text-danger">@peselIsTakenMess</span>
                         <ValidationMessage For="@(() => trainerAccountDto.Pesel)" />
                     </div>
                     <div class="form-group">
@@ -121,6 +124,7 @@
                             <label for="Email" class="input-group-text col-md-3">Email:</label>
                             <InputText @bind-Value="@trainerViewDto.Email" class="form-control" disabled="@isDisabled"></InputText>
                         </div>
+                        <span class="text-danger">@emailIsTakenMess</span>
                         <ValidationMessage For="@(() => trainerViewDto.Email)" />
                     </div>
                     <div class="form-group">
@@ -142,6 +146,7 @@
                             <label for="PhoneNr" class="input-group-text col-md-3">Numer tel.:</label>
                             <InputText @bind-Value="@trainerViewDto.PhoneNr" class="form-control" disabled="@isDisabled"></InputText>
                         </div>
+                        <span class="text-danger">@phoneNrIsTakenMess</span>
                         <ValidationMessage For="@(() => trainerViewDto.PhoneNr)" />
                     </div>
                     <div class="form-group">
@@ -149,6 +154,7 @@
                             <label for="Pesel" class="input-group-text col-md-3">Pesel:</label>
                             <InputText @bind-Value="@trainerViewDto.Pesel" class="form-control" disabled="@isDisabled"></InputText>
                         </div>
+                        <span class="text-danger">@peselIsTakenMess</span>
                         <ValidationMessage For="@(() => trainerViewDto.Pesel)" />
                     </div>
                     <div class="form-group">
@@ -268,6 +274,8 @@
     TrainerViewDto trainerViewDto = new TrainerViewDto();
     bool isDisabled;
 
+    string? emailIsTakenMess, phoneNrIsTakenMess, peselIsTakenMess;
+
     protected override async Task OnInitializedAsync()
     {
         var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
@@ -297,6 +305,7 @@
 
     protected void OnValidSubmit()
     {
+        emailIsTakenMess = null; phoneNrIsTakenMess = null; peselIsTakenMess = null;
         if (FormMode != "edit")
         {
             CreateTrainer();
@@ -314,8 +323,26 @@
         if (!string.IsNullOrEmpty(token))
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            await _httpClient.PostAsJsonAsync("api/trainer", trainerAccountDto);
-            NavigationManager.NavigateTo("trainerList");
+            var response = await _httpClient.PostAsJsonAsync("api/trainer", trainerAccountDto);
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("trainerList");
+            }
+            else if ((int)response.StatusCode == 422)
+            {
+                emailIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
+            else if ((int)response.StatusCode == 423)
+            {
+                peselIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
+            else if ((int)response.StatusCode == 424)
+            {
+                phoneNrIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
         }
         else
         {
@@ -330,8 +357,26 @@
         if (!string.IsNullOrEmpty(token))
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            await _httpClient.PutAsJsonAsync($"api/trainer/{CurrentID}", trainerViewDto);
-            NavigationManager.NavigateTo("trainerList");
+            var response = await _httpClient.PutAsJsonAsync($"api/trainer/{CurrentID}", trainerViewDto);
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("trainerList");
+            }
+            else if ((int)response.StatusCode == 422)
+            {
+                emailIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
+            else if ((int)response.StatusCode == 423)
+            {
+                peselIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
+            else if ((int)response.StatusCode == 424)
+            {
+                phoneNrIsTakenMess = await response.Content.ReadAsStringAsync();
+                StateHasChanged();
+            }
         }
         else
         {

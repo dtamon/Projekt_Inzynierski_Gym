@@ -18,19 +18,19 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
             return await _context.Person.FirstOrDefaultAsync(x => x.Email == email);
         }
 
-        public async Task<bool> IsEmailTaken(string email)
+        public async Task<bool> IsEmailTaken(int id, string email)
         {
-            return await _context.Person.AnyAsync(x => x.Email == email);
+            return await _context.Person.AnyAsync(x => x.Id != id && x.Email == email);
         }
 
-        public async Task<bool> IsPeselTaken(string pesel)
+        public async Task<bool> IsPeselTaken(int id, string pesel)
         {
-            return await _context.Person.AnyAsync(x => x.Pesel == pesel);
+            return await _context.Person.AnyAsync(x => x.Id != id && x.Pesel == pesel);
         }
 
-        public async Task<bool> IsPhoneNrTaken(string phoneNr)
+        public async Task<bool> IsPhoneNrTaken(int id, string phoneNr)
         {
-            return await _context.Person.AnyAsync(x => x.PhoneNr == phoneNr);
+            return await _context.Person.AnyAsync(x => x.Id != id && x.PhoneNr == phoneNr);
         }
     }
 }

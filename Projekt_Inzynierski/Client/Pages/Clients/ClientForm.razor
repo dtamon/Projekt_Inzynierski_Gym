@@ -300,6 +300,8 @@
             var response = await _httpClient.PutAsJsonAsync($"api/client/{CurrentID}", clientViewDto);
             if (response.IsSuccessStatusCode)
             {
+                byte[] bytes = await response.Content.ReadAsByteArrayAsync();
+                await BlazorDownloadFileService.DownloadFile($"Aneks_do_Umowy_{clientViewDto.FirstName}-{clientViewDto.LastName}.pdf", bytes, contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
                 NavigationManager.NavigateTo("clientList");
             }
             else if ((int)response.StatusCode == 422)

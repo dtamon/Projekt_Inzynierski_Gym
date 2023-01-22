@@ -6,6 +6,7 @@ using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
 using Projekt_Inzynierski.DataAccess.Queries;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
+using System.Diagnostics.Contracts;
 
 namespace Projekt_Inzynierski.Core.Services.Services
 {
@@ -78,7 +79,7 @@ namespace Projekt_Inzynierski.Core.Services.Services
             return _mapper.Map<ClientViewDto>(await _clientRepository.GetClientByIdAsync(id));
         }
 
-        public async Task UpdateClientAsync(ClientViewDto clientDto, int id)
+        public async Task<DataToGeneratePdfDto> UpdateClientAsync(ClientViewDto clientDto, int id)
         {
             if (await _personRepository.IsEmailTaken(clientDto.Id, clientDto.Email))
                 throw new EmailIsTakenException("Email jest zajęty");
@@ -91,14 +92,34 @@ namespace Projekt_Inzynierski.Core.Services.Services
             if (client == null)
                 throw new NotFoundException("Client not found");
 
+            var contract = await _contractRepository.GetContractByIdAsync(clientDto.ContractId);
+            if (contract == null)
+                throw new NotFoundException("Contract not found");
+
+            if (client.ContractId != clientDto.ContractId)
+            {
+                clientDto.ContractStart = DateTime.Today;
+                clientDto.ContractEnd = clientDto.ContractStart.AddMonths(contract.Months);
+            }
+
             client.FirstName = clientDto.FirstName;
             client.LastName = clientDto.LastName;
             client.PhoneNr = clientDto.PhoneNr;
             client.Email = clientDto.Email;
             client.Pesel = clientDto.Pesel;
             client.ContractId = clientDto.ContractId;
+            client.ContractStart = clientDto.ContractStart;
+            client.ContractEnd = clientDto.ContractEnd;
 
             await _clientRepository.UpdateClientAsync(client);
+
+            var dataToPdf = new DataToGeneratePdfDto()
+            {
+                Client = _mapper.Map<ClientAccountDto>(client),
+                Contract = _mapper.Map<ContractDto>(contract)
+            };
+
+            return dataToPdf;
         }
     }
 }

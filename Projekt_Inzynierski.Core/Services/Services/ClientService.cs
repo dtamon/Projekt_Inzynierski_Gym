@@ -6,7 +6,6 @@ using Projekt_Inzynierski.Core.Services.Interfaces;
 using Projekt_Inzynierski.DataAccess.Entities;
 using Projekt_Inzynierski.DataAccess.Queries;
 using Projekt_Inzynierski.DataAccess.Repositories.Interfaces;
-using System.Diagnostics.Contracts;
 
 namespace Projekt_Inzynierski.Core.Services.Services
 {

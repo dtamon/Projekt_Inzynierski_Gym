@@ -36,7 +36,7 @@ namespace Projekt_Inzynierski.DataAccess.Repositories.Repositories
 
         public async Task<Client?> GetClientByIdAsync(int id)
         {
-            return await _context.Client.Include(c => c.Contract).Include(v => v.Visits).FirstOrDefaultAsync(s => s.Id == id);
+            return await _context.Client.Include(c => c.Contract).Include(v => v.Visits.OrderByDescending(x => x.VisitDate)).FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task UpdateClientAsync(Client client)

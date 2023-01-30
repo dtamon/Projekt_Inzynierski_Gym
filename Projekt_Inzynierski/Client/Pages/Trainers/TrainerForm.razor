@@ -230,7 +230,6 @@
                         <thead>
                             <tr>
                                 <th>Typ treningu</th>
-                                @*<th>Trener prowadzący</th>*@
                                 <th>Limit miejsc</th>
                                 <th>Ilość wolnych miejsc</th>
                                 <th>Data i godzina rozpoczęcia</th>
@@ -242,7 +241,6 @@
                             {
                                 <tr>
                                     <td>@groupTraining.TrainingType</td>
-                                    @*<td>@groupTraining.CreatedByTrainer.FirstName @groupTraining.CreatedByTrainer.LastName</td>*@
                                     <td>@groupTraining.MaxClients</td>
                                     <td>@groupTraining.FreeSpots</td>
                                     <td>@groupTraining.StartDate.ToShortDateString() @groupTraining.StartDate.ToShortTimeString()</td>

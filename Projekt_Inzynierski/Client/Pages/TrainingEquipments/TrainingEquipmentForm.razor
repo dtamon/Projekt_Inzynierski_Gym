@@ -17,7 +17,7 @@
             </div>
             <div class="form-group">
                 <div class="input-group">
-                    <label for="SerialNr" class="input-group-text col-md-3">Numer seryjny:</label>
+                    <label for="SerialNr" class="input-group-text col-md-4">Numer seryjny:</label>
                     <InputText @bind-Value="@equipmentDto.SerialNr" class="form-control" disabled="@isDisabled"></InputText>
                 </div>
                 <ValidationMessage For="@(() => equipmentDto.SerialNr)" />
@@ -25,7 +25,7 @@
             <br />
             <div class="form-group">
                 <div class="input-group">
-                    <label for="TechnicalState" class="input-group-text col-md-3">Czy jest sprawny?</label>
+                    <label for="TechnicalState" class="input-group-text col-md-4">Czy jest sprawny:</label>
                     <div class="form-control">
                         <InputCheckbox @bind-Value="@equipmentDto.TechnicalState" class="form-check-input" disabled="@isDisabled" />
                     </div>

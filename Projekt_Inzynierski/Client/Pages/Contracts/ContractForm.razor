@@ -18,14 +18,14 @@
                 </div>
                 <div class="form-group">
                     <div class="input-group">
-                        <label for="Months" class="input-group-text col-md-3">Okres miesięcy:</label>
+                        <label for="Months" class="input-group-text col-md-4">Okres miesięcy:</label>
                         <InputNumber @bind-Value="@contractDto.Months" class="form-control" disabled="@isDisabled"></InputNumber>
                     </div>
                     <ValidationMessage For="@(() => contractDto.Months)" />
                 </div>
                 <div class="form-group">
                     <div class="input-group">
-                        <label for="MonthlyCost" class="input-group-text col-md-3">Koszt miesięcznie:</label>
+                        <label for="MonthlyCost" class="input-group-text col-md-4">Koszt miesięczny:</label>
                         <InputNumber @bind-Value="@contractDto.MonthlyCost" class="form-control" disabled="@isDisabled"></InputNumber>
                     </div>
                     <ValidationMessage For="@(() => contractDto.MonthlyCost)" />

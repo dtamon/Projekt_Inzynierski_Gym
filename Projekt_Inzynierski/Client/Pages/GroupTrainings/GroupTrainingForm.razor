@@ -20,28 +20,28 @@
                 {
                     <div class="form-group">
                         <div class="input-group">
-                            <label for="TrainingType" class="input-group-text col-md-3">Prowadzący:</label>
+                            <label for="TrainingType" class="input-group-text col-md-4">Prowadzący:</label>
                             <input type="text" value="@groupTrainingDto.CreatedByTrainer.FirstName @groupTrainingDto.CreatedByTrainer.LastName, @groupTrainingDto.CreatedByTrainer.Pesel" class="form-control" disabled="@isDisabled" />
                         </div>
                     </div>
                 }
                 <div class="form-group">
                     <div class="input-group">
-                        <label for="TrainingType" class="input-group-text col-md-3">Typ treningu:</label>
+                        <label for="TrainingType" class="input-group-text col-md-4">Typ treningu:</label>
                         <InputText @bind-Value="@groupTrainingDto.TrainingType" class="form-control" disabled="@isDisabled"></InputText>
                     </div>
                     <ValidationMessage For="@(() => groupTrainingDto.TrainingType)" />
                 </div>
                 <div class="form-group">
                     <div class="input-group">
-                        <label for="MaxClients" class="input-group-text col-md-3">Ilość miejsc:</label>
+                        <label for="MaxClients" class="input-group-text col-md-4">Ilość miejsc:</label>
                         <InputNumber @bind-Value="@groupTrainingDto.MaxClients" class="form-control" disabled="@isDisabled"></InputNumber>
                     </div>
                     <ValidationMessage For="@(() => groupTrainingDto.MaxClients)" />
                 </div>
                 <div class="form-group">
                     <div class="input-group">
-                        <label for="StartDate" class="input-group-text col-md-3">Data rozpoczęcia:</label>
+                        <label for="StartDate" class="input-group-text col-md-4">Data rozpoczęcia:</label>
                         <input type="datetime" @bind="@groupTrainingDto.StartDate" class="form-control" disabled="@isDisabled" />
                     </div>
                     <span class="text-danger">@startDateCollideMess</span>
